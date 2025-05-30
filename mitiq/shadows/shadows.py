@@ -24,7 +24,7 @@ from mitiq.shadows.quantum_processing import random_pauli_measurement
 def pauli_twirling_calibrate(
     k_calibration: int = 1,
     locality: int | None = None,
-    zero_state_shadow_outcomes: tuple[list[str] | list[str]] = None,
+    zero_state_shadow_outcomes: tuple[list[str] | list[str]] | None = None,
     qubits: list[cirq.Qid] | None = None,
     executor: Callable[[cirq.Circuit], MeasurementResult] | None = None,
     num_total_measurements_calibration: int | None = 20000,
