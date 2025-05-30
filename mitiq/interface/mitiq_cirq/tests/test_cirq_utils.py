@@ -76,21 +76,15 @@ def test_execute_with_depolarizing_noise():
     observable = np.diag([0, 1])
     # Test 1
     noise1 = 0.0
-    observable_exp_value = execute_with_depolarizing_noise(
-        qc, observable, noise1
-    )
+    observable_exp_value = execute_with_depolarizing_noise(qc, observable, noise1)
     assert 0.0 == observable_exp_value
 
     # Test 2
     noise2 = 0.5
-    observable_exp_value = execute_with_depolarizing_noise(
-        qc, observable, noise2
-    )
+    observable_exp_value = execute_with_depolarizing_noise(qc, observable, noise2)
     assert np.isclose(observable_exp_value, 0.5)
 
     # Test 3
     noise3 = 0.001
-    observable_exp_value = execute_with_depolarizing_noise(
-        qc, observable, noise3
-    )
+    observable_exp_value = execute_with_depolarizing_noise(qc, observable, noise3)
     assert np.isclose(observable_exp_value, 0.062452)

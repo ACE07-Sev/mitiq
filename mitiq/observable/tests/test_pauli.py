@@ -27,9 +27,7 @@ zmat = cirq.unitary(cirq.Z)
 def test_pauli_init():
     pauli = PauliString(spec="IZXYI", coeff=1.0)
     a, b, c = cirq.LineQubit.range(1, 4)
-    assert pauli._pauli == cirq.PauliString(
-        1.0, cirq.Z(a), cirq.X(b), cirq.Y(c)
-    )
+    assert pauli._pauli == cirq.PauliString(1.0, cirq.Z(a), cirq.X(b), cirq.Y(c))
     assert str(pauli) == "Z(q(1))*X(q(2))*Y(q(3))"
 
 
@@ -55,15 +53,11 @@ def test_pauli_eq():
     assert PauliString(spec="X") != PauliString(spec="Z")
     assert PauliString(spec="Z") != PauliString(spec="Z", coeff=-1.0)
 
-    assert PauliString(spec="Z", support=(0,)) != PauliString(
-        spec="Z", support=(1,)
-    )
+    assert PauliString(spec="Z", support=(0,)) != PauliString(spec="Z", support=(1,))
     assert PauliString(spec="IZ") == PauliString(spec="Z", support=(1,))
     assert PauliString(spec="XY") == PauliString(spec="YX", support=(1, 0))
 
-    assert {PauliString(spec="Z"), PauliString(spec="Z")} == {
-        PauliString(spec="Z")
-    }
+    assert {PauliString(spec="Z"), PauliString(spec="Z")} == {PauliString(spec="Z")}
 
 
 def test_matrix():
@@ -365,14 +359,10 @@ def test_pstringcollection_expectation_from_measurements_qubit_indices():
     measurements = MeasurementResult(
         [[0, 0], [0, 0], [0, 1], [0, 1]], qubit_indices=(1, 5)
     )
-    pset = PauliStringCollection(
-        PauliString(spec="Z", coeff=-2.0, support=(1,))
-    )
+    pset = PauliStringCollection(PauliString(spec="Z", coeff=-2.0, support=(1,)))
     assert np.isclose(pset._expectation_from_measurements(measurements), -2.0)
 
-    pset = PauliStringCollection(
-        PauliString(spec="Z", coeff=-2.0, support=(5,))
-    )
+    pset = PauliStringCollection(PauliString(spec="Z", coeff=-2.0, support=(5,)))
     assert np.isclose(pset._expectation_from_measurements(measurements), 0.0)
 
 

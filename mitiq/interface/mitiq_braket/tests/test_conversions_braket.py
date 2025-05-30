@@ -15,9 +15,7 @@ from mitiq.interface.mitiq_braket.conversions import from_braket, to_braket
 from mitiq.utils import _equal
 
 
-@pytest.mark.parametrize(
-    "qreg", (LineQubit.range(2), [LineQubit(1), LineQubit(6)])
-)
+@pytest.mark.parametrize("qreg", (LineQubit.range(2), [LineQubit(1), LineQubit(6)]))
 def test_to_from_braket_bell_circuit(qreg):
     cirq_circuit = Circuit(ops.H(qreg[0]), ops.CNOT(*qreg))
     test_circuit = from_braket(to_braket(cirq_circuit))
@@ -44,9 +42,7 @@ def test_from_braket_non_parameterized_single_qubit_gates():
     cirq_circuit = from_braket(braket_circuit)
 
     for i, op in enumerate(cirq_circuit.all_operations()):
-        assert np.allclose(
-            instructions[i].operator.to_matrix(), protocols.unitary(op)
-        )
+        assert np.allclose(instructions[i].operator.to_matrix(), protocols.unitary(op))
 
     qreg = LineQubit.range(4)
     expected_cirq_circuit = Circuit(
@@ -78,17 +74,14 @@ def test_from_braket_parameterized_single_qubit_gates(qubit_index):
     ]
     angles = np.random.RandomState(11).random(len(pgates))
     instructions = [
-        Instruction(rot(a), target=qubit_index)
-        for rot, a in zip(pgates, angles)
+        Instruction(rot(a), target=qubit_index) for rot, a in zip(pgates, angles)
     ]
     for instr in instructions:
         braket_circuit.add_instruction(instr)
     cirq_circuit = from_braket(braket_circuit)
 
     for i, op in enumerate(cirq_circuit.all_operations()):
-        assert np.allclose(
-            instructions[i].operator.to_matrix(), protocols.unitary(op)
-        )
+        assert np.allclose(instructions[i].operator.to_matrix(), protocols.unitary(op))
 
     qubit = LineQubit(qubit_index)
     expected_cirq_circuit = Circuit(
@@ -99,9 +92,7 @@ def test_from_braket_parameterized_single_qubit_gates(qubit_index):
         cirq_ionq_ops.GPIGate(phi=angles[4] / (2 * np.pi)).on(qubit),
         cirq_ionq_ops.GPI2Gate(phi=angles[5] / (2 * np.pi)).on(qubit),
     )
-    assert _equal(
-        cirq_circuit, expected_cirq_circuit, require_qubit_equality=True
-    )
+    assert _equal(cirq_circuit, expected_cirq_circuit, require_qubit_equality=True)
 
 
 def test_from_braket_non_parameterized_two_qubit_gates():
@@ -164,8 +155,7 @@ def test_from_braket_parameterized_two_qubit_two_parameters_gates():
     ]
     angles = np.random.RandomState(2).random((len(pgates), 2))
     instructions = [
-        Instruction(rot(a[0], a[1]), target=[0, 1])
-        for rot, a in zip(pgates, angles)
+        Instruction(rot(a[0], a[1]), target=[0, 1]) for rot, a in zip(pgates, angles)
     ]
 
     cirq_circuits = list()
@@ -300,9 +290,7 @@ def test_to_from_braket_common_two_qubit_gates(common_gate):
 
     # Cirq AAPowGate has a different global phase than braket AA which gets
     # lost in translation. Here, AA = XX, YY, or ZZ.
-    if not isinstance(
-        common_gate, (ops.XXPowGate, ops.YYPowGate, ops.ZZPowGate)
-    ):
+    if not isinstance(common_gate, (ops.XXPowGate, ops.YYPowGate, ops.ZZPowGate)):
         assert _equal(test_circuit, cirq_circuit, require_qubit_equality=True)
 
 

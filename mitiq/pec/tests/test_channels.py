@@ -33,12 +33,8 @@ def test_max_ent_state_circuit():
     """Tests 1-qubit and 2-qubit maximally entangled states are generated."""
     two_state = np.array([1, 0, 0, 1]) / np.sqrt(2)
     four_state = np.array(3 * [1, 0, 0, 0, 0] + [1]) / 2.0
-    assert np.allclose(
-        _max_ent_state_circuit(2).final_state_vector(), two_state
-    )
-    assert np.allclose(
-        _max_ent_state_circuit(4).final_state_vector(), four_state
-    )
+    assert np.allclose(_max_ent_state_circuit(2).final_state_vector(), two_state)
+    assert np.allclose(_max_ent_state_circuit(4).final_state_vector(), four_state)
 
 
 def test_max_ent_state_circuit_error():
@@ -106,17 +102,12 @@ def test_kraus_to_super():
     for num_qubits in (1, 2, 3, 4, 5):
         d = 2**num_qubits
         fake_kraus_ops = [
-            np.random.rand(d, d) + 1.0j * np.random.rand(d, d)
-            for _ in range(7)
+            np.random.rand(d, d) + 1.0j * np.random.rand(d, d) for _ in range(7)
         ]
         super_op = kraus_to_super(fake_kraus_ops)
         fake_state = np.random.rand(d, d) + 1.0j * np.random.rand(d, d)
-        result_with_kraus = sum(
-            [k @ fake_state @ k.conj().T for k in fake_kraus_ops]
-        )
-        result_with_super = vector_to_matrix(
-            super_op @ matrix_to_vector(fake_state)
-        )
+        result_with_kraus = sum([k @ fake_state @ k.conj().T for k in fake_kraus_ops])
+        result_with_super = vector_to_matrix(super_op @ matrix_to_vector(fake_state))
         assert np.allclose(result_with_kraus, result_with_super)
 
 

@@ -4,9 +4,9 @@
 # LICENSE file in the root directory of this source tree.
 
 from collections import Counter
+from collections.abc import Sequence
 from numbers import Number
-from typing import Any, Dict, List, Optional, Sequence, Set, Union, cast
-from typing import Counter as TCounter
+from typing import Any, cast
 
 import cirq
 import numpy as np
@@ -41,7 +41,7 @@ class PauliString:
         self,
         spec: str = "",
         coeff: complex = 1.0,
-        support: Optional[Sequence[int]] = None,
+        support: Sequence[int] | None = None,
     ) -> None:
         if not set(spec).issubset(set(self._string_to_gate_map.keys())):
             raise ValueError(
@@ -82,7 +82,7 @@ class PauliString:
 
     def matrix(
         self,
-        qubit_indices_to_include: Optional[List[int]] = None,
+        qubit_indices_to_include: list[int] | None = None,
     ) -> npt.NDArray[np.complex64]:
         """Returns the (potentially very large) matrix of the PauliString."""
         qubits = (
@@ -92,7 +92,7 @@ class PauliString:
         )
         return self._pauli.matrix(qubits=qubits)
 
-    def _basis_rotations(self) -> List[cirq.Operation]:
+    def _basis_rotations(self) -> list[cirq.Operation]:
         """Returns the basis rotations needed to measure the PauliString."""
         return [
             op
@@ -100,7 +100,7 @@ class PauliString:
             if op.gate != cirq.SingleQubitCliffordGate.I
         ]
 
-    def _qubits_to_measure(self) -> Set[cirq.Qid]:
+    def _qubits_to_measure(self) -> set[cirq.Qid]:
         return set(self._pauli.qubits)
 
     def measure_in(self, circuit: QPROGRAM) -> QPROGRAM:
@@ -113,9 +113,7 @@ class PauliString:
         Args:
             other: The PauliString to check simultaneous measurement with.
         """
-        overlap = set(self._pauli.qubits).intersection(
-            set(other._pauli.qubits)
-        )
+        overlap = set(self._pauli.qubits).intersection(set(other._pauli.qubits))
         for qubit in overlap:
             if cirq.I in (self._pauli.get(qubit), other._pauli.get(qubit)):
                 continue
@@ -124,9 +122,7 @@ class PauliString:
         return True
 
     def with_coeff(self, coeff: complex) -> "PauliString":
-        return PauliString(
-            spec=self.spec, coeff=coeff, support=sorted(self.support())
-        )
+        return PauliString(spec=self.spec, coeff=coeff, support=sorted(self.support()))
 
     @property
     def spec(self) -> str:
@@ -134,7 +130,7 @@ class PauliString:
         the PauliString."""
         return _cirq_pauli_to_string(self._pauli)
 
-    def support(self) -> Set[int]:
+    def support(self) -> set[int]:
         return {q.x for q in self._pauli.qubits}
 
     def weight(self) -> int:
@@ -143,18 +139,12 @@ class PauliString:
         """
         return sum(gate != cirq.I for gate in self._pauli.values())
 
-    def _expectation_from_measurements(
-        self, measurements: MeasurementResult
-    ) -> float:
-        return PauliStringCollection(self)._expectation_from_measurements(
-            measurements
-        )
+    def _expectation_from_measurements(self, measurements: MeasurementResult) -> float:
+        return PauliStringCollection(self)._expectation_from_measurements(measurements)
 
-    def __mul__(self, other: Union["PauliString", Number]) -> "PauliString":
+    def __mul__(self, other: "PauliString | Number") -> "PauliString":
         if isinstance(other, PauliString):
-            return PauliString.from_cirq_pauli_string(
-                self._pauli * other._pauli
-            )
+            return PauliString.from_cirq_pauli_string(self._pauli * other._pauli)
         elif isinstance(other, Number):
             return PauliString.from_cirq_pauli_string(self._pauli * other)
         return NotImplemented
@@ -203,18 +193,14 @@ class PauliStringCollection:
         >>> print(pcol.can_add(PauliString(spec="Z")))  # False.
     """
 
-    def __init__(
-        self, *paulis: PauliString, check_precondition: bool = True
-    ) -> None:
-        self._paulis_by_weight: Dict[int, TCounter[PauliString]] = dict()
+    def __init__(self, *paulis: PauliString, check_precondition: bool = True) -> None:
+        self._paulis_by_weight: dict[int, Counter[PauliString]] = dict()
         self.add(*paulis, check_precondition=check_precondition)
 
     def can_add(self, pauli: PauliString) -> bool:
         return all(pauli.can_be_measured_with(p) for p in self.elements)
 
-    def add(
-        self, *paulis: PauliString, check_precondition: bool = True
-    ) -> None:
+    def add(self, *paulis: PauliString, check_precondition: bool = True) -> None:
         for pauli in paulis:
             if check_precondition and not self.can_add(pauli):
                 raise ValueError(
@@ -227,7 +213,7 @@ class PauliStringCollection:
                 self._paulis_by_weight[weight].update({pauli})
 
     @property
-    def elements(self) -> List[PauliString]:
+    def elements(self) -> list[PauliString]:
         return [
             pauli
             for paulis in self._paulis_by_weight.values()
@@ -235,10 +221,10 @@ class PauliStringCollection:
         ]
 
     @property
-    def elements_by_weight(self) -> Dict[int, TCounter[PauliString]]:
+    def elements_by_weight(self) -> dict[int, Counter[PauliString]]:
         return self._paulis_by_weight
 
-    def support(self) -> Set[int]:
+    def support(self) -> set[int]:
         return {cast(cirq.LineQubit, q).x for q in self._qubits_to_measure()}
 
     def max_weight(self) -> int:
@@ -247,8 +233,8 @@ class PauliStringCollection:
     def min_weight(self) -> int:
         return min(self._paulis_by_weight.keys(), default=0)
 
-    def _qubits_to_measure(self) -> Set[cirq.Qid]:
-        qubits: Set[cirq.Qid] = set()
+    def _qubits_to_measure(self) -> set[cirq.Qid]:
+        qubits: set[cirq.Qid] = set()
         for pauli in self.elements:
             qubits.update(pauli._pauli.qubits)
         return qubits
@@ -282,9 +268,7 @@ class PauliStringCollection:
         qubits_with_measurements = set[cirq.Qid]()
 
         # Find any existing measurement gates in the circuit
-        for _, op, _ in circuit.findall_operations_with_gate_type(
-            cirq.MeasurementGate
-        ):
+        for _, op, _ in circuit.findall_operations_with_gate_type(cirq.MeasurementGate):
             qubits_with_measurements.update(op.qubits)
 
         for pauli in paulis.elements:
@@ -303,9 +287,7 @@ class PauliStringCollection:
         reverse_qubit_map = dict(zip(qubit_map.values(), qubit_map.keys()))
         return measured.transform_qubits(lambda q: reverse_qubit_map[q])
 
-    def _expectation_from_measurements(
-        self, measurements: MeasurementResult
-    ) -> float:
+    def _expectation_from_measurements(self, measurements: MeasurementResult) -> float:
         total = 0.0
         for pauli in self.elements:
             bitstrings = measurements.filter_qubits(sorted(pauli.support()))

@@ -5,8 +5,6 @@
 
 """Functions to create a QPE circuit."""
 
-from typing import Optional
-
 import cirq
 
 from mitiq import QPROGRAM
@@ -16,7 +14,7 @@ from mitiq.interface import convert_from_mitiq
 def generate_qpe_circuit(
     evalue_reg: int,
     input_gate: cirq.Gate = cirq.T,
-    return_type: Optional[str] = None,
+    return_type: str | None = None,
 ) -> QPROGRAM:
     """Returns a circuit to create a quantum phase estimation (QPE) circuit as
     defined in https://en.wikipedia.org/wiki/Quantum_phase_estimation_algorithm
@@ -47,9 +45,7 @@ def generate_qpe_circuit(
         raise ValueError("This QPE method only works for 1-qubit gates.")
 
     if evalue_reg == num_qubits_for_gate:
-        raise ValueError(
-            "The eigenvalue reg must be larger than the eigenstate reg."
-        )
+        raise ValueError("The eigenvalue reg must be larger than the eigenstate reg.")
 
     total_num_qubits = evalue_reg + num_qubits_for_gate
     qreg = cirq.LineQubit.range(total_num_qubits)
@@ -64,8 +60,7 @@ def generate_qpe_circuit(
 
     for i in range(total_num_qubits - 1)[::-1]:
         circuit.append(
-            [input_gate(qreg[-1]).controlled_by(qreg[i])]
-            * (2 ** (evalue_reg - 1 - i))
+            [input_gate(qreg[-1]).controlled_by(qreg[i])] * (2 ** (evalue_reg - 1 - i))
         )
 
     # IQFT of the eigenvalue register

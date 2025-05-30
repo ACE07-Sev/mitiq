@@ -9,7 +9,7 @@
 
 """Defines utility functions for classical shadows protocol."""
 
-from typing import Generator, List, Optional, Tuple
+from collections.abc import Generator
 
 import numpy as np
 import numpy.typing as npt
@@ -18,7 +18,7 @@ from scipy.linalg import sqrtm
 import mitiq
 
 
-def create_string(str_len: int, loc_list: List[int]) -> str:
+def create_string(str_len: int, loc_list: list[int]) -> str:
     """
     This function returns a string of length ``str_len`` with 1s at the
     locations specified by ``loc_list`` and 0s elsewhere.
@@ -36,13 +36,11 @@ def create_string(str_len: int, loc_list: List[int]) -> str:
             create_string(5, [1, 3])
             >>> "01010"
     """
-    return "".join(
-        map(lambda i: "1" if i in set(loc_list) else "0", range(str_len))
-    )
+    return "".join(map(lambda i: "1" if i in set(loc_list) else "0", range(str_len)))
 
 
 def valid_bitstrings(
-    num_qubits: int, max_hamming_weight: Optional[int] = None
+    num_qubits: int, max_hamming_weight: int | None = None
 ) -> set[str]:
     """
     Description.
@@ -59,8 +57,7 @@ def valid_bitstrings(
     """
     if max_hamming_weight and max_hamming_weight < 1:
         raise ValueError(
-            "max_hamming_weight must be greater than 0. "
-            f"Got {max_hamming_weight}."
+            "max_hamming_weight must be greater than 0. " f"Got {max_hamming_weight}."
         )
 
     bitstrings = {
@@ -71,9 +68,7 @@ def valid_bitstrings(
     return bitstrings
 
 
-def fidelity(
-    sigma: npt.NDArray[np.complex64], rho: npt.NDArray[np.complex64]
-) -> float:
+def fidelity(sigma: npt.NDArray[np.complex64], rho: npt.NDArray[np.complex64]) -> float:
     """
     Calculate the fidelity between two states.
 
@@ -98,8 +93,8 @@ def fidelity(
 
 
 def batch_calibration_data(
-    data: Tuple[List[str], List[str]], num_batches: int
-) -> Generator[Tuple[List[str], List[str]], None, None]:
+    data: tuple[list[str], list[str]], num_batches: int
+) -> Generator[tuple[list[str], list[str]], None, None]:
     """Batch calibration into chunks of size batch_size.
 
     Args:
@@ -154,9 +149,9 @@ def local_clifford_shadow_norm(obs: mitiq.PauliString) -> float:
 
 def n_measurements_opts_expectation_bound(
     error: float,
-    observables: List[mitiq.PauliString],
+    observables: list[mitiq.PauliString],
     failure_rate: float,
-) -> Tuple[int, int]:
+) -> tuple[int, int]:
     """
     This function returns the minimum number of classical shadows required and
     the number of groups "k" into which we need to split the shadows for

@@ -5,8 +5,6 @@
 
 """Functions for creating GHZ circuits for benchmarking purposes."""
 
-from typing import Optional
-
 import cirq
 
 from mitiq import QPROGRAM
@@ -15,7 +13,7 @@ from mitiq.interface import convert_from_mitiq
 
 def generate_ghz_circuit(
     n_qubits: int,
-    return_type: Optional[str] = None,
+    return_type: str | None = None,
 ) -> QPROGRAM:
     """Returns a GHZ circuit ie a circuit that prepares an ``n_qubits``
     GHZ state.
@@ -31,9 +29,7 @@ def generate_ghz_circuit(
         A GHZ circuit acting on ``n_qubits`` qubits.
     """
     if n_qubits <= 0:
-        raise ValueError(
-            "Cannot prepare a GHZ circuit with {} qubits", n_qubits
-        )
+        raise ValueError("Cannot prepare a GHZ circuit with {} qubits", n_qubits)
 
     qubits = cirq.LineQubit.range(n_qubits)
     circuit = cirq.Circuit()

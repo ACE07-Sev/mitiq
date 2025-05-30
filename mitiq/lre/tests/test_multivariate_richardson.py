@@ -61,10 +61,7 @@ test_circuit2 = Circuit(
     ],
 )
 def test_basis_exp(test_num_layers, test_degree, expected):
-    assert (
-        _full_monomial_basis_term_exponents(test_num_layers, test_degree)
-        == expected
-    )
+    assert _full_monomial_basis_term_exponents(test_num_layers, test_degree) == expected
 
 
 @pytest.mark.parametrize(
@@ -74,9 +71,7 @@ def test_basis_exp(test_num_layers, test_degree, expected):
     # This makes the unit test very slow.
 )
 def test_basis_exp_len(test_num_layers, test_degree):
-    calc_dict = _full_monomial_basis_term_exponents(
-        test_num_layers, test_degree
-    )
+    calc_dict = _full_monomial_basis_term_exponents(test_num_layers, test_degree)
     for i in calc_dict:
         assert len(i) == test_num_layers
 
@@ -228,9 +223,7 @@ def test_sample_matrix_numerical_stability():
 def test_eval(num_chunks):
     """Verify the number of calculated linear combination coefficients matches
     to the number of scaled chunked circuits."""
-    coeffs = multivariate_richardson_coefficients(
-        7 * test_circuit2, 2, 2, num_chunks
-    )
+    coeffs = multivariate_richardson_coefficients(7 * test_circuit2, 2, 2, num_chunks)
     multiple_scaled_circuits = multivariate_layer_scaling(
         7 * test_circuit2, 2, 2, num_chunks
     )

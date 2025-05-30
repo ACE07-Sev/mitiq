@@ -5,7 +5,7 @@
 """Functions to calculate parameters for depolarizing noise and biased noise
 models via a learning-based technique."""
 
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 import numpy as np
 import numpy.typing as npt
@@ -23,19 +23,19 @@ from mitiq.pec.representations.depolarizing import (
 
 
 def learn_biased_noise_parameters(
-    operations_to_learn: List[QPROGRAM],
+    operations_to_learn: list[QPROGRAM],
     circuit: QPROGRAM,
     ideal_executor: Executor,
     noisy_executor: Executor,
-    pec_kwargs: Dict[str, Any] = {},
+    pec_kwargs: dict[str, Any] = {},
     num_training_circuits: int = 5,
     fraction_non_clifford: float = 0.2,
-    training_random_state: Optional[np.random.RandomState] = None,
+    training_random_state: np.random.RandomState | None = None,
     epsilon0: float = 0.05,
     eta0: float = 1,
-    observable: Optional[Observable] = None,
-    **learning_kwargs: Dict["str", Any],
-) -> Tuple[bool, float, float]:
+    observable: Observable | None = None,
+    **learning_kwargs: dict["str", Any],
+) -> tuple[bool, float, float]:
     r"""This function learns the biased noise parameters epsilon and eta
     associated to a set of input operations. The learning process is based on
     the execution of a set of training circuits on a noisy backend and on a
@@ -88,9 +88,7 @@ def learn_biased_noise_parameters(
         random_state=training_random_state,
     )
 
-    ideal_values = np.array(
-        ideal_executor.evaluate(training_circuits, observable)
-    )
+    ideal_values = np.array(ideal_executor.evaluate(training_circuits, observable))
 
     pec_data, method, minimize_kwargs = _parse_learning_kwargs(
         learning_kwargs=learning_kwargs
@@ -119,18 +117,18 @@ def learn_biased_noise_parameters(
 
 
 def learn_depolarizing_noise_parameter(
-    operations_to_learn: List[QPROGRAM],
+    operations_to_learn: list[QPROGRAM],
     circuit: QPROGRAM,
     ideal_executor: Executor,
     noisy_executor: Executor,
-    pec_kwargs: Dict[str, Any] = {},
+    pec_kwargs: dict[str, Any] = {},
     num_training_circuits: int = 5,
     fraction_non_clifford: float = 0.2,
-    training_random_state: Optional[np.random.RandomState] = None,
+    training_random_state: np.random.RandomState | None = None,
     epsilon0: float = 0.05,
-    observable: Optional[Observable] = None,
-    **learning_kwargs: Dict["str", Any],
-) -> Tuple[bool, float]:
+    observable: Observable | None = None,
+    **learning_kwargs: dict["str", Any],
+) -> tuple[bool, float]:
     r"""This function learns the depolarizing noise parameter (epsilon)
     associated to a set of input operations. The learning process is based on
     the execution of a set of training circuits on a noisy backend and on a
@@ -182,9 +180,7 @@ def learn_depolarizing_noise_parameter(
         random_state=training_random_state,
     )
 
-    ideal_values = np.array(
-        ideal_executor.evaluate(training_circuits, observable)
-    )
+    ideal_values = np.array(ideal_executor.evaluate(training_circuits, observable))
 
     pec_data, method, minimize_kwargs = _parse_learning_kwargs(
         learning_kwargs=learning_kwargs
@@ -214,13 +210,13 @@ def learn_depolarizing_noise_parameter(
 
 def depolarizing_noise_loss_function(
     epsilon: npt.NDArray[np.float64],
-    operations_to_mitigate: List[QPROGRAM],
-    training_circuits: List[QPROGRAM],
+    operations_to_mitigate: list[QPROGRAM],
+    training_circuits: list[QPROGRAM],
     ideal_values: npt.NDArray[np.float64],
     noisy_executor: Executor,
-    pec_kwargs: Dict[str, Any],
-    pec_data: Optional[npt.NDArray[np.float64]] = None,
-    observable: Optional[Observable] = None,
+    pec_kwargs: dict[str, Any],
+    pec_data: npt.NDArray[np.float64] | None = None,
+    observable: Observable | None = None,
 ) -> float:
     r"""Loss function for optimizing quasi-probability representations
     assuming a depolarizing noise model depending on one real parameter.
@@ -279,13 +275,13 @@ def depolarizing_noise_loss_function(
 
 def biased_noise_loss_function(
     params: npt.NDArray[np.float64],
-    operations_to_mitigate: List[QPROGRAM],
-    training_circuits: List[QPROGRAM],
+    operations_to_mitigate: list[QPROGRAM],
+    training_circuits: list[QPROGRAM],
     ideal_values: npt.NDArray[np.float64],
     noisy_executor: Executor,
-    pec_kwargs: Dict[str, Any],
-    pec_data: Optional[npt.NDArray[np.float64]] = None,
-    observable: Optional[Observable] = None,
+    pec_kwargs: dict[str, Any],
+    pec_data: npt.NDArray[np.float64] | None = None,
+    observable: Observable | None = None,
 ) -> float:
     r"""Loss function for optimizing quasi-probability representations
     assuming a biased noise model depending on two real parameters.
@@ -348,8 +344,8 @@ def biased_noise_loss_function(
 
 
 def _parse_learning_kwargs(
-    learning_kwargs: Dict[str, Any],
-) -> Tuple[npt.NDArray[np.float64], str, Dict[str, Any]]:
+    learning_kwargs: dict[str, Any],
+) -> tuple[npt.NDArray[np.float64], str, dict[str, Any]]:
     r"""Function for handling additional options and data for the learning
     functions.
 

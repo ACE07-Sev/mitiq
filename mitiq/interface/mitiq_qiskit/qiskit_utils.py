@@ -6,7 +6,6 @@
 """Qiskit utility functions."""
 
 from functools import partial
-from typing import Optional, Tuple
 
 import numpy as np
 import numpy.typing as npt
@@ -39,9 +38,7 @@ def initialized_depolarizing_noise(noise_level: float) -> NoiseModel:
     noise_model.add_all_qubit_quantum_error(
         depolarizing_error(noise_level, 1), ["u1", "u2", "u3"]
     )
-    noise_model.add_all_qubit_quantum_error(
-        depolarizing_error(noise_level, 2), ["cx"]
-    )
+    noise_model.add_all_qubit_quantum_error(depolarizing_error(noise_level, 2), ["cx"])
     return noise_model
 
 
@@ -130,7 +127,7 @@ def execute_with_shots_and_noise(
     obs: npt.NDArray[np.complex64],
     noise_model: NoiseModel,
     shots: int,
-    seed: Optional[int] = None,
+    seed: int | None = None,
 ) -> float:
     """Simulates the evolution of the noisy circuit and returns
     the statistical estimate of the expectation value of the observable.
@@ -175,19 +172,17 @@ def execute_with_shots_and_noise(
     expectation = 0
 
     for bitstring, count in counts.items():
-        expectation += (
-            eigvals[int(bitstring[0 : circ.num_qubits], 2)] * count / shots
-        )
+        expectation += eigvals[int(bitstring[0 : circ.num_qubits], 2)] * count / shots
     return expectation
 
 
 def sample_bitstrings(
     circuit: QuantumCircuit,
-    backend: Optional[Backend] = None,
-    noise_model: Optional[NoiseModel] = None,
+    backend: Backend | None = None,
+    noise_model: NoiseModel | None = None,
     shots: int = 10000,
     measure_all: bool = False,
-    qubit_indices: Optional[Tuple[int]] = None,
+    qubit_indices: tuple[int] | None = None,
 ) -> MeasurementResult:
     """Returns measurement bitstrings obtained from executing the input circuit
     on a Qiskit backend (passed as an argument).
@@ -218,9 +213,7 @@ def sample_bitstrings(
     if backend:
         job = backend.run(circuit, shots=shots)
     elif noise_model:
-        backend = AerSimulator(
-            method="density_matrix", noise_model=noise_model
-        )
+        backend = AerSimulator(method="density_matrix", noise_model=noise_model)
         exec_circuit = qiskit.transpile(
             circuit,
             backend=backend,
@@ -231,9 +224,7 @@ def sample_bitstrings(
         )
         job = backend.run(exec_circuit, shots=shots)
     else:
-        raise ValueError(
-            "Either a backend or a noise model must be given as input."
-        )
+        raise ValueError("Either a backend or a noise model must be given as input.")
 
     counts = job.result().get_counts(circuit)
     bitstrings = []
@@ -250,11 +241,11 @@ def sample_bitstrings(
 def compute_expectation_value_on_noisy_backend(
     circuit: QuantumCircuit,
     obs: Observable,
-    backend: Optional[Backend] = None,
-    noise_model: Optional[NoiseModel] = None,
+    backend: Backend | None = None,
+    noise_model: NoiseModel | None = None,
     shots: int = 10000,
     measure_all: bool = False,
-    qubit_indices: Optional[Tuple[int]] = None,
+    qubit_indices: tuple[int] | None = None,
 ) -> complex:
     """Returns the noisy expectation value of the input Mitiq observable
     obtained from executing the input circuit on a Qiskit backend.

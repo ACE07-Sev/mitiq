@@ -3,10 +3,11 @@
 # This source code is licensed under the GPL license (v3) found in the
 # LICENSE file in the root directory of this source tree.
 
+from collections.abc import Callable
 from dataclasses import asdict, dataclass
 from enum import Enum, auto
 from functools import partial
-from typing import Any, Callable, Dict, List, cast
+from typing import Any, cast
 
 import cirq
 import networkx as nx
@@ -72,7 +73,7 @@ class BenchmarkProblem:
     id: int
     circuit: cirq.Circuit
     type: str
-    ideal_distribution: Dict[str, float]
+    ideal_distribution: dict[str, float]
 
     def most_likely_bitstring(self) -> str:
         distribution = self.ideal_distribution
@@ -81,9 +82,7 @@ class BenchmarkProblem:
     def largest_probability(self) -> float:
         return max(self.ideal_distribution.values())
 
-    def converted_circuit(
-        self, circuit_type: SUPPORTED_PROGRAM_TYPES
-    ) -> QPROGRAM:
+    def converted_circuit(self, circuit_type: SUPPORTED_PROGRAM_TYPES) -> QPROGRAM:
         """Adds measurements to all qubits and convert
         to the input frontend type.
 
@@ -109,7 +108,7 @@ class BenchmarkProblem:
     def two_qubit_gate_count(self) -> int:
         return sum(len(op.qubits) > 1 for op in self.circuit.all_operations())
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Produces a summary of the ``BenchmarkProblem``, to be used in
         recording the results when running calibration experiments.
 
@@ -154,7 +153,7 @@ class Strategy:
 
     id: int
     technique: MitigationTechnique
-    technique_params: Dict[str, Any]
+    technique_params: dict[str, Any]
 
     @property
     def mitigation_function(self) -> Callable[..., float]:
@@ -198,9 +197,7 @@ class Strategy:
 
             return partial_pec
         elif self.technique is MitigationTechnique.ZNE:
-            return partial(
-                self.technique.mitigation_function, **self.technique_params
-            )
+            return partial(self.technique.mitigation_function, **self.technique_params)
         else:
             raise ValueError(
                 """Specified technique is not supported by calibration.
@@ -208,7 +205,7 @@ class Strategy:
                 calibration_supported_techniques,
             )
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """A summary of the strategies parameters, without the technique added.
 
         Returns:
@@ -218,34 +215,26 @@ class Strategy:
             inference_func = self.technique_params["factory"]
             summary["factory"] = inference_func.__class__.__name__
             summary["scale_factors"] = inference_func._scale_factors
-            summary["scale_method"] = self.technique_params[
-                "scale_noise"
-            ].__name__
+            summary["scale_method"] = self.technique_params["scale_noise"].__name__
 
         elif self.technique is MitigationTechnique.PEC:
             summary["representation_function"] = self.technique_params[
                 "representation_function"
             ].__name__
             summary["noise_level"] = self.technique_params["noise_level"]
-            summary["noise_bias"] = self.technique_params.setdefault(
-                "noise_bias", 0
-            )
-            summary["is_qubit_dependent"] = self.technique_params[
-                "is_qubit_dependent"
-            ]
+            summary["noise_bias"] = self.technique_params.setdefault("noise_bias", 0)
+            summary["is_qubit_dependent"] = self.technique_params["is_qubit_dependent"]
             summary["num_samples"] = self.technique_params["num_samples"]
         return summary
 
-    def to_pretty_dict(self) -> Dict[str, str]:
+    def to_pretty_dict(self) -> dict[str, str]:
         summary = self.to_dict()
         if self.technique is MitigationTechnique.ZNE:
             summary["scale_factors"] = str(summary["scale_factors"])[1:-1]
             summary["factory"] = summary["factory"][:-7]
         elif self.technique is MitigationTechnique.PEC:
             summary["noise_bias"] = summary.get("noise_bias", "N/A")
-            summary["representation_function"] = summary[
-                "representation_function"
-            ][25:]
+            summary["representation_function"] = summary["representation_function"][25:]
         return summary
 
     def __repr__(self) -> str:
@@ -258,7 +247,7 @@ class Strategy:
             result += f"{title}: {value}\n"
         return result.rstrip()
 
-    def num_circuits_required(self) -> int:
+    def num_circuits_required(self) -> int | None:
         summary = self.to_dict()
         if self.technique is MitigationTechnique.ZNE:
             return len(summary["scale_factors"])
@@ -299,8 +288,8 @@ class Settings:
 
     def __init__(
         self,
-        benchmarks: List[Dict[str, Any]],
-        strategies: List[Dict[str, Any]],
+        benchmarks: list[dict[str, Any]],
+        strategies: list[dict[str, Any]],
     ):
         self.techniques = [
             MitigationTechnique[technique["technique"].upper()]
@@ -308,8 +297,8 @@ class Settings:
         ]
         self.technique_params = strategies
         self.benchmarks = benchmarks
-        self.strategy_dict: Dict[int, Strategy] = {}
-        self.problem_dict: Dict[int, BenchmarkProblem] = {}
+        self.strategy_dict: dict[int, Strategy] = {}
+        self.problem_dict: dict[int, BenchmarkProblem] = {}
 
     def get_strategy(self, strategy_id: int) -> Strategy:
         return self.strategy_dict[strategy_id]
@@ -317,7 +306,7 @@ class Settings:
     def get_problem(self, problem_id: int) -> BenchmarkProblem:
         return self.problem_dict[problem_id]
 
-    def make_problems(self) -> List[BenchmarkProblem]:
+    def make_problems(self) -> list[BenchmarkProblem]:
         """Generate the benchmark problems for the calibration experiment.
         Returns:
             A list of :class:`BenchmarkProblem` objects"""
@@ -342,9 +331,7 @@ class Settings:
             elif circuit_type == "rotated_rb":
                 theta = benchmark["theta"]
                 if num_qubits == 1:
-                    circuit = generate_rotated_rb_circuits(num_qubits, depth)[
-                        0
-                    ]
+                    circuit = generate_rotated_rb_circuits(num_qubits, depth)[0]
                     p = (2 / 3) * np.sin(theta / 2) ** 2
                     ideal = {"0": p, "1": 1 - p}
                 else:
@@ -386,7 +373,7 @@ class Settings:
 
         return circuits
 
-    def make_strategies(self) -> List[Strategy]:
+    def make_strategies(self) -> list[Strategy]:
         """Generates a list of :class:`Strategy` objects using the specified
         configurations.
 
@@ -399,9 +386,7 @@ class Settings:
             params_copy = params.copy()
             del params_copy["technique"]
 
-            strategy = Strategy(
-                id=i, technique=technique, technique_params=params_copy
-            )
+            strategy = Strategy(id=i, technique=technique, technique_params=params_copy)
             funcs.append(strategy)
             self.strategy_dict[strategy.id] = strategy
         return funcs

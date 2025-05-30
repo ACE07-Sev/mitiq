@@ -7,18 +7,9 @@
 
 import warnings
 from abc import ABC, abstractmethod
+from collections.abc import Callable, Sequence
 from copy import deepcopy
-from typing import (
-    Any,
-    Callable,
-    Dict,
-    List,
-    Optional,
-    Sequence,
-    Tuple,
-    Union,
-    cast,
-)
+from typing import Any, TypeAlias, cast
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -34,16 +25,22 @@ from mitiq.interface import accept_any_qprogram_as_input
 from mitiq.observable import Observable
 from mitiq.zne.scaling import fold_gates_at_random
 
-ExtrapolationResult = Union[
-    float,  # The zero-noise value.
-    Tuple[
-        float,  # The zero-noise value.
-        Optional[float],  # The (estimated) error on the zero-noise value.
-        List[float],  # Optimal parameters found during fitting.
-        Optional[np.ndarray],  # Covariance of fitting parameters.
-        Callable[[float], float],  # Function that was fit.
-    ],
-]
+# Extrapolation Result:
+# - float: The zero-noise value.
+# - float (optional): The (estimated) error on the zero-noise value.
+# - list[float]: Optimal parameters found during fitting.
+# - npt.NDArray[np.float64] (optional): Covariance of fitting parameters.
+# - Callable[[float], float]: Function that was fit.
+ExtrapolationResult: TypeAlias = (
+    float
+    | tuple[
+        float,
+        float | None,
+        list[float],
+        npt.NDArray[np.float64] | None,
+        Callable[[float], float],
+    ]
+)
 
 
 class ExtrapolationError(Exception):
@@ -104,8 +101,8 @@ def mitiq_curve_fit(
     ansatz: Callable[..., float],
     scale_factors: Sequence[float],
     exp_values: Sequence[float],
-    init_params: Optional[List[float]] = None,
-) -> Tuple[List[float], npt.NDArray[np.float64]]:
+    init_params: list[float] | None = None,
+) -> tuple[list[float], npt.NDArray[np.float64]]:
     """Fits the ansatz to the (scale factor, expectation value) data using
     ``scipy.optimize.curve_fit``, returning the optimal parameters and
     covariance matrix of the parameters.
@@ -151,8 +148,8 @@ def mitiq_polyfit(
     scale_factors: Sequence[float],
     exp_values: Sequence[float],
     deg: int,
-    weights: Optional[Sequence[float]] = None,
-) -> Tuple[List[float], Optional[npt.NDArray[np.float64]]]:
+    weights: Sequence[float] | None = None,
+) -> tuple[list[float], npt.NDArray[np.float64] | None]:
     """Fits the ansatz to the (scale factor, expectation value) data using
     ``numpy.polyfit``, returning the optimal parameters and covariance matrix
     of the parameters.
@@ -188,9 +185,7 @@ def mitiq_polyfit(
             warn.category = ExtrapolationWarning
             warn.message = _EXTR_WARN
         # re-raise all warnings
-        warnings.warn_explicit(
-            warn.message, warn.category, warn.filename, warn.lineno
-        )
+        warnings.warn_explicit(warn.message, warn.category, warn.filename, warn.lineno)
     return list(opt_params), params_cov
 
 
@@ -212,32 +207,30 @@ class Factory(ABC):
     """
 
     def __init__(self) -> None:
-        self._instack: List[Dict[str, float]] = []
-        self._outstack: List[float] = []
-        self._opt_params: Optional[List[float]] = None
-        self._params_cov: Optional[npt.NDArray[np.float64]] = None
-        self._zne_limit: Optional[float] = None
-        self._zne_error: Optional[float] = None
-        self._zne_curve: Optional[Callable[[float], float]] = None
+        self._instack: list[dict[str, float]] = []
+        self._outstack: list[float] = []
+        self._opt_params: list[float] | None = None
+        self._params_cov: npt.NDArray[np.float64] | None = None
+        self._zne_limit: float | None = None
+        self._zne_error: float | None = None
+        self._zne_curve: Callable[[float], float] | None = None
         self._already_reduced = False
-        self._options: Dict[str, Optional[float]] = {}
+        self._options: dict[str, float | None] = {}
 
-    def get_scale_factors(self) -> List[float]:
+    def get_scale_factors(self) -> list[float]:
         """Returns the scale factors that were either passed in to the factory
         or at which the factory has computed expectation values.
         """
-        scale_factors = [
-            params.get("scale_factor", 0.0) for params in self._instack
-        ]
+        scale_factors = [params.get("scale_factor", 0.0) for params in self._instack]
         if not scale_factors and hasattr(self, "_scale_factors"):
             return [scale_factor for scale_factor in self._scale_factors]
         return scale_factors
 
-    def get_expectation_values(self) -> List[float]:
+    def get_expectation_values(self) -> list[float]:
         """Returns the expectation values computed by the factory."""
         return self._outstack
 
-    def get_optimal_parameters(self) -> List[float]:
+    def get_optimal_parameters(self) -> list[float]:
         """Returns the optimal model parameters produced by the extrapolation
         fit.
         """
@@ -290,8 +283,8 @@ class Factory(ABC):
     def run(
         self,
         qp: QPROGRAM,
-        executor: Union[Executor, Callable[..., QuantumResult]],
-        observable: Optional[Observable] = None,
+        executor: Executor | Callable[..., QuantumResult],
+        observable: Observable | None = None,
         scale_noise: Callable[
             [QPROGRAM, float], QPROGRAM
         ] = fold_gates_at_random,  # type: ignore [has-type]
@@ -336,9 +329,7 @@ class Factory(ABC):
     def reduce(self) -> float:
         raise NotImplementedError
 
-    def push(
-        self, instack_val: Dict[str, float], outstack_val: float
-    ) -> "Factory":
+    def push(self, instack_val: dict[str, float], outstack_val: float) -> "Factory":
         """Appends "instack_val" to "self._instack" and "outstack_val" to
         "self._outstack". Each time a new expectation value is computed this
         method should be used to update the internal state of the Factory.
@@ -443,7 +434,7 @@ class BatchedFactory(Factory, ABC):
     def __init__(
         self,
         scale_factors: Sequence[float],
-        shot_list: Optional[List[int]] = None,
+        shot_list: list[int] | None = None,
     ) -> None:
         if len(scale_factors) < 2:
             raise ValueError("At least 2 scale factors are necessary.")
@@ -501,8 +492,8 @@ class BatchedFactory(Factory, ABC):
     def run(
         self,
         qp: QPROGRAM,
-        executor: Union[Executor, Callable[..., QuantumResult]],
-        observable: Optional[Observable] = None,
+        executor: Executor | Callable[..., QuantumResult],
+        observable: Observable | None = None,
         scale_noise: Callable[
             [QPROGRAM, float], QPROGRAM
         ] = fold_gates_at_random,  # type: ignore [has-type]
@@ -554,7 +545,7 @@ class BatchedFactory(Factory, ABC):
 
         # If there are different keyword args, run each circuit individually.
         # https://stackoverflow.com/questions/1151658/python-hashable-dicts.
-        class HashableDict(Dict[Any, Any]):
+        class HashableDict(dict[Any, Any]):
             def __hash__(self) -> int:  # type: ignore[override]
                 return hash(tuple(sorted(self.items())))
 
@@ -562,9 +553,7 @@ class BatchedFactory(Factory, ABC):
             res = []
             for circuit, kwargs in zip(to_run, kwargs_list):
                 res.extend(
-                    executor.evaluate(
-                        circuit, observable, force_run_all=True, **kwargs
-                    )
+                    executor.evaluate(circuit, observable, force_run_all=True, **kwargs)
                 )
         else:
             # Else, run all circuits.
@@ -607,7 +596,7 @@ class BatchedFactory(Factory, ABC):
         circuit: QPROGRAM,
         scale_noise: Callable[[QPROGRAM, float], QPROGRAM],
         num_to_average: int = 1,
-    ) -> List[QPROGRAM]:
+    ) -> list[QPROGRAM]:
         """Returns all noise-scaled circuits to run.
 
         Args:
@@ -630,11 +619,9 @@ class BatchedFactory(Factory, ABC):
                 for scale, shots in zip(self._scale_factors, self._shot_list)
             ]
         else:
-            self._instack = [
-                {"scale_factor": scale} for scale in self._scale_factors
-            ]
+            self._instack = [{"scale_factor": scale} for scale in self._scale_factors]
 
-    def _get_keyword_args(self, num_to_average: int) -> List[Dict[str, Any]]:
+    def _get_keyword_args(self, num_to_average: int) -> list[dict[str, Any]]:
         """Returns a list of keyword dictionaries to be used for
         executing the circuits generated by the method "_generate_circuits".
 
@@ -665,7 +652,7 @@ class AdaptiveFactory(Factory, ABC):
     """
 
     @abstractmethod
-    def next(self) -> Dict[str, float]:
+    def next(self) -> dict[str, float]:
         """Returns a dictionary of parameters to execute a circuit at."""
         raise NotImplementedError
 
@@ -728,8 +715,8 @@ class AdaptiveFactory(Factory, ABC):
     def run(
         self,
         qp: QPROGRAM,
-        executor: Union[Executor, Callable[..., QuantumResult]],
-        observable: Optional[Observable] = None,
+        executor: Executor | Callable[..., QuantumResult],
+        observable: Observable | None = None,
         scale_noise: Callable[
             [QPROGRAM, float], QPROGRAM
         ] = fold_gates_at_random,  # type: ignore [has-type]
@@ -766,17 +753,13 @@ class AdaptiveFactory(Factory, ABC):
         ) -> float:
             """Evaluates the quantum expectation value for a given
             scale_factor and other executor parameters."""
-            to_run = [
-                scale_noise(qp, scale_factor) for _ in range(num_to_average)
-            ]
+            to_run = [scale_noise(qp, scale_factor) for _ in range(num_to_average)]
             expectation_values = executor.evaluate(  # type: ignore[union-attr]
                 to_run, observable, force_run_all=True, **exec_params
             )
             return cast(float, np.average(expectation_values))
 
-        return self.run_classical(
-            scale_factor_to_expectation_value, max_iterations
-        )
+        return self.run_classical(scale_factor_to_expectation_value, max_iterations)
 
 
 class PolyFactory(BatchedFactory):
@@ -806,7 +789,7 @@ class PolyFactory(BatchedFactory):
         self,
         scale_factors: Sequence[float],
         order: int,
-        shot_list: Optional[List[int]] = None,
+        shot_list: list[int] | None = None,
     ) -> None:
         if order > len(scale_factors) - 1:
             raise ValueError(
@@ -850,9 +833,7 @@ class PolyFactory(BatchedFactory):
             parameters, use the ``reduce`` method.
         """
 
-        opt_params, params_cov = mitiq_polyfit(
-            scale_factors, exp_values, order
-        )
+        opt_params, params_cov = mitiq_polyfit(scale_factors, exp_values, order)
 
         zne_limit = opt_params[-1]
 
@@ -922,9 +903,7 @@ class RichardsonFactory(BatchedFactory):
         # Richardson extrapolation is a particular case of a polynomial fit
         # with order equal to the number of data points minus 1.
         order = len(scale_factors) - 1
-        return PolyFactory.extrapolate(
-            scale_factors, exp_values, order, full_output
-        )
+        return PolyFactory.extrapolate(scale_factors, exp_values, order, full_output)
 
 
 class FakeNodesFactory(BatchedFactory):
@@ -996,9 +975,7 @@ class FakeNodesFactory(BatchedFactory):
         return zne_limit, zne_error, opt_params, params_cov, new_curve
 
     @staticmethod
-    def _map_to_fake_nodes(
-        x: Sequence[float], a: float, b: float
-    ) -> Sequence[float]:
+    def _map_to_fake_nodes(x: Sequence[float], a: float, b: float) -> Sequence[float]:
         """
         A function that maps inputs to Chebyshev-Lobatto points. Based on
         the function [De2020polynomial]_:
@@ -1022,9 +999,7 @@ class FakeNodesFactory(BatchedFactory):
 
         # The mapping function
         def mapping(_x: float) -> float:
-            return (a - b) / 2 * np.cos(np.pi * (_x - a) / (b - a)) + (
-                a + b
-            ) / 2
+            return (a - b) / 2 * np.cos(np.pi * (_x - a) / (b - a)) + (a + b) / 2
 
         return [mapping(y) for y in x]
 
@@ -1087,9 +1062,7 @@ class LinearFactory(BatchedFactory):
             parameters, use the ``reduce`` method.
         """
         # Linear extrapolation is equivalent to a polynomial fit with order=1
-        return PolyFactory.extrapolate(
-            scale_factors, exp_values, 1, full_output
-        )
+        return PolyFactory.extrapolate(scale_factors, exp_values, 1, full_output)
 
 
 class ExpFactory(BatchedFactory):
@@ -1125,15 +1098,13 @@ class ExpFactory(BatchedFactory):
     def __init__(
         self,
         scale_factors: Sequence[float],
-        asymptote: Optional[float] = None,
+        asymptote: float | None = None,
         avoid_log: bool = False,
-        shot_list: Optional[List[int]] = None,
+        shot_list: list[int] | None = None,
     ) -> None:
         super(ExpFactory, self).__init__(scale_factors, shot_list)
         if not (asymptote is None or isinstance(asymptote, float)):
-            raise ValueError(
-                "The argument 'asymptote' must be either a float or None"
-            )
+            raise ValueError("The argument 'asymptote' must be either a float or None")
         self._options = {
             "asymptote": asymptote,
             "avoid_log": avoid_log,
@@ -1143,7 +1114,7 @@ class ExpFactory(BatchedFactory):
     def extrapolate(
         scale_factors: Sequence[float],
         exp_values: Sequence[float],
-        asymptote: Optional[float] = None,
+        asymptote: float | None = None,
         avoid_log: bool = False,
         eps: float = 1.0e-6,
         full_output: bool = False,
@@ -1244,15 +1215,13 @@ class PolyExpFactory(BatchedFactory):
         self,
         scale_factors: Sequence[float],
         order: int,
-        asymptote: Optional[float] = None,
+        asymptote: float | None = None,
         avoid_log: bool = False,
-        shot_list: Optional[List[int]] = None,
+        shot_list: list[int] | None = None,
     ) -> None:
         super(PolyExpFactory, self).__init__(scale_factors, shot_list)
         if not (asymptote is None or isinstance(asymptote, float)):
-            raise ValueError(
-                "The argument 'asymptote' must be either a float or None"
-            )
+            raise ValueError("The argument 'asymptote' must be either a float or None")
         self._options = {
             "order": order,
             "asymptote": asymptote,
@@ -1264,7 +1233,7 @@ class PolyExpFactory(BatchedFactory):
         scale_factors: Sequence[float],
         exp_values: Sequence[float],
         order: int,
-        asymptote: Optional[float] = None,
+        asymptote: float | None = None,
         avoid_log: bool = False,
         eps: float = 1.0e-6,
         full_output: bool = False,
@@ -1324,9 +1293,7 @@ class PolyExpFactory(BatchedFactory):
         shift = int(asymptote is None)
 
         # Check arguments
-        error_str = (
-            "Data is not enough: at least two data points are necessary."
-        )
+        error_str = "Data is not enough: at least two data points are necessary."
         if scale_factors is None or exp_values is None:
             raise ValueError(error_str)
         if len(scale_factors) != len(exp_values) or len(scale_factors) < 2:
@@ -1385,9 +1352,7 @@ class PolyExpFactory(BatchedFactory):
             if params_cov is not None:
                 if params_cov.shape == (order + 2, order + 2):
                     zne_error = np.sqrt(
-                        params_cov[0, 0]
-                        + 2 * params_cov[0, 1]
-                        + params_cov[1, 1]
+                        params_cov[0, 0] + 2 * params_cov[0, 1] + params_cov[1, 1]
                     )
 
             if full_output:
@@ -1451,9 +1416,7 @@ class PolyExpFactory(BatchedFactory):
         zne_limit = asymptote + sign * np.exp(z_coefficients[-1])
 
         def _zne_curve(scale_factor: float) -> float:
-            return asymptote + sign * np.exp(
-                np.polyval(z_coefficients, scale_factor)
-            )
+            return asymptote + sign * np.exp(np.polyval(z_coefficients, scale_factor))
 
         # Use propagation of errors to calculate zne_error
         if params_cov is not None:
@@ -1472,8 +1435,8 @@ class PolyExpFactory(BatchedFactory):
 
 # Keep a log of the optimization process storing:
 # noise value(s), expectation value(s), parameters, and zero limit
-OptimizationHistory = List[
-    Tuple[List[Dict[str, float]], List[float], List[float], float]
+OptimizationHistory = list[
+    tuple[list[dict[str, float]], list[float], list[float], float]
 ]
 
 
@@ -1515,15 +1478,13 @@ class AdaExpFactory(AdaptiveFactory):
         self,
         steps: int,
         scale_factor: float = 2.0,
-        asymptote: Optional[float] = None,
+        asymptote: float | None = None,
         avoid_log: bool = False,
         max_scale_factor: float = 6.0,
     ) -> None:
         super(AdaExpFactory, self).__init__()
         if not (asymptote is None or isinstance(asymptote, float)):
-            raise ValueError(
-                "The argument 'asymptote' must be either a float or None"
-            )
+            raise ValueError("The argument 'asymptote' must be either a float or None")
         if scale_factor <= 1:
             raise ValueError(
                 "The argument 'scale_factor' must be strictly larger than one."
@@ -1537,8 +1498,7 @@ class AdaExpFactory(AdaptiveFactory):
             )
         if max_scale_factor <= 1:
             raise ValueError(
-                "The argument 'max_scale_factor' must be"
-                " strictly larger than one."
+                "The argument 'max_scale_factor' must be" " strictly larger than one."
             )
         self._steps = steps
         self._scale_factor = scale_factor
@@ -1547,7 +1507,7 @@ class AdaExpFactory(AdaptiveFactory):
         self.max_scale_factor = max_scale_factor
         self.history: OptimizationHistory = []
 
-    def next(self) -> Dict[str, float]:
+    def next(self) -> dict[str, float]:
         """Returns a dictionary of parameters to execute a circuit at."""
         # The 1st scale factor is always 1
         if len(self._instack) == 0:
@@ -1594,7 +1554,7 @@ class AdaExpFactory(AdaptiveFactory):
     def extrapolate(
         scale_factors: Sequence[float],
         exp_values: Sequence[float],
-        asymptote: Optional[float] = None,
+        asymptote: float | None = None,
         avoid_log: bool = False,
         eps: float = 1.0e-6,
         full_output: bool = False,

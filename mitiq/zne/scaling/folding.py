@@ -7,7 +7,7 @@
 
 import warnings
 from copy import deepcopy
-from typing import Any, Dict, FrozenSet, List, Optional, cast
+from typing import Any, cast
 
 import numpy as np
 from cirq import Circuit, InsertStrategy, Moment, has_unitary, inverse, ops
@@ -93,17 +93,15 @@ def _squash_moments(circuit: Circuit) -> Circuit:
     """
     output_circuit = circuit.copy()
     output_circuit = output_circuit[0:0]  # Remove moments
-    output_circuit.append(
-        circuit.all_operations(), strategy=InsertStrategy.EARLIEST
-    )
+    output_circuit.append(circuit.all_operations(), strategy=InsertStrategy.EARLIEST)
     return output_circuit
 
 
 def _fold_all(
     circuit: Circuit,
     num_folds: int = 1,
-    exclude: FrozenSet[Any] = frozenset(),
-    skip_moments: FrozenSet[int] = frozenset(),
+    exclude: frozenset[Any] = frozenset(),
+    skip_moments: frozenset[int] = frozenset(),
 ) -> Circuit:
     """Returns a circuit with all gates folded locally.
 
@@ -116,9 +114,7 @@ def _fold_all(
     """
     num_folds = round(num_folds)
     if num_folds < 0:
-        raise ValueError(
-            f"Arg `num_folds` must be positive but was {num_folds}."
-        )
+        raise ValueError(f"Arg `num_folds` must be positive but was {num_folds}.")
 
     # Parse the exclude argument.
     all_gates = set(cast(ops.Gate, op.gate) for op in circuit.all_operations())
@@ -149,9 +145,7 @@ def _fold_all(
         elif isinstance(item, ops.Gate):
             to_exclude.add(item)
         else:
-            raise ValueError(
-                f"Do not know how to exclude {item} of type {type(item)}."
-            )
+            raise ValueError(f"Do not know how to exclude {item} of type {type(item)}.")
 
     folded = deepcopy(circuit)[:0]
     for i, moment in enumerate(circuit):
@@ -176,9 +170,7 @@ def _default_weight(op: ops.Operation) -> float:
     return 0.99 ** len(op.qubits)
 
 
-def _get_weight_for_gate(
-    weights: Dict[str, float], op: ops.Operation
-) -> float:
+def _get_weight_for_gate(weights: dict[str, float], op: ops.Operation) -> float:
     """Returns the weight for a given gate, using a default value of 1.0 if
     weights is None or if the weight is not specified.
 
@@ -210,7 +202,7 @@ def _get_weight_for_gate(
 def fold_all(
     circuit: Circuit,
     scale_factor: float,
-    exclude: FrozenSet[Any] = frozenset(),
+    exclude: frozenset[Any] = frozenset(),
 ) -> Circuit:
     """Returns a circuit with all gates folded locally.
 
@@ -268,9 +260,7 @@ def fold_all(
 
 # Global folding function
 @accept_qprogram_and_validate
-def fold_global(
-    circuit: Circuit, scale_factor: float, **kwargs: Any
-) -> Circuit:
+def fold_global(circuit: Circuit, scale_factor: float, **kwargs: Any) -> Circuit:
     """Returns a new circuit obtained by folding the global unitary of the
     input circuit.
 
@@ -330,8 +320,8 @@ def fold_global(
 
 def _create_weight_mask(
     circuit: Circuit,
-    fidelities: Dict[str, float],
-) -> List[float]:
+    fidelities: dict[str, float],
+) -> list[float]:
     """Returns a list of weights associated to each gate in the input
     circuit. Measurement gates are ignored.
 
@@ -372,10 +362,10 @@ def _create_weight_mask(
 
 
 def _create_fold_mask(
-    weight_mask: List[float],
+    weight_mask: list[float],
     scale_factor: float,
-    seed: Optional[int] = None,
-) -> List[int]:
+    seed: int | None = None,
+) -> list[int]:
     r"""Returns a list of integers determining how many times each gate a
     circuit should be folded to realize the desired input scale_factor.
 
@@ -445,9 +435,7 @@ def _create_fold_mask(
     # Fold gates until the input scale_factor is better approximated
     input_circuit_weight = sum(weight_mask)
     output_circuit_weight = odd_integer_scale_factor * input_circuit_weight
-    approx_error = np.abs(
-        output_circuit_weight - scale_factor * input_circuit_weight
-    )
+    approx_error = np.abs(output_circuit_weight - scale_factor * input_circuit_weight)
     for j in folding_order:
         # Skip gates with 0 weight
         if np.isclose(weight_mask[j], 0.0):
@@ -469,8 +457,8 @@ def _create_fold_mask(
 
 def _apply_fold_mask(
     circuit: Circuit,
-    num_folds_mask: List[int],
-    squash_moments: Optional[bool] = True,
+    num_folds_mask: list[int],
+    squash_moments: bool = True,
 ) -> Circuit:
     r"""Applies local unitary folding to the gates of the input circuit
     according to the input num_folds_mask.
@@ -530,7 +518,7 @@ def _apply_fold_mask(
 def fold_gates_at_random(
     circuit: Circuit,
     scale_factor: float,
-    seed: Optional[int] = None,
+    seed: int | None = None,
     **kwargs: Any,
 ) -> Circuit:
     r"""

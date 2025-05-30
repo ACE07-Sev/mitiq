@@ -13,7 +13,7 @@ from functools import reduce
 from itertools import compress
 from operator import mul
 from statistics import median
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 import cirq
 import numpy as np
@@ -39,8 +39,8 @@ ONE_STATE = np.array([[0, 0], [0, 1]])
 
 
 def get_single_shot_pauli_fidelity(
-    bitstring: str, paulistring: str, locality: Optional[int] = None
-) -> Dict[str, float]:
+    bitstring: str, paulistring: str, locality: int | None = None
+) -> dict[str, float]:
     r"""
     Calculate Pauli fidelity :math:`f_b` for a single shot measurement of the
     calibration circuit for b= bit_string.
@@ -87,10 +87,10 @@ def get_single_shot_pauli_fidelity(
 
 
 def get_pauli_fidelities(
-    calibration_outcomes: Tuple[List[str], List[str]],
+    calibration_outcomes: tuple[list[str], list[str]],
     num_batches: int,
-    locality: Optional[int] = None,
-) -> Dict[str, complex]:
+    locality: int | None = None,
+) -> dict[str, complex]:
     r"""
     Calculate Pauli fidelities for the calibration circuit. In the notation of
     arXiv:2011.09636, this function estimates the coefficients
@@ -125,15 +125,13 @@ def get_pauli_fidelities(
         for bitstring, fids in all_fidelities.items():
             means[bitstring].append(sum(fids) / num_batches)
 
-    return {
-        bitstring: median(averages) for bitstring, averages in means.items()
-    }
+    return {bitstring: median(averages) for bitstring, averages in means.items()}
 
 
 def classical_snapshot(
     bitstring: str,
     paulistring: str,
-    fidelities: Optional[Dict[str, float]] = None,
+    fidelities: dict[str, float] | None = None,
 ) -> npt.NDArray[Any]:
     r"""
     Implement a single snapshot state reconstruction
@@ -170,9 +168,7 @@ def classical_snapshot(
                 pi_snapshot_vector.append(
                     pi * operator_ptm_vector_rep(U.conj().T @ state @ U)
                 )
-            elements.append(
-                1 / fidelity * matrix_kronecker_product(pi_snapshot_vector)
-            )
+            elements.append(1 / fidelity * matrix_kronecker_product(pi_snapshot_vector))
         rho_snapshot = np.sum(elements, axis=0)
     else:
         local_rhos = []
@@ -188,8 +184,8 @@ def classical_snapshot(
 
 
 def shadow_state_reconstruction(
-    shadow_measurement_outcomes: Tuple[List[str], List[str]],
-    fidelities: Optional[Dict[str, float]] = None,
+    shadow_measurement_outcomes: tuple[list[str], list[str]],
+    fidelities: dict[str, float] | None = None,
 ) -> npt.NDArray[Any]:
     """Reconstruct a state approximation as an average over all snapshots.
 
@@ -214,10 +210,10 @@ def shadow_state_reconstruction(
 
 
 def expectation_estimation_shadow(
-    measurement_outcomes: Tuple[List[str], List[str]],
+    measurement_outcomes: tuple[list[str], list[str]],
     pauli: mitiq.PauliString,
     num_batches: int,
-    fidelities: Optional[Dict[str, float]] = None,
+    fidelities: dict[str, float] | None = None,
 ) -> float:
     """Calculate the expectation value of an observable from classical shadows.
     Use median of means to ameliorate the effects of outliers.
@@ -242,9 +238,7 @@ def expectation_estimation_shadow(
     filtered_bitstrings = [
         "".join([bitstring[q] for q in qubits]) for bitstring in bitstrings
     ]
-    filtered_paulis = [
-        "".join([pauli[q] for q in qubits]) for pauli in paulistrings
-    ]
+    filtered_paulis = ["".join([pauli[q] for q in qubits]) for pauli in paulistrings]
     filtered_data = (filtered_bitstrings, filtered_paulis)
 
     means = []

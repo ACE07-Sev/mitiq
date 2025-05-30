@@ -4,7 +4,8 @@
 # LICENSE file in the root directory of this source tree.
 
 import copy
-from typing import Callable, List, Optional, cast
+from collections.abc import Callable
+from typing import cast
 
 import numpy as np
 from cirq import (
@@ -46,7 +47,7 @@ class CircuitMismatchException(Exception):
 
 
 def _generate_parameter_calibration_circuit(
-    qubits: List[Qid], depth: int, gate: EigenGate
+    qubits: list[Qid], depth: int, gate: EigenGate
 ) -> Circuit:
     """Generates a circuit which should be the identity. Given a rotation
     gate R(param), it applies R(2 * pi / depth) depth times, resulting
@@ -67,9 +68,7 @@ def _generate_parameter_calibration_circuit(
         raise CircuitMismatchException(
             "Number of qubits does not match domain size of gate."
         )
-    return Circuit(
-        gate(exponent=2 * np.pi / depth).on(*qubits) for _ in range(depth)
-    )
+    return Circuit(gate(exponent=2 * np.pi / depth).on(*qubits) for _ in range(depth))
 
 
 def compute_parameter_variance(
@@ -97,9 +96,7 @@ def compute_parameter_variance(
     """
 
     base_gate = _get_base_gate(gate)
-    circuit = _generate_parameter_calibration_circuit(
-        [qubit], depth, base_gate
-    )
+    circuit = _generate_parameter_calibration_circuit([qubit], depth, base_gate)
     expectation = executor(circuit)
     error_prob = (1 - np.power(2 * expectation - 1, 1 / depth)) / 2
     variance = -0.5 * np.log(1 - 2 * error_prob)
@@ -111,7 +108,7 @@ def scale_parameters(
     circuit: QPROGRAM,
     scale_factor: float,
     base_variance: float,
-    seed: Optional[int] = None,
+    seed: int | None = None,
 ) -> Circuit:
     """Applies parameter-noise scaling to the input circuit,
     assuming that each gate has the same base level of noise.
@@ -143,8 +140,6 @@ def scale_parameters(
                 param = cast(float, gate.exponent) * np.pi
                 error = rng.normal(loc=0.0, scale=np.sqrt(noise))
                 new_param = param + error
-                curr_moment.append(
-                    base_gate(exponent=new_param / np.pi)(*qubits)
-                )
+                curr_moment.append(base_gate(exponent=new_param / np.pi)(*qubits))
         final_moments.append(Moment(curr_moment))
     return Circuit(final_moments)

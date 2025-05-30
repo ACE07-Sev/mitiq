@@ -187,9 +187,7 @@ def test_qubit_independent_representation_qiskit():
     zcircuit_different.z(different_qreg)
 
     for _ in range(5):
-        seqs, signs, norm = sample_sequence(
-            circuit_to_mitigate, representations=[rep]
-        )
+        seqs, signs, norm = sample_sequence(circuit_to_mitigate, representations=[rep])
         assert seqs[0] in [xcircuit_different, zcircuit_different]
         assert signs[0] in {1, -1}
         assert norm == 1.0
@@ -211,9 +209,7 @@ def test_qubit_independent_representation_pyquil():
     )
 
     for _ in range(50):
-        seqs, signs, norm = sample_sequence(
-            circuit_to_mitigate, representations=[rep]
-        )
+        seqs, signs, norm = sample_sequence(circuit_to_mitigate, representations=[rep])
         assert seqs[0] in [Program(gates.X(1)), Program(gates.Z(1))]
         assert signs[0] in {1, -1}
         assert norm == 1.0
@@ -367,9 +363,7 @@ def test_sample_circuit_trivial_decomposition():
         coeffs=[1.0],
     )
 
-    sampled_circuits, signs, norm = sample_circuit(
-        circuit, [rep], random_state=1
-    )
+    sampled_circuits, signs, norm = sample_circuit(circuit, [rep], random_state=1)
     assert _equal(sampled_circuits[0], circuit)
     assert signs[0] == 1
     assert np.isclose(norm, 1)
@@ -436,9 +430,7 @@ def test_sample_circuit_choi():
     choi_unbiased_estimates = []
     rng = np.random.RandomState(1)
     for _ in range(500):
-        imp_circs, signs, norm = sample_circuit(
-            ideal_circ, rep_list, random_state=rng
-        )
+        imp_circs, signs, norm = sample_circuit(ideal_circ, rep_list, random_state=rng)
         noisy_imp_circ = imp_circs[0].with_noise(depolarize(BASE_NOISE))
         sequence_choi = _circuit_to_choi(noisy_imp_circ)
         choi_unbiased_estimates.append(norm * signs[0] * sequence_choi)

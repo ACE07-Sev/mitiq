@@ -10,8 +10,6 @@
 
 """Functions for generating randomized benchmarking circuits."""
 
-from typing import List, Optional
-
 import cirq
 import numpy as np
 from cirq.experiments.qubit_characterizations import (
@@ -30,9 +28,9 @@ def generate_rb_circuits(
     n_qubits: int,
     num_cliffords: int,
     trials: int = 1,
-    return_type: Optional[str] = None,
-    seed: Optional[int] = None,
-) -> List[QPROGRAM]:
+    return_type: str | None = None,
+    seed: int | None = None,
+) -> list[QPROGRAM]:
     """Returns a list of randomized benchmarking circuits, i.e. circuits that
     are equivalent to the identity.
 
@@ -52,8 +50,7 @@ def generate_rb_circuits(
     """
     if n_qubits not in (1, 2):
         raise ValueError(
-            "Only generates RB circuits on one or two "
-            f"qubits not {n_qubits}."
+            f"Only generates RB circuits on one or two qubits not {n_qubits}."
         )
     qubits = cirq.LineQubit.range(n_qubits)
     cliffords = _single_qubit_cliffords()
@@ -64,13 +61,9 @@ def generate_rb_circuits(
         clifford_group_size = 24
         for _ in range(trials):
             gate_ids = list(rng.choice(clifford_group_size, num_cliffords))
-            gate_sequence = [
-                gate for gate_id in gate_ids for gate in c1[gate_id]
-            ]
+            gate_sequence = [gate for gate_id in gate_ids for gate in c1[gate_id]]
             gate_sequence.append(_reduce_gate_seq(gate_sequence) ** -1)
-            circuits.append(
-                cirq.Circuit(gate(qubits[0]) for gate in gate_sequence)
-            )
+            circuits.append(cirq.Circuit(gate(qubits[0]) for gate in gate_sequence))
 
     else:
         clifford_group_size = 11520
@@ -87,9 +80,7 @@ def generate_rb_circuits(
                 circuit.append(
                     _two_qubit_clifford(qubits[0], qubits[1], idx, cliffords)
                 )
-            inv_idx = _find_inv_matrix(
-                cirq.protocols.unitary(circuit), cfd_matrices
-            )
+            inv_idx = _find_inv_matrix(cirq.protocols.unitary(circuit), cfd_matrices)
             circuit.append(
                 _two_qubit_clifford(qubits[0], qubits[1], inv_idx, cliffords)
             )

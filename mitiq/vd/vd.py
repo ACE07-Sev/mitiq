@@ -3,7 +3,7 @@
 # This source code is licensed under the GPL license (v3) found in the
 # LICENSE file in the root directory of this source tree.
 
-from typing import Callable
+from collections.abc import Callable
 
 import cirq
 import numpy as np
@@ -24,9 +24,7 @@ def construct_circuits(
     """
     NUM_COPIES = 2
     parallel_copied_circuit = _copy_circuit_parallel(circuit, NUM_COPIES)
-    entangled_circuit = _apply_diagonalizing_gate(
-        parallel_copied_circuit, NUM_COPIES
-    )
+    entangled_circuit = _apply_diagonalizing_gate(parallel_copied_circuit, NUM_COPIES)
     entangled_circuit.append(cirq.measure(entangled_circuit.all_qubits()))
     return entangled_circuit
 
@@ -55,10 +53,7 @@ def combine_results(
         denom_product = 1
         for j in range(num_qubits):
             denom_product *= (
-                1
-                + (-1) ** z1[j]
-                - (-1) ** z2[j]
-                + (-1) ** z1[j] * (-1) ** z2[j]
+                1 + (-1) ** z1[j] - (-1) ** z2[j] + (-1) ** z1[j] * (-1) ** z2[j]
             )
 
         D += (1 / (2**num_qubits)) * denom_product
@@ -75,9 +70,7 @@ def combine_results(
                     )
 
             E[i] += (
-                (1 / (2**num_qubits))
-                * ((-1) ** z1[i] + (-1) ** z2[i])
-                * num_product
+                (1 / (2**num_qubits)) * ((-1) ** z1[i] + (-1) ** z2[i]) * num_product
             )
 
     return E / D

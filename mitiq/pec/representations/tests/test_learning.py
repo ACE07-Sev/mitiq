@@ -39,9 +39,7 @@ from mitiq.pec.representations.learning import (
 )
 
 rng = np.random.RandomState(1)
-circuit = random_x_z_cnot_circuit(
-    LineQubit.range(2), n_moments=5, random_state=rng
-)
+circuit = random_x_z_cnot_circuit(LineQubit.range(2), n_moments=5, random_state=rng)
 
 # Set number of samples used to calculate mitigated value in loss function
 pec_kwargs = {"num_samples": 20, "random_state": 1}
@@ -97,9 +95,7 @@ def test_depolarizing_noise_loss_function(epsilon, operations):
         return ideal_execute(noisy_circ)
 
     noisy_executor = Executor(noisy_execute)
-    noisy_values = np.array(
-        noisy_executor.evaluate(training_circuits, observable)
-    )
+    noisy_values = np.array(noisy_executor.evaluate(training_circuits, observable))
     loss = depolarizing_noise_loss_function(
         epsilon=np.array([epsilon]),
         operations_to_mitigate=operations,
@@ -128,9 +124,7 @@ def test_biased_noise_loss_function(epsilon, eta, operations):
         return ideal_execute(noisy_circ)
 
     noisy_executor = Executor(noisy_execute)
-    noisy_values = np.array(
-        noisy_executor.evaluate(training_circuits, observable)
-    )
+    noisy_values = np.array(noisy_executor.evaluate(training_circuits, observable))
 
     loss = biased_noise_loss_function(
         params=[epsilon, eta],
@@ -196,9 +190,7 @@ def test_biased_noise_loss_function_qiskit(operations):
         return qiskit_utils.execute(circ, obs.matrix())
 
     ideal_executor_qiskit = Executor(ideal_execute_qiskit)
-    ideal_values = np.array(
-        ideal_executor_qiskit.evaluate(qiskit_training_circuits)
-    )
+    ideal_values = np.array(ideal_executor_qiskit.evaluate(qiskit_training_circuits))
 
     epsilon = 0.1
 
@@ -208,9 +200,7 @@ def test_biased_noise_loss_function_qiskit(operations):
 
     noisy_executor_qiskit = Executor(noisy_execute_qiskit)
 
-    noisy_values = np.array(
-        noisy_executor_qiskit.evaluate(qiskit_training_circuits)
-    )
+    noisy_values = np.array(noisy_executor_qiskit.evaluate(qiskit_training_circuits))
 
     loss = biased_noise_loss_function(
         params=[epsilon, 0],
@@ -285,9 +275,7 @@ def test_learn_biased_noise_parameters(epsilon, eta):
             index = op[0] + 1
             qubits = op[1].qubits
             for q in qubits:
-                insertions.append(
-                    (index, biased_noise_channel(epsilon, eta)(q))
-                )
+                insertions.append((index, biased_noise_channel(epsilon, eta)(q)))
         noisy_circ.batch_insert(insertions)
         return ideal_execute(noisy_circ)
 

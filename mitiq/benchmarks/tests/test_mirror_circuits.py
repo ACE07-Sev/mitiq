@@ -32,7 +32,7 @@ all_gates.append(cirq.measure)
         nx.Graph({0: (99,), 10: (20,), 5: (6,)}),
     ],
 )
-def test_random_paulis(graph):
+def test_random_paulis(graph: nx.Graph) -> None:
     circuit = mirror_circuits.random_paulis(
         connectivity_graph=graph, random_state=random.RandomState()
     )
@@ -44,7 +44,7 @@ def test_random_paulis(graph):
     assert set(op.gate for op in circuit.all_operations()).issubset(paulis)
 
 
-def test_edge_grab():
+def test_edge_grab() -> None:
     nqubits = [9, 10, 11]
     graphs = []
     for qubits in nqubits:
@@ -68,7 +68,7 @@ def test_edge_grab():
             assert len(list(selected_edges.neighbors(node))) in (0, 1)
 
 
-def test_random_cliffords():
+def test_random_cliffords() -> None:
     nqubits = [9, 10, 11]
     edges = [
         [(1, 2), (4, 7), (3, 5)],
@@ -88,12 +88,10 @@ def test_random_cliffords():
         for a, b in edges[x]:
             two_q_gates.add(cirq.CNOT(cirq.LineQubit(a), cirq.LineQubit(b)))
         assert two_q_gates.issubset(circuit.all_operations())
-        assert set(op.gate for op in circuit.all_operations()).issubset(
-            all_cliffords
-        )
+        assert set(op.gate for op in circuit.all_operations()).issubset(all_cliffords)
 
 
-def test_random_single_cliffords():
+def test_random_single_cliffords() -> None:
     qubits = [[0, 1, 2, 3, 4], [1, 3, 5, 7], [1, 2, 4, 6, 7, 8]]
     for x in range(3):
         graph = nx.Graph()
@@ -102,8 +100,9 @@ def test_random_single_cliffords():
             graph, random_state=random.RandomState()
         )
         assert isinstance(circuit, cirq.Circuit)
-        assert set(circuit.all_qubits()).issubset
-        ([cirq.LineQubit(qubit) for qubit in qubits[x]])
+        assert set(circuit.all_qubits()).issubset(
+            [cirq.LineQubit(qubit) for qubit in qubits[x]]
+        )
         assert set(op.gate for op in circuit.all_operations()).issubset(
             single_cliffords
         )
@@ -117,12 +116,12 @@ def test_random_single_cliffords():
         (24, 0.5, nx.complete_graph(5)),
     ],
 )
-def test_generate_mirror_circuit(depth_twoqprob_graph):
+def test_generate_mirror_circuit(
+    depth_twoqprob_graph: tuple[int, float, nx.Graph],
+) -> None:
     depth, xi, connectivity_graph = depth_twoqprob_graph
     n = connectivity_graph.number_of_nodes()
-    circ, _ = mirror_circuits.generate_mirror_circuit(
-        depth, xi, connectivity_graph
-    )
+    circ, _ = mirror_circuits.generate_mirror_circuit(depth, xi, connectivity_graph)
     assert isinstance(circ, cirq.Circuit)
     assert len(circ.all_qubits()) == n
     assert set(op.gate for op in circ.all_operations()).issubset(all_gates)
@@ -132,13 +131,11 @@ def test_generate_mirror_circuit(depth_twoqprob_graph):
         .run(circ, repetitions=1_000)
         .multi_measurement_histogram(keys=circ.all_measurement_key_names())
     )
-    assert (
-        len(result.keys()) == 1
-    )  # checks that the circuit only outputs one bitstring
+    assert len(result.keys()) == 1  # checks that the circuit only outputs one bitstring
 
 
 @pytest.mark.parametrize("seed", (0, 3))
-def test_mirror_circuit_seeding(seed):
+def test_mirror_circuit_seeding(seed: int) -> None:
     nlayers = 5
     two_qubit_gate_prob = 0.4
     connectivity_graph = nx.complete_graph(5)
@@ -158,7 +155,7 @@ def test_mirror_circuit_seeding(seed):
 
 
 @pytest.mark.parametrize("return_type", SUPPORTED_PROGRAM_TYPES.keys())
-def test_mirror_circuits_conversions(return_type):
+def test_mirror_circuits_conversions(return_type: str) -> None:
     nlayers = 5
     two_qubit_gate_prob = 0.4
     connectivity_graph = nx.complete_graph(5)
@@ -171,10 +168,8 @@ def test_mirror_circuits_conversions(return_type):
     assert return_type in circuit.__module__
 
 
-@pytest.mark.parametrize(
-    "twoq_name_and_gate", [("CNOT", cirq.CNOT), ("CZ", cirq.CZ)]
-)
-def test_two_qubit_gate(twoq_name_and_gate):
+@pytest.mark.parametrize("twoq_name_and_gate", [("CNOT", cirq.CNOT), ("CZ", cirq.CZ)])
+def test_two_qubit_gate(twoq_name_and_gate: tuple[str, cirq.Gate]) -> None:
     twoq_name, twoq_gate = twoq_name_and_gate
     circuit, _ = mirror_circuits.generate_mirror_circuit(
         nlayers=2,
@@ -188,21 +183,19 @@ def test_two_qubit_gate(twoq_name_and_gate):
     assert two_qubit_gates == {twoq_gate}
 
 
-def test_two_qubit_gate_unsupported():
+def test_two_qubit_gate_unsupported() -> None:
     with pytest.raises(ValueError, match="Supported two-qubit gate names are"):
         mirror_circuits.generate_mirror_circuit(
             1, 1.0, nx.complete_graph(2), two_qubit_gate_name="bad_gate_name"
         )
 
 
-def test_two_qubit_gate_bad_probability():
-    with pytest.raises(
-        ValueError, match="two_qubit_gate_prob must be between 0 and 1"
-    ):
+def test_two_qubit_gate_bad_probability() -> None:
+    with pytest.raises(ValueError, match="two_qubit_gate_prob must be between 0 and 1"):
         mirror_circuits.generate_mirror_circuit(1, 2.0, nx.complete_graph(2))
 
 
-def test_deterministic_correct_bitstrings():
+def test_deterministic_correct_bitstrings() -> None:
     """For a fixed seed, correct bitstrings should be deterministic."""
     expected_correct_bitstrings = (
         [[0, 0], [1, 1], [0, 0], [0, 1], [0, 0], [0, 0], [0, 0], [0, 0]]

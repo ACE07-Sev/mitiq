@@ -69,9 +69,7 @@ light_pec_settings = Settings(
     strategies=[
         {
             "technique": "pec",
-            "representation_function": (
-                represent_operation_with_local_biased_noise
-            ),
+            "representation_function": (represent_operation_with_local_biased_noise),
             "is_qubit_dependent": False,
             "noise_level": 0.01,
             "noise_bias": 0.1,
@@ -203,9 +201,7 @@ def test_PEC_workflow_multi_platform(circuit_type):
         return
 
     executor = MagicMock(return_value=MeasurementResult(["000", "001"]))
-    cal = Calibrator(
-        executor, frontend=circuit_type, settings=light_pec_settings
-    )
+    cal = Calibrator(executor, frontend=circuit_type, settings=light_pec_settings)
     cost = cal.get_cost()
     num_executions = 2 * 200 + 2
     assert cost == {"noisy_executions": num_executions, "ideal_executions": 0}
@@ -258,9 +254,7 @@ def test_best_strategy():
         ],
     )
 
-    cal = Calibrator(
-        damping_execute, frontend="cirq", settings=test_strategy_settings
-    )
+    cal = Calibrator(damping_execute, frontend="cirq", settings=test_strategy_settings)
     cal.run()
     assert not np.isnan(cal.results.mitigated).all()
 
@@ -269,9 +263,7 @@ def test_best_strategy():
 
 
 def test_convert_to_expval_executor():
-    noiseless_bitstring_executor = Executor(
-        partial(damping_execute, noise_level=0)
-    )
+    noiseless_bitstring_executor = Executor(partial(damping_execute, noise_level=0))
     noiseless_expval_executor = convert_to_expval_executor(
         noiseless_bitstring_executor, bitstring="00"
     )
@@ -293,9 +285,7 @@ def test_execute_with_mitigation(monkeypatch):
 
     # override the def of `input` so that it returns "yes"
     monkeypatch.setattr("builtins.input", lambda _: "yes")
-    expval = execute_with_mitigation(
-        rb_circuit, expval_executor, calibrator=cal
-    )
+    expval = execute_with_mitigation(rb_circuit, expval_executor, calibrator=cal)
     assert isinstance(expval, float)
     assert 0 <= expval <= 1.5
 
@@ -390,17 +380,13 @@ def test_ExtrapolationResults_performance_str():
             assert line.split("Mitigated error: ")[1] == str(round(merr, 4))
             mandatory_lines_count += 1
         if "Improvement factor: " in line:
-            assert line.split("Improvement factor: ")[1] == str(
-                round(nerr / merr, 4)
-            )
+            assert line.split("Improvement factor: ")[1] == str(round(nerr / merr, 4))
             mandatory_lines_count += 1
     assert mandatory_lines_count == 3
 
 
 def test_Calibrator_log_argument():
-    cal = Calibrator(
-        damping_execute, frontend="cirq", settings=Settings([], [])
-    )
+    cal = Calibrator(damping_execute, frontend="cirq", settings=Settings([], []))
     cal.results = MagicMock()
     cal.run()
     cal.results.log_results_flat.assert_not_called()
@@ -424,9 +410,7 @@ def test_ExtrapolationResults_logging_results_flat(capfd):
     results._performance_str = MagicMock(return_value=perf_str)
     for s in strategies:
         for p in problems:
-            results.add_result(
-                s, p, ideal_val=1.0, noisy_val=0.5, mitigated_val=0.6
-            )
+            results.add_result(s, p, ideal_val=1.0, noisy_val=0.5, mitigated_val=0.6)
     results.log_results_flat()
     captured = capfd.readouterr()
     results._performance_str.assert_has_calls(
@@ -457,9 +441,7 @@ def test_ExtrapolationResults_logging_results_cartesian(capfd):
     results._performance_str = MagicMock(return_value=perf_str)
     for s in strategies:
         for p in problems:
-            results.add_result(
-                s, p, ideal_val=1.0, noisy_val=0.5, mitigated_val=0.6
-            )
+            results.add_result(s, p, ideal_val=1.0, noisy_val=0.5, mitigated_val=0.6)
     results.log_results_cartesian()
     captured = capfd.readouterr()
     results._performance_str.assert_has_calls(

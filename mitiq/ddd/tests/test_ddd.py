@@ -5,8 +5,6 @@
 
 """Unit tests for high-level DDD tools."""
 
-from typing import List
-
 import cirq
 import numpy as np
 from pytest import mark
@@ -34,8 +32,7 @@ circuit_cirq_a = x_layer + cirq.Circuit(
 )
 # Manually append inverse to avoid conversions of SWAP^-1.
 circuit_cirq_a += (
-    cirq.Circuit(cirq.SWAP(q, q + 1) for q in cirq.LineQubit.range(7)[::-1])
-    + x_layer
+    cirq.Circuit(cirq.SWAP(q, q + 1) for q in cirq.LineQubit.range(7)[::-1]) + x_layer
 )
 
 circuit_cirq_b = x_layer[:4] + cirq.Circuit(
@@ -75,9 +72,7 @@ def test_execute_with_ddd_without_noise(circuit_type, circuit, rule):
 @mark.parametrize("circuit", [circuit_cirq_a, circuit_cirq_b])
 @mark.parametrize("executor", [serial_executor, batched_executor])
 @mark.parametrize("rule", [xx, yy, xyxy])
-def test_execute_with_ddd_and_depolarizing_noise(
-    circuit_type, circuit, executor, rule
-):
+def test_execute_with_ddd_and_depolarizing_noise(circuit_type, circuit, executor, rule):
     """Tests that with execute_with_ddd the error of a noisy
     expectation value is unchanged with depolarizing noise.
     """
@@ -176,9 +171,7 @@ def test_mitigate_executor_ddd():
     assert np.isclose(mitigated_executor(circuit_cirq_a), ddd_value)
 
     batched_mitigated_executor = mitigate_executor(batched_executor, rule=xx)
-    assert np.isclose(
-        *batched_mitigated_executor([circuit_cirq_a] * 3), ddd_value
-    )
+    assert np.isclose(*batched_mitigated_executor([circuit_cirq_a] * 3), ddd_value)
 
 
 def test_ddd_decorator():
@@ -196,7 +189,7 @@ def test_ddd_decorator():
 
     # Test batched executors too
     @ddd_decorator(rule=xx)
-    def my_batched_executor(circuits) -> List[float]:
+    def my_batched_executor(circuits) -> list[float]:
         return batched_executor(circuits)
 
     assert np.isclose(*my_batched_executor([circuit_cirq_a]), ddd_value)
@@ -237,8 +230,6 @@ def test_ddd_decorator_with_rule_args():
 def test_num_trials_generates_circuits(num_trials: int):
     """Test that the number of generated circuits follows num_trials."""
 
-    circuits = construct_circuits(
-        circuit_cirq_a, rule=xx, num_trials=num_trials
-    )
+    circuits = construct_circuits(circuit_cirq_a, rule=xx, num_trials=num_trials)
 
     assert num_trials == len(circuits)

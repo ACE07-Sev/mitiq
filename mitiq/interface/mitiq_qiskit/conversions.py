@@ -8,7 +8,7 @@ Qiskit's circuit representation.
 """
 
 import re
-from typing import Any, List, Optional, Set, Tuple
+from typing import Any
 
 import cirq
 import numpy as np
@@ -52,9 +52,7 @@ def _remove_qasm_barriers(qasm: QASMType) -> QASMType:
     return "".join(lines)
 
 
-def _map_bit_index(
-    bit_index: int, new_register_sizes: List[int]
-) -> Tuple[int, int]:
+def _map_bit_index(bit_index: int, new_register_sizes: list[int]) -> tuple[int, int]:
     """Returns the register index and (qu)bit index in this register for the
     mapped bit_index.
 
@@ -92,7 +90,7 @@ def _map_bit_index(
 
 def _add_identity_to_idle(
     circuit: qiskit.QuantumCircuit,
-) -> Set[qiskit.circuit.Qubit]:
+) -> set[qiskit.circuit.Qubit]:
     """Adds identities to idle qubits in the circuit and returns the altered
     indices. Used to preserve idle qubits and indices in conversion.
 
@@ -122,7 +120,7 @@ def _add_identity_to_idle(
 
 def _remove_identity_from_idle(
     circuit: qiskit.QuantumCircuit,
-    idle_qubits: Set[qiskit.circuit.Qubit],
+    idle_qubits: set[qiskit.circuit.Qubit],
 ) -> None:
     """Removes identities from the circuit corresponding to the input
     idle qubits.
@@ -133,7 +131,7 @@ def _remove_identity_from_idle(
         circuit: Qiskit circuit to have identities removed
         idle_indices: Set of altered idle qubits.
     """
-    to_delete_indices: List[int] = []
+    to_delete_indices: list[int] = []
     for index, op in enumerate(circuit._data):
         gate, qubits, cbits = op
         if gate.name == "id" and set(qubits).intersection(idle_qubits):
@@ -145,7 +143,7 @@ def _remove_identity_from_idle(
 
 def _measurement_order(
     circuit: qiskit.QuantumCircuit,
-) -> List[Tuple[Any, ...]]:
+) -> list[tuple[Any, ...]]:
     """Returns the left-to-right measurement order in the circuit.
 
     The "measurement order" is a list of tuples (qubit, bit) involved in
@@ -180,7 +178,7 @@ def _measurement_order(
 
 def _transform_registers(
     circuit: qiskit.QuantumCircuit,
-    new_qregs: Optional[List[qiskit.QuantumRegister]] = None,
+    new_qregs: list[qiskit.QuantumRegister] | None = None,
 ) -> qiskit.QuantumCircuit:
     """Transforms the registers in the circuit to the new registers.
 

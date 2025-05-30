@@ -3,7 +3,6 @@
 import math
 import random
 import re
-from typing import List
 from unittest.mock import Mock
 
 import numpy as np
@@ -55,11 +54,11 @@ def executor_density_matrix_typed(circuit) -> np.ndarray:
     return compute_density_matrix(circuit, noise_level=(0,))
 
 
-def executor_density_matrix_batched(circuits) -> List[np.ndarray]:
+def executor_density_matrix_batched(circuits) -> list[np.ndarray]:
     return [executor_density_matrix_typed(circuit) for circuit in circuits]
 
 
-def batched_executor(circuits) -> List[float]:
+def batched_executor(circuits) -> list[float]:
     return [execute(circuit) for circuit in circuits]
 
 
@@ -86,9 +85,7 @@ def test_lre_exp_value(degree, fold_multiplier):
         (test_cirq_two_qubits, 1, 2, obs_zz),
     ],
 )
-def test_lre_exp_value_with_observable(
-    circuit, degree, fold_multiplier, observable
-):
+def test_lre_exp_value_with_observable(circuit, degree, fold_multiplier, observable):
     """Verify LRE can be used with observables."""
     test_executor = Executor(mitiq_cirq.compute_density_matrix)
     lre_exp_val = execute_with_lre(
@@ -142,9 +139,8 @@ def test_lre_batched_executor(degree, fold_multiplier):
     assert isinstance(lre_exp_val_batched, float)
 
     assert test_batched_executor.calls_to_executor == 1
-    assert (
-        test_batched_executor.executed_circuits
-        == multivariate_layer_scaling(test_cirq, degree, fold_multiplier)
+    assert test_batched_executor.executed_circuits == multivariate_layer_scaling(
+        test_cirq, degree, fold_multiplier
     )
 
 
@@ -152,9 +148,7 @@ def test_lre_batched_executor(degree, fold_multiplier):
     "degree, fold_multiplier, observable",
     [(2, 2, obs_x), (2, 3, obs_y), (3, 4, obs_z)],
 )
-def test_lre_batched_executor_with_observable(
-    degree, fold_multiplier, observable
-):
+def test_lre_batched_executor_with_observable(degree, fold_multiplier, observable):
     """Verify LRE batch executor with observable works as expected."""
     test_batched_executor = Executor(
         executor_density_matrix_batched, max_batch_size=200
@@ -169,9 +163,8 @@ def test_lre_batched_executor_with_observable(
     assert isinstance(lre_exp_val_batched, float)
 
     assert test_batched_executor.calls_to_executor == 1
-    assert (
-        test_batched_executor.executed_circuits
-        == multivariate_layer_scaling(test_cirq, degree, fold_multiplier)
+    assert test_batched_executor.executed_circuits == multivariate_layer_scaling(
+        test_cirq, degree, fold_multiplier
     )
 
 
@@ -201,11 +194,7 @@ def test_lre_decorator():
     @lre_decorator(degree=2, fold_multiplier=2)
     def execute(circuit, noise_level=0.025):
         noisy_circuit = circuit.with_noise(depolarize(p=noise_level))
-        rho = (
-            DensityMatrixSimulator()
-            .simulate(noisy_circuit)
-            .final_density_matrix
-        )
+        rho = DensityMatrixSimulator().simulate(noisy_circuit).final_density_matrix
         return rho[0, 0].real
 
     assert abs(execute(test_cirq) - ideal_val) <= abs(noisy_val - ideal_val)
@@ -219,16 +208,10 @@ def test_lre_decorator_raised_error():
         @lre_decorator()
         def execute(circuit, noise_level=0.025):
             noisy_circuit = circuit.with_noise(depolarize(p=noise_level))
-            rho = (
-                DensityMatrixSimulator()
-                .simulate(noisy_circuit)
-                .final_density_matrix
-            )
+            rho = DensityMatrixSimulator().simulate(noisy_circuit).final_density_matrix
             return rho[0, 0].real
 
-        assert abs(execute(test_cirq) - ideal_val) <= abs(
-            noisy_val - ideal_val
-        )
+        assert abs(execute(test_cirq) - ideal_val) <= abs(noisy_val - ideal_val)
 
 
 @pytest.mark.parametrize("input_method", [(fold_global), (fold_all)])
@@ -251,9 +234,7 @@ def test_lre_runs_correct_number_of_circuits_when_chunking():
 
     mock_executor = Mock(side_effect=lambda _: random.random())
 
-    test_cirq = benchmarks.generate_rb_circuits(n_qubits=1, num_cliffords=12)[
-        0
-    ]
+    test_cirq = benchmarks.generate_rb_circuits(n_qubits=1, num_cliffords=12)[0]
 
     degree, fold_multiplier, num_chunks = 2, 2, 10
 
@@ -267,9 +248,7 @@ def test_lre_runs_correct_number_of_circuits_when_chunking():
 
     chunked_circ = _get_chunks(test_cirq, num_chunks=num_chunks)
     assert isinstance(lre_exp_val_chunking, float)
-    assert mock_executor.call_count == math.comb(
-        degree + len(chunked_circ), degree
-    )
+    assert mock_executor.call_count == math.comb(degree + len(chunked_circ), degree)
 
 
 def test_two_stage_lre():

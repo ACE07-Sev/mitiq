@@ -27,9 +27,7 @@ def test_apply_mitiq_layout_success():
     layout_pass = ApplyMitiqLayout(new_qregs=new_qregs)
 
     # Manually set a layout in the property_set (usually done by previous pass)
-    layout_pass.property_set = {
-        "layout": Layout.from_qubit_list(circuit.qubits)
-    }
+    layout_pass.property_set = {"layout": Layout.from_qubit_list(circuit.qubits)}
 
     # Run the transformation
     new_dag = layout_pass.run(dag)
@@ -53,9 +51,7 @@ def test_apply_mitiq_layout_fail_small_register():
     layout_pass = ApplyMitiqLayout(new_qregs=new_qregs)
 
     # Manually set a layout in the property_set (usually done by previous pass)
-    layout_pass.property_set = {
-        "layout": Layout.from_qubit_list(circuit.qubits)
-    }
+    layout_pass.property_set = {"layout": Layout.from_qubit_list(circuit.qubits)}
 
     # Expect TranspilerError due to small QuantumRegister
     with pytest.raises(TranspilerError):
@@ -90,9 +86,7 @@ def test_clear_layout_clears_the_layout():
     layout_pass = ClearLayout()
 
     # Manually set a layout in the property_set (usually done by previous pass)
-    layout_pass.property_set = {
-        "layout": Layout.from_qubit_list(circuit.qubits)
-    }
+    layout_pass.property_set = {"layout": Layout.from_qubit_list(circuit.qubits)}
 
     layout_pass.run(dag)
     assert "layout" not in layout_pass.property_set

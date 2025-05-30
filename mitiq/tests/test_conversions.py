@@ -5,8 +5,6 @@
 
 """Tests for circuit conversions."""
 
-from typing import List
-
 import cirq
 import numpy as np
 import pennylane as qml
@@ -35,9 +33,7 @@ QASMType = str
 
 # Cirq Bell circuit.
 cirq_qreg = cirq.LineQubit.range(2)
-cirq_circuit = cirq.Circuit(
-    cirq.ops.H.on(cirq_qreg[0]), cirq.ops.CNOT.on(*cirq_qreg)
-)
+cirq_circuit = cirq.Circuit(cirq.ops.H.on(cirq_qreg[0]), cirq.ops.CNOT.on(*cirq_qreg))
 
 # Qiskit Bell circuit.
 qiskit_qreg = qiskit.QuantumRegister(2)
@@ -75,7 +71,7 @@ def scaling_function(circ: cirq.Circuit, *args, **kwargs) -> cirq.Circuit:
 
 def one_to_many_circuit_modifier(
     circ: cirq.Circuit, *args, **kwargs
-) -> List[cirq.Circuit]:
+) -> list[cirq.Circuit]:
     return [circ, circ[0:1] + circ]
 
 
@@ -96,9 +92,7 @@ def returns_several_circuits(circ: cirq.Circuit, *args, **kwargs):
     return [circ] * 5
 
 
-@pytest.mark.parametrize(
-    "circuit", (qiskit_circuit, pyquil_circuit, braket_circuit)
-)
+@pytest.mark.parametrize("circuit", (qiskit_circuit, pyquil_circuit, braket_circuit))
 def test_to_mitiq(circuit):
     converted_circuit, input_type = convert_to_mitiq(circuit)
     assert _equal(converted_circuit, cirq_circuit)

@@ -7,7 +7,6 @@
 
 import functools
 import random
-from typing import List
 from unittest.mock import Mock
 
 import cirq
@@ -82,21 +81,15 @@ def generic_executor(circuit, noise_level: float = 0.1) -> float:
 
 # Default executor for unit tests
 def executor(circuit) -> float:
-    wavefunction = circuit.final_state_vector(
-        ignore_terminal_measurements=True
-    )
+    wavefunction = circuit.final_state_vector(ignore_terminal_measurements=True)
     return np.real(wavefunction.conj().T @ np.kron(npX, npZ) @ wavefunction)
 
 
-@pytest.mark.parametrize(
-    "executor", (sample_bitstrings, compute_density_matrix)
-)
+@pytest.mark.parametrize("executor", (sample_bitstrings, compute_density_matrix))
 def test_with_observable_batched_factory(executor):
     observable = Observable(PauliString(spec="Z"))
     circuit = cirq.Circuit(cirq.H.on(cirq.LineQubit(0))) * 20
-    executor = functools.partial(
-        executor, noise_model_function=cirq.depolarize
-    )
+    executor = functools.partial(executor, noise_model_function=cirq.depolarize)
 
     real_factory = PolyFactory(scale_factors=[1, 3, 5], order=2)
     mock_factory = Mock(spec_set=PolyFactory, wraps=real_factory)
@@ -113,9 +106,7 @@ def test_with_observable_batched_factory(executor):
     assert 0 <= zne_val <= 2
 
 
-@pytest.mark.parametrize(
-    "executor", (sample_bitstrings, compute_density_matrix)
-)
+@pytest.mark.parametrize("executor", (sample_bitstrings, compute_density_matrix))
 def test_with_observable_adaptive_factory(executor):
     observable = Observable(PauliString(spec="Z"))
     circuit = cirq.Circuit(cirq.H.on(cirq.LineQubit(0))) * 20
@@ -123,9 +114,7 @@ def test_with_observable_adaptive_factory(executor):
     noisy_value = observable.expectation(circuit, sample_bitstrings)
     zne_value = execute_with_zne(
         circuit,
-        executor=functools.partial(
-            executor, noise_model_function=cirq.amplitude_damp
-        ),
+        executor=functools.partial(executor, noise_model_function=cirq.amplitude_damp),
         observable=observable,
         factory=AdaExpFactory(steps=4, asymptote=0.5),
     )
@@ -149,9 +138,7 @@ def test_with_observable_two_qubits():
     noisy_value = observable.expectation(circuit, executor)
     zne_value = execute_with_zne(
         circuit,
-        executor=functools.partial(
-            executor, noise_model_function=cirq.depolarize
-        ),
+        executor=functools.partial(executor, noise_model_function=cirq.depolarize),
         observable=observable,
         factory=PolyFactory(scale_factors=[1, 3, 5], order=2),
     )
@@ -312,7 +299,7 @@ def qiskit_decorated_executor(qp: QPROGRAM) -> float:
     return qiskit_executor(qp)
 
 
-def batched_qiskit_executor(circuits) -> List[float]:
+def batched_qiskit_executor(circuits) -> list[float]:
     return [qiskit_executor(circuit) for circuit in circuits]
 
 
@@ -517,9 +504,7 @@ def test_layerwise_folding_with_zne():
         circuit, mock_executor, factory=factory, scale_noise=fold_layer_func
     )
     assert mock_executor.call_count == len(scale_factors)
-    circuit_depths = [
-        len(args[0]) for args, kwargs in mock_executor.call_args_list
-    ]
+    circuit_depths = [len(args[0]) for args, kwargs in mock_executor.call_args_list]
     assert circuit_depths == [
         circuit_depth,
         circuit_depth + 2,
@@ -560,9 +545,7 @@ def test_execute_with_zne_transpiled_qiskit_circuit():
 def test_execute_zne_on_qiskit_circuit_with_QFT():
     """Tests ZNE of a Qiskit device with a QFT gate."""
 
-    def qs_noisy_simulation(
-        circuit: qiskit.QuantumCircuit, shots: int = 1
-    ) -> float:
+    def qs_noisy_simulation(circuit: qiskit.QuantumCircuit, shots: int = 1) -> float:
         noise_model = initialized_depolarizing_noise(noise_level=0.02)
         backend = AerSimulator(noise_model=noise_model)
         job = backend.run(circuit.decompose(), shots=shots)
@@ -580,16 +563,12 @@ def test_execute_zne_on_qiskit_circuit_with_QFT():
     "noise_scaling_method",
     [fold_gates_at_random, insert_id_layers, fold_global, fold_all],
 )
-@pytest.mark.parametrize(
-    "extrapolation_factory", [RichardsonFactory, LinearFactory]
-)
+@pytest.mark.parametrize("extrapolation_factory", [RichardsonFactory, LinearFactory])
 @pytest.mark.parametrize(
     "conversion_func",
     [None, to_qiskit, to_braket, to_pennylane, to_pyquil, to_qibo],
 )
-def test_two_stage_zne(
-    noise_scaling_method, extrapolation_factory, conversion_func
-):
+def test_two_stage_zne(noise_scaling_method, extrapolation_factory, conversion_func):
     qreg = cirq.LineQubit.range(2)
     cirq_circuit = cirq.Circuit(
         cirq.H.on_each(qreg),
@@ -603,9 +582,7 @@ def test_two_stage_zne(
         frontend_circuit = cirq_circuit
 
     scale_factors = [1, 3, 5]
-    circs = construct_circuits(
-        frontend_circuit, scale_factors, noise_scaling_method
-    )
+    circs = construct_circuits(frontend_circuit, scale_factors, noise_scaling_method)
 
     assert len(circs) == len(scale_factors)
 
@@ -616,9 +593,7 @@ def test_two_stage_zne(
 
     results = [executor(cirq_circuit) for _ in range(3)]
     extrapolation_method = extrapolation_factory.extrapolate
-    two_stage_zne_res = combine_results(
-        scale_factors, results, extrapolation_method
-    )
+    two_stage_zne_res = combine_results(scale_factors, results, extrapolation_method)
 
     assert isinstance(two_stage_zne_res, float)
 
@@ -643,9 +618,7 @@ def test_default_scaling_option_two_stage_zne():
 
     scale_factors = [3, 5, 6, 8]
 
-    circs_default_scaling_method = construct_circuits(
-        cirq_circuit, scale_factors
-    )
+    circs_default_scaling_method = construct_circuits(cirq_circuit, scale_factors)
 
     for i in range(len(scale_factors)):
         assert len(circs_default_scaling_method[i]) > len(cirq_circuit)

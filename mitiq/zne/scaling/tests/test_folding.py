@@ -83,9 +83,7 @@ def test_squash_moments_never_increases_moments():
     circuit always <= # moments as the input circuit.
     """
     for _ in range(50):
-        circuit = testing.random_circuit(
-            qubits=5, n_moments=8, op_density=0.75
-        )
+        circuit = testing.random_circuit(qubits=5, n_moments=8, op_density=0.75)
         squashed = _squash_moments(circuit)
         assert len(squashed) <= len(circuit)
 
@@ -267,12 +265,8 @@ def test_fold_with_channels_raises_error(fold_method):
     non-invertible channels (which are not measurements).
     """
     qbit = LineQubit(0)
-    circ = Circuit(
-        ops.H.on(qbit), ops.depolarize(p=0.1).on(qbit), ops.measure(qbit)
-    )
-    with pytest.raises(
-        UnfoldableCircuitError, match="Circuit contains non-invertible"
-    ):
+    circ = Circuit(ops.H.on(qbit), ops.depolarize(p=0.1).on(qbit), ops.measure(qbit))
+    with pytest.raises(UnfoldableCircuitError, match="Circuit contains non-invertible"):
         fold_method(circ, scale_factor=3.0)
 
 
@@ -337,12 +331,8 @@ def test_errors_raised_parametrized_circuits(fold_method):
         fold_method(ansatz_circ, scale_factor=3.0)
 
     qbit = LineQubit(0)
-    circ = Circuit(
-        ry(theta).on(q), ops.depolarize(p=0.1).on(qbit), ops.measure(qbit)
-    )
-    with pytest.raises(
-        UnfoldableCircuitError, match="Circuit contains non-invertible"
-    ):
+    circ = Circuit(ry(theta).on(q), ops.depolarize(p=0.1).on(qbit), ops.measure(qbit))
+    with pytest.raises(UnfoldableCircuitError, match="Circuit contains non-invertible"):
         fold_method(circ, scale_factor=3.0)
 
 
@@ -361,9 +351,7 @@ def test_fold_gates_at_random_seed_one_qubit():
     circuit = Circuit([ops.X.on(qubit), ops.Y.on(qubit), ops.Z.on(qubit)])
     # Small scale
     folded = fold_gates_at_random(circuit, scale_factor=1.4, seed=3)
-    correct = Circuit(
-        [ops.X.on(qubit)], [ops.Y.on(qubit)] * 3, [ops.Z.on(qubit)]
-    )
+    correct = Circuit([ops.X.on(qubit)], [ops.Y.on(qubit)] * 3, [ops.Z.on(qubit)])
     assert _equal(folded, correct)
 
     # Medium scale, fold two gates
@@ -773,12 +761,8 @@ def test_convert_to_from_mitiq_qiskit():
 
     # Check correctness
     mitiq_qreg = LineQubit.range(2)
-    correct_mitiq_circuit = Circuit(
-        ops.H.on(mitiq_qreg[0]), ops.CNOT.on(*mitiq_qreg)
-    )
-    assert _equal(
-        mitiq_circuit, correct_mitiq_circuit, require_qubit_equality=False
-    )
+    correct_mitiq_circuit = Circuit(ops.H.on(mitiq_qreg[0]), ops.CNOT.on(*mitiq_qreg))
+    assert _equal(mitiq_circuit, correct_mitiq_circuit, require_qubit_equality=False)
 
     # Convert back to original circuit type
     original_circuit = convert_from_mitiq(mitiq_circuit, input_circuit_type)
@@ -821,9 +805,7 @@ def test_fold_at_random_with_qiskit_circuits():
     assert _equal(folded_circuit, correct_folded_circuit)
 
     # Keep the input type
-    qiskit_folded_circuit = fold_gates_at_random(
-        qiskit_circuit, scale_factor=1.0
-    )
+    qiskit_folded_circuit = fold_gates_at_random(qiskit_circuit, scale_factor=1.0)
     assert isinstance(qiskit_folded_circuit, QuantumCircuit)
     assert qiskit_folded_circuit.qregs == qiskit_circuit.qregs
     assert qiskit_folded_circuit.cregs == qiskit_circuit.cregs
@@ -985,9 +967,7 @@ def test_fold_and_squash_random_circuits_random_stretches():
     """
     rng = np.random.RandomState(seed=1)
     for trial in range(5):
-        circuit = testing.random_circuit(
-            qubits=8, n_moments=8, op_density=0.75
-        )
+        circuit = testing.random_circuit(qubits=8, n_moments=8, op_density=0.75)
         scale = 2 * rng.random() + 1
         folded_not_squashed = fold_gates_at_random(
             circuit,
@@ -1025,9 +1005,7 @@ def test_fold_local_with_fidelities(qiskit):
         circ = convert_from_mitiq(circ, "qiskit")
     # Only fold the Toffoli gate
     fidelities = {"H": 1.0, "T": 1.0, "CNOT": 1.0, "TOFFOLI": 0.95}
-    folded = fold_gates_at_random(
-        circ, scale_factor=3.0, fidelities=fidelities
-    )
+    folded = fold_gates_at_random(circ, scale_factor=3.0, fidelities=fidelities)
     correct = Circuit(
         [ops.H.on_each(*qreg)],
         [ops.CNOT.on(qreg[0], qreg[1])],
@@ -1122,19 +1100,13 @@ def test_all_gates_folded_at_max_scale_with_fidelities(qiskit):
 
 def test_fold_local_raises_error_with_bad_fidelities():
     with pytest.raises(ValueError, match="Fidelities should be"):
-        fold_gates_at_random(
-            Circuit(), scale_factor=1.21, fidelities={"H": -1.0}
-        )
+        fold_gates_at_random(Circuit(), scale_factor=1.21, fidelities={"H": -1.0})
 
     with pytest.raises(ValueError, match="Fidelities should be"):
-        fold_gates_at_random(
-            Circuit(), scale_factor=1.21, fidelities={"CNOT": 0.0}
-        )
+        fold_gates_at_random(Circuit(), scale_factor=1.21, fidelities={"CNOT": 0.0})
 
     with pytest.raises(ValueError, match="Fidelities should be"):
-        fold_gates_at_random(
-            Circuit(), scale_factor=1.21, fidelities={"triple": 1.2}
-        )
+        fold_gates_at_random(Circuit(), scale_factor=1.21, fidelities={"triple": 1.2})
 
 
 @pytest.mark.parametrize("conversion_type", ("qiskit", "pyquil"))

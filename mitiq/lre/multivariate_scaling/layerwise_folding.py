@@ -8,8 +8,9 @@ extrapolation as defined in :cite:`Russo_2024_LRE`.
 """
 
 import itertools
+from collections.abc import Callable
 from copy import deepcopy
-from typing import Any, Callable, List, Optional, Tuple
+from typing import Any
 
 import numpy as np
 from cirq import Circuit
@@ -43,9 +44,7 @@ def _get_num_layers_without_measurements(input_circuit: Circuit) -> int:
     return len(circuit)
 
 
-def _get_chunks(
-    input_circuit: Circuit, num_chunks: Optional[int] = None
-) -> List[Circuit]:
+def _get_chunks(input_circuit: Circuit, num_chunks: int | None = None) -> list[Circuit]:
     """Splits a circuit into approximately equal chunks.
 
     Adapted from:
@@ -76,9 +75,7 @@ def _get_chunks(
         num_chunks = num_layers
 
     if num_chunks < 1:
-        raise ValueError(
-            "Number of chunks should be greater than or equal to 1."
-        )
+        raise ValueError("Number of chunks should be greater than or equal to 1.")
 
     if num_chunks > num_layers:
         raise ValueError(
@@ -98,8 +95,8 @@ def get_scale_factor_vectors(
     input_circuit: Circuit,
     degree: int,
     fold_multiplier: int,
-    num_chunks: Optional[int] = None,
-) -> List[Tuple[Any, ...]]:
+    num_chunks: int | None = None,
+) -> list[tuple[Any, ...]]:
     """Returns the patterned scale factor vectors required for multivariate
     extrapolation.
 
@@ -134,8 +131,7 @@ def get_scale_factor_vectors(
     # Get the scale factor vectors.
     # The layers are scaled as 2n+1 due to unitary folding.
     return [
-        tuple(2 * num_folds + 1 for num_folds in pattern)
-        for pattern in pattern_full
+        tuple(2 * num_folds + 1 for num_folds in pattern) for pattern in pattern_full
     ]
 
 
@@ -143,11 +139,9 @@ def _multivariate_layer_scaling(
     input_circuit: Circuit,
     degree: int,
     fold_multiplier: int,
-    num_chunks: Optional[int] = None,
-    folding_method: Callable[
-        [QPROGRAM, float], QPROGRAM
-    ] = fold_gates_at_random,
-) -> List[Circuit]:
+    num_chunks: int | None = None,
+    folding_method: Callable[[QPROGRAM, float], QPROGRAM] = fold_gates_at_random,
+) -> list[Circuit]:
     r"""
     Defines the noise scaling function required for Layerwise Richardson
     Extrapolation as defined in :cite:`Russo_2024_LRE`.
@@ -185,9 +179,7 @@ def _multivariate_layer_scaling(
 
     """
     if degree < 1:
-        raise ValueError(
-            "Multinomial degree must be greater than or equal to 1."
-        )
+        raise ValueError("Multinomial degree must be greater than or equal to 1.")
     if fold_multiplier < 1:
         raise ValueError("Fold multiplier must be greater than or equal to 1.")
     circuit_copy = deepcopy(input_circuit)

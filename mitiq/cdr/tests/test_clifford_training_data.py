@@ -51,9 +51,7 @@ def test_generate_training_circuits_any_qprogram(circuit_type):
 def test_select_all(method):
     q = cirq.LineQubit(0)
     ops = [cirq.ops.rz(0.01).on(q), cirq.ops.rz(-0.77).on(q)]
-    indices = _select(
-        ops, 0.0, method=method, random_state=np.random.RandomState(1)
-    )
+    indices = _select(ops, 0.0, method=method, random_state=np.random.RandomState(1))
     assert np.allclose(indices, np.array(list(range(len(ops)))))
 
 
@@ -130,12 +128,8 @@ def test_generate_training_circuits_with_clifford_circuit():
 
 @pytest.mark.parametrize("method_select", ["uniform", "gaussian"])
 @pytest.mark.parametrize("method_replace", ["uniform", "gaussian", "closest"])
-@pytest.mark.parametrize(
-    "kwargs", [{}, {"sigma_select": 0.5, "sigma_replace": 0.5}]
-)
-def test_generate_training_circuits_mega(
-    method_select, method_replace, kwargs
-):
+@pytest.mark.parametrize("kwargs", [{}, {"sigma_select": 0.5, "sigma_replace": 0.5}])
+def test_generate_training_circuits_mega(method_select, method_replace, kwargs):
     circuit = random_x_z_cnot_circuit(qubits=4, n_moments=10, random_state=1)
     num_train = 10
     fraction_non_clifford = 0.1
@@ -161,9 +155,7 @@ def test_generate_training_circuits_mega(
 @pytest.mark.parametrize("method", ["uniform", "gaussian"])
 def test_select(method):
     q = cirq.NamedQubit("q")
-    non_clifford_ops = [
-        cirq.ops.rz(a).on(q) for a in np.linspace(1, 2, 10) / np.e
-    ]
+    non_clifford_ops = [cirq.ops.rz(a).on(q) for a in np.linspace(1, 2, 10) / np.e]
     fraction_non_clifford = 0.4
 
     indices = _select(

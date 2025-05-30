@@ -49,15 +49,9 @@ def test_filter_qubits():
     assert np.allclose(result.filter_qubits([1]), np.array([[0], [1], [0]]))
     assert np.allclose(result.filter_qubits([2]), np.array([[1], [0], [0]]))
 
-    assert np.allclose(
-        result.filter_qubits([0, 1]), np.array([[0, 0], [0, 1], [1, 0]])
-    )
-    assert np.allclose(
-        result.filter_qubits([0, 2]), np.array([[0, 1], [0, 0], [1, 0]])
-    )
-    assert np.allclose(
-        result.filter_qubits([1, 2]), np.array([[0, 1], [1, 0], [0, 0]])
-    )
+    assert np.allclose(result.filter_qubits([0, 1]), np.array([[0, 0], [0, 1], [1, 0]]))
+    assert np.allclose(result.filter_qubits([0, 2]), np.array([[0, 1], [0, 0], [1, 0]]))
+    assert np.allclose(result.filter_qubits([1, 2]), np.array([[0, 1], [1, 0], [0, 0]]))
 
 
 def test_empty():

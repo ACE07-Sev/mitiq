@@ -23,9 +23,7 @@ def random_x_z_circuit(qubits, n_moments, random_state) -> cirq.Circuit:
 
 def random_x_z_cnot_circuit(qubits, n_moments, random_state) -> cirq.Circuit:
     angles = np.linspace(0.0, 2 * np.pi, 8)
-    oneq_gates = [
-        gate(a) for a in angles for gate in (cirq.ops.rx, cirq.ops.rz)
-    ]
+    oneq_gates = [gate(a) for a in angles for gate in (cirq.ops.rx, cirq.ops.rz)]
     gate_domain = {oneq_gate: 1 for oneq_gate in oneq_gates}
     gate_domain.update({cirq.ops.CNOT: 2})
 

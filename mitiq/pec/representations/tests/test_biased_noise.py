@@ -62,8 +62,7 @@ def two_qubit_biased_noise_overhead(epsilon: float, eta: float) -> float:
     alpha_beta = (
         (a**2 + a * b - 2 * c**2)
         * (-a * b - b**2 + 2 * c**2)
-        / (a**3 + a**2 * b - a * b**2 - 4 * a * c**2 - b**3 + 4 * b * c**2)
-        ** 2
+        / (a**3 + a**2 * b - a * b**2 - 4 * a * c**2 - b**3 + 4 * b * c**2) ** 2
     )
     alpha_gamma = (
         -c
@@ -100,9 +99,7 @@ def two_qubit_biased_noise_overhead(epsilon: float, eta: float) -> float:
 @pytest.mark.parametrize("epsilon", [0, 0.1, 0.7])
 @pytest.mark.parametrize("eta", [0, 1, 1000])
 @pytest.mark.parametrize("gate", [X, Y, Z, H])
-def test_single_qubit_representation_norm(
-    gate: Gate, epsilon: float, eta: float
-):
+def test_single_qubit_representation_norm(gate: Gate, epsilon: float, eta: float):
     q = LineQubit(0)
     optimal_norm = single_qubit_biased_noise_overhead(epsilon, eta)
     norm = represent_operation_with_local_biased_noise(
@@ -134,9 +131,7 @@ def test_three_qubit_biased_noise_representation_error():
 @pytest.mark.parametrize("epsilon", [0, 0.1, 0.7])
 @pytest.mark.parametrize("eta", [0, 1, 1000])
 @pytest.mark.parametrize("gate", [X, Y, Z, H, CZ, CNOT, ISWAP, SWAP])
-def test_biased_noise_representation_with_choi(
-    gate: Gate, epsilon: float, eta: float
-):
+def test_biased_noise_representation_with_choi(gate: Gate, epsilon: float, eta: float):
     """Tests the representation by comparing exact Choi matrices."""
     qreg = LineQubit.range(gate.num_qubits())
     ideal_choi = _operation_to_choi(gate.on(*qreg))

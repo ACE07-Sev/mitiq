@@ -153,9 +153,7 @@ def test_generate_diagonalizing_gate():
         ]
     )
 
-    assert np.allclose(
-        _generate_diagonalizing_gate(2)._matrix, expected_matrix
-    )
+    assert np.allclose(_generate_diagonalizing_gate(2)._matrix, expected_matrix)
 
 
 def test_apply_cyclic_system_permutation():
@@ -184,9 +182,7 @@ def test_edge_case_single_qubit():
     matrix = np.array([[1, 2], [3, 4]])
     # No permutation should happen here
     expected = matrix.copy()
-    result = _apply_cyclic_system_permutation(
-        matrix, N_qubits=1, num_registers=1
-    )
+    result = _apply_cyclic_system_permutation(matrix, N_qubits=1, num_registers=1)
     assert np.allclose(result, expected)
 
 
@@ -266,7 +262,5 @@ def test_apply_symmetric_observable_X():
         ]
     )
 
-    result = _apply_symmetric_observable(
-        matrix, N_qubits=1, observable=observable
-    )
+    result = _apply_symmetric_observable(matrix, N_qubits=1, observable=observable)
     assert np.allclose(result, expected)

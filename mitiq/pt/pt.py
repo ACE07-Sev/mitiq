@@ -4,8 +4,8 @@
 # LICENSE file in the root directory of this source tree.
 
 import random
+from collections.abc import Callable
 from functools import singledispatch
-from typing import Callable, List, Optional
 
 import cirq
 import pennylane as qml
@@ -69,9 +69,9 @@ PENNYLANE_NOISE_OP = {
 def generate_pauli_twirl_variants(
     circuit: QPROGRAM,
     num_circuits: int = 10,
-    noise_name: Optional[str] = None,
+    noise_name: str | None = None,
     **kwargs: float,
-) -> List[QPROGRAM]:
+) -> list[QPROGRAM]:
     r"""Return the Pauli twirled versions of the input circuit.
 
     Only the CNOT and CZ gates in an input circuit are Pauli twirled
@@ -118,9 +118,7 @@ def add_noise_to_two_qubit_gates(
 def _add_noise_to_two_qubit_gates(
     circuit: QPROGRAM, noise_name: str, **kwargs: float
 ) -> QPROGRAM:
-    raise NotImplementedError(
-        f"Cannot add noise to Circuit of type {type(circuit)}."
-    )
+    raise NotImplementedError(f"Cannot add noise to Circuit of type {type(circuit)}.")
 
 
 @_add_noise_to_two_qubit_gates.register
@@ -142,9 +140,7 @@ def _cirq(circuit: _Circuit, noise_name: str, **kwargs: float) -> _Circuit:
 
 
 @_add_noise_to_two_qubit_gates.register
-def _pennylane(
-    circuit: QuantumTape, noise_name: str, **kwargs: float
-) -> QuantumTape:
+def _pennylane(circuit: QuantumTape, noise_name: str, **kwargs: float) -> QuantumTape:
     new_ops = []
     noise_function = PENNYLANE_NOISE_OP[noise_name]
 
@@ -161,7 +157,7 @@ def _pennylane(
     )
 
 
-def twirl_CNOT_gates(circuit: QPROGRAM, num_circuits: int) -> List[QPROGRAM]:
+def twirl_CNOT_gates(circuit: QPROGRAM, num_circuits: int) -> list[QPROGRAM]:
     """Generate a list of circuits using Pauli twirling on CNOT gates.
 
     Args:
@@ -176,7 +172,7 @@ def _twirl_CNOT_qprogram(circuit: cirq.Circuit) -> cirq.Circuit:
     return circuit.map_operations(_twirl_single_CNOT_gate)
 
 
-def twirl_CZ_gates(circuit: QPROGRAM, num_circuits: int) -> List[QPROGRAM]:
+def twirl_CZ_gates(circuit: QPROGRAM, num_circuits: int) -> list[QPROGRAM]:
     """Generate a list of circuits using Pauli twirling on CZ gates.
 
     Args:

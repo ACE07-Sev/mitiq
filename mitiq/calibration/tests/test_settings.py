@@ -263,9 +263,7 @@ def test_make_circuits_invalid_circuit_type():
             }
         ],
     )
-    with pytest.raises(
-        ValueError, match="invalid value passed for `circuit_types`"
-    ):
+    with pytest.raises(ValueError, match="invalid value passed for `circuit_types`"):
         settings.make_problems()
 
 

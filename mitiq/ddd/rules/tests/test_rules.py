@@ -64,32 +64,17 @@ def test_built_in_sequences(rule, slack_length):
         (
             5,
             xx,
-            Circuit(
-                [
-                    X(LineQubit(0)) if i % 2 else I(LineQubit(0))
-                    for i in range(5)
-                ]
-            ),
+            Circuit([X(LineQubit(0)) if i % 2 else I(LineQubit(0)) for i in range(5)]),
         ),
         (
             5,
             yy,
-            Circuit(
-                [
-                    Y(LineQubit(0)) if i % 2 else I(LineQubit(0))
-                    for i in range(5)
-                ]
-            ),
+            Circuit([Y(LineQubit(0)) if i % 2 else I(LineQubit(0)) for i in range(5)]),
         ),
         (
             4,
             xyxy,
-            Circuit(
-                [
-                    Y(LineQubit(0)) if i % 2 else X(LineQubit(0))
-                    for i in range(4)
-                ]
-            ),
+            Circuit([Y(LineQubit(0)) if i % 2 else X(LineQubit(0)) for i in range(4)]),
         ),
     ],
 )
@@ -112,9 +97,7 @@ def test_rule_failures(slack_length, spacing):
             gates=[X, Y, Z],
         )
         assert len(sequence) == 0
-    elif slack_length < (
-        (num_decoupling_gates + 1) * spacing + num_decoupling_gates
-    ):
+    elif slack_length < ((num_decoupling_gates + 1) * spacing + num_decoupling_gates):
         sequence = general_rule(
             slack_length=slack_length,
             spacing=spacing,
@@ -224,7 +207,5 @@ def test_not_unitary(gates):
         with pytest.raises(TypeError, match="cirq.unitary failed"):
             general_rule(slack_length=17, gates=gates)
     else:
-        with pytest.raises(
-            ValueError, match="is not equivalent to the identity"
-        ):
+        with pytest.raises(ValueError, match="is not equivalent to the identity"):
             general_rule(slack_length=17, gates=gates)

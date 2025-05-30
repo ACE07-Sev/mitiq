@@ -184,9 +184,7 @@ def test_random_circuit_to_from_circuits():
     )
     qiskit_circuit = to_qiskit(cirq_circuit)
     circuit_cirq = from_qiskit(qiskit_circuit)
-    assert cirq.equal_up_to_global_phase(
-        cirq_circuit.unitary(), circuit_cirq.unitary()
-    )
+    assert cirq.equal_up_to_global_phase(cirq_circuit.unitary(), circuit_cirq.unitary())
 
 
 def test_random_circuit_to_from_qasm():
@@ -198,9 +196,7 @@ def test_random_circuit_to_from_qasm():
     )
     qasm = to_qasm(cirq_circuit)
     circuit_cirq = from_qasm(qasm)
-    assert cirq.equal_up_to_global_phase(
-        cirq_circuit.unitary(), circuit_cirq.unitary()
-    )
+    assert cirq.equal_up_to_global_phase(cirq_circuit.unitary(), circuit_cirq.unitary())
 
 
 def test_convert_with_qft():
@@ -323,9 +319,7 @@ def test_transform_circuit_with_multiple_qregs(nqubits, with_ops, measure):
 def test_transform_qregs_two_qubit_ops(new_reg_sizes):
     nqubits = sum(new_reg_sizes)
     circ = to_qiskit(
-        cirq.testing.random_circuit(
-            nqubits, n_moments=5, op_density=1, random_state=1
-        )
+        cirq.testing.random_circuit(nqubits, n_moments=5, op_density=1, random_state=1)
     )
     orig = circ.copy()
 
@@ -342,9 +336,7 @@ def test_transform_qregs_two_qubit_ops(new_reg_sizes):
 def test_transform_qregs_random_circuit(new_reg_sizes, measure):
     nbits = sum(new_reg_sizes)
     circ = to_qiskit(
-        cirq.testing.random_circuit(
-            nbits, n_moments=5, op_density=1, random_state=10
-        )
+        cirq.testing.random_circuit(nbits, n_moments=5, op_density=1, random_state=10)
     )
     creg = qiskit.ClassicalRegister(nbits)
     circ.add_register(creg)
@@ -388,9 +380,7 @@ def test_transform_registers_adds_idle_qubits():
     assert circuit.num_qubits == 1
     old_data = copy.deepcopy(circuit.data)
 
-    circuit = _transform_registers(
-        circuit, new_qregs=[qreg, qiskit.QuantumRegister(4)]
-    )
+    circuit = _transform_registers(circuit, new_qregs=[qreg, qiskit.QuantumRegister(4)])
 
     assert len(circuit.qregs) == 2
     assert circuit.num_qubits == 5

@@ -8,7 +8,6 @@ slack window.
 """
 
 from itertools import cycle
-from typing import List
 
 import numpy as np
 from cirq import (
@@ -23,9 +22,7 @@ from cirq import (
 )
 
 
-def general_rule(
-    slack_length: int, gates: List[Gate], spacing: int = -1
-) -> Circuit:
+def general_rule(slack_length: int, gates: list[Gate], spacing: int = -1) -> Circuit:
     """Returns a digital dynamical decoupling sequence, based on inputs.
 
     Args:
@@ -147,7 +144,7 @@ def yy(slack_length: int, spacing: int = -1) -> Circuit:
     return yy_sequence
 
 
-def repeated_rule(slack_length: int, gates: List[Gate]) -> Circuit:
+def repeated_rule(slack_length: int, gates: list[Gate]) -> Circuit:
     """Returns a general digital dynamical decoupling sequence that repeats
     until the slack is filled without spacing, up to a complete repetition.
 

@@ -24,9 +24,7 @@ def noiseless_executor(program: pyquil.Program) -> float:
     results = QVM.run(executable).readout_data.get("ro")
 
     num_shots = len(results)
-    return (
-        num_shots - np.count_nonzero(np.count_nonzero(results, axis=1))
-    ) / num_shots
+    return (num_shots - np.count_nonzero(np.count_nonzero(results, axis=1))) / num_shots
 
 
 def test_run_factory():
@@ -39,9 +37,7 @@ def test_run_factory():
 
     fac = zne.inference.RichardsonFactory([1.0, 2.0, 3.0])
 
-    fac.run(
-        qp, noiseless_executor, scale_noise=zne.scaling.fold_gates_at_random
-    )
+    fac.run(qp, noiseless_executor, scale_noise=zne.scaling.fold_gates_at_random)
     result = fac.reduce()
     assert np.isclose(result, 1.0, atol=1e-5)
 

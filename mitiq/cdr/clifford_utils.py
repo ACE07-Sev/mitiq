@@ -5,8 +5,6 @@
 
 """Functions for mapping circuits to (near) Clifford circuits."""
 
-from typing import List
-
 import cirq
 import numpy as np
 import numpy.typing as npt
@@ -26,9 +24,7 @@ def is_clifford(circuit: Circuit) -> bool:
     Args:
         circuit: A single operation, list of operations, or circuit.
     """
-    return all(
-        cirq.has_stabilizer_effect(op) for op in circuit.all_operations()
-    )
+    return all(cirq.has_stabilizer_effect(op) for op in circuit.all_operations())
 
 
 @accept_any_qprogram_as_input
@@ -39,9 +35,7 @@ def count_non_cliffords(circuit: Circuit) -> int:
     Args:
         circuit: Circuit to count the number of non-Clifford operations in.
     """
-    return sum(
-        not cirq.has_stabilizer_effect(op) for op in circuit.all_operations()
-    )
+    return sum(not cirq.has_stabilizer_effect(op) for op in circuit.all_operations())
 
 
 def random_clifford(
@@ -53,9 +47,7 @@ def random_clifford(
         num_angles: Number of Clifford angles to return in array.
         random_state: Random state for sampling.
     """
-    return np.array(
-        [random_state.choice(_CLIFFORD_ANGLES) for _ in range(num_angles)]
-    )
+    return np.array([random_state.choice(_CLIFFORD_ANGLES) for _ in range(num_angles)])
 
 
 @np.vectorize
@@ -99,7 +91,7 @@ def is_clifford_angle(
 
 
 @np.vectorize
-def angle_to_proximities(angle: float, sigma: float) -> List[float]:
+def angle_to_proximities(angle: float, sigma: float) -> list[float]:
     """Returns probability distribution based on distance from angles to
     Clifford gates.
 

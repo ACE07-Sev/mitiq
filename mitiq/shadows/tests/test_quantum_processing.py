@@ -6,11 +6,10 @@
 """Unit tests for quantum processing functions for classical shadows."""
 
 import importlib
-from typing import Callable, List
+from collections.abc import Callable
 from unittest.mock import patch
 
 import cirq
-import cirq.testing
 import pytest
 from qiskit_aer import Aer
 
@@ -59,7 +58,7 @@ def test_generate_random_pauli_strings():
     result = generate_random_pauli_strings(num_qubits, num_strings)
 
     # Check that the result is a list
-    assert isinstance(result, List)
+    assert isinstance(result, list)
 
     # Check that the number of strings matches the input
     assert len(result) == num_strings
@@ -145,16 +144,12 @@ def test_random_pauli_measurement_no_errors(n_qubits, executor):
     """Test that random_pauli_measurement runs without errors."""
     qubits = cirq.LineQubit.range(n_qubits)
     circuit = simple_test_circuit(qubits)
-    random_pauli_measurement(
-        circuit, n_total_measurements=10, executor=executor
-    )
+    random_pauli_measurement(circuit, n_total_measurements=10, executor=executor)
 
 
 @pytest.mark.parametrize("n_qubits", [1, 2, 5])
 @pytest.mark.parametrize("executor", [cirq_executor, qiskit_executor])
-def test_random_pauli_measurement_output_dimensions(
-    n_qubits: int, executor: Callable
-):
+def test_random_pauli_measurement_output_dimensions(n_qubits: int, executor: Callable):
     """Test that random_pauli_measurement returns the correct output
     dimensions."""
     qubits = cirq.LineQubit.range(n_qubits)
@@ -177,9 +172,7 @@ def test_random_pauli_measurement_output_dimensions(
 
 @pytest.mark.parametrize("n_qubits", [1, 2, 5])
 @pytest.mark.parametrize("executor", [cirq_executor, qiskit_executor])
-def test_random_pauli_measurement_output_types(
-    n_qubits: int, executor: Callable
-):
+def test_random_pauli_measurement_output_types(n_qubits: int, executor: Callable):
     """Test that random_pauli_measurement returns the correct output types."""
     qubits = cirq.LineQubit.range(n_qubits)
     circuit = simple_test_circuit(qubits)

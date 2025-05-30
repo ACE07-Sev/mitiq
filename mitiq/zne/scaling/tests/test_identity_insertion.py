@@ -59,9 +59,7 @@ def test_scaling_with_terminal_measurement():
     scaled with identity layers as expected.
     """
     qbit = LineQubit(0)
-    input_circ = Circuit(
-        [ops.H.on(qbit)], [ops.T.on(qbit)], [ops.measure(qbit)]
-    )
+    input_circ = Circuit([ops.H.on(qbit)], [ops.T.on(qbit)], [ops.measure(qbit)])
     scaled_circ = insert_id_layers(input_circ, scale_factor=3.0)
     expected_circ = Circuit(
         [ops.H.on(qbit)],
@@ -96,9 +94,7 @@ def test_calculate_id_layers_diff_scale_factor():
     float_scale_factor_list = [1.3, 2.6, 3.77, 4.8, 5.9]
     for i in float_scale_factor_list:
         float_scale_factor = i
-        id_layers_float_scale = _calculate_id_layers(
-            circ_depth, float_scale_factor
-        )
+        id_layers_float_scale = _calculate_id_layers(circ_depth, float_scale_factor)
 
         num_partial_layers_float_scale_factor = id_layers_float_scale[-1]
         assert num_partial_layers_float_scale_factor >= 0

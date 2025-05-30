@@ -32,9 +32,7 @@ def test_valid_bitstrings():
 
     num_qubits = 4
     max_hamming_weight = 2
-    bitstrings_on_3_qubits_hamming_2 = valid_bitstrings(
-        num_qubits, max_hamming_weight
-    )
+    bitstrings_on_3_qubits_hamming_2 = valid_bitstrings(num_qubits, max_hamming_weight)
     assert len(bitstrings_on_3_qubits_hamming_2) == sum(
         math.comb(num_qubits, i) for i in range(max_hamming_weight + 1)
     )  # sum_{i == 0}^{max_hamming_weight} (num_qubits choose i)

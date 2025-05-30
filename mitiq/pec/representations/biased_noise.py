@@ -5,7 +5,6 @@
 """Function to generate representations with biased noise."""
 
 import copy
-from typing import List
 
 from cirq import Circuit, Operation, X, Y, Z
 
@@ -77,7 +76,7 @@ def represent_operation_with_local_biased_noise(
     """
     circuit_copy = copy.deepcopy(ideal_operation)
     converted_circ, _ = convert_to_mitiq(circuit_copy)
-    post_ops: List[List[Operation]]
+    post_ops: list[list[Operation]]
     qubits = converted_circ.all_qubits()
 
     # Calculate coefficients in basis expansion in terms of eta and epsilon
@@ -127,8 +126,7 @@ def represent_operation_with_local_biased_noise(
         )
     # Basis of implementable operations as circuits.
     imp_op_circuits = [
-        append_cirq_circuit_to_qprogram(ideal_operation, Circuit(op))
-        for op in post_ops
+        append_cirq_circuit_to_qprogram(ideal_operation, Circuit(op)) for op in post_ops
     ]
 
     # Build basis expansion.
