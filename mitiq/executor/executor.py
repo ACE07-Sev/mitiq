@@ -30,6 +30,7 @@ DensityMatrixLike = [
     list[npt.NDArray[np.complex64]],
     list[npt.NDArray[np.complex64]],
     tuple[npt.NDArray[np.complex64]],
+    np.ndarray # type: ignore
 ]
 FloatLike = [
     None,  # Untyped executors are assumed to return floats.
