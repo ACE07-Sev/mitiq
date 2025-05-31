@@ -32,9 +32,13 @@ def sample_probability_vector(
     """
     num_values = len(probability_vector)
     if not np.log2(num_values).is_integer():
-        raise ValueError("The length of the probability vector must be a power of 2.")
+        raise ValueError(
+            "The length of the probability vector must be a power of 2."
+        )
 
-    sampled_indices = np.random.choice(num_values, size=samples, p=probability_vector)
+    sampled_indices = np.random.choice(
+        num_values, size=samples, p=probability_vector
+    )
 
     bit_width = int(np.log2(num_values))
     bitstrings = [format(index, f"0{bit_width}b") for index in sampled_indices]
@@ -153,7 +157,9 @@ def closest_positive_distribution(
         constraints=normalization,
     )
     if not result.success:
-        raise ValueError("REM failed to determine the closest positive distribution.")
+        raise ValueError(
+            "REM failed to determine the closest positive distribution."
+        )
     return result.x.tolist()
 
 

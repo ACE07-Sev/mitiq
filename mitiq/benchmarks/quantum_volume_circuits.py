@@ -58,7 +58,9 @@ def generate_quantum_volume_circuit(
         A list of the heavy bitstrings for the returned circuit.
     """
     random_state = random.RandomState(seed)
-    circuit = generate_model_circuit(num_qubits, depth, random_state=random_state)
+    circuit = generate_model_circuit(
+        num_qubits, depth, random_state=random_state
+    )
     heavy_bitstrings = compute_heavy_bitstrings(circuit, num_qubits)
 
     if decompose:

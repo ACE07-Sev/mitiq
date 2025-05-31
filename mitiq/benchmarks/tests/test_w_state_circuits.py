@@ -46,7 +46,9 @@ def test_w4_circuit():
 
     # compare the state vector
     w4_state_vector = (
-        cirq.Simulator().simulate(output_circuit, initial_state=1000).final_state_vector
+        cirq.Simulator()
+        .simulate(output_circuit, initial_state=1000)
+        .final_state_vector
     )
     correct_final_state_vector = np.array(
         [0, 0.5, 0.5, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0, 0, 0, 0]
@@ -70,9 +72,13 @@ def test_w2_circuit():
 
     # compare the state vector
     w2_state_vector = (
-        cirq.Simulator().simulate(output_circuit, initial_state=10).final_state_vector
+        cirq.Simulator()
+        .simulate(output_circuit, initial_state=10)
+        .final_state_vector
     )
-    correct_final_state_vector = np.array([0, 1 / np.sqrt(2), 1 / np.sqrt(2), 0])
+    correct_final_state_vector = np.array(
+        [0, 1 / np.sqrt(2), 1 / np.sqrt(2), 0]
+    )
     assert np.allclose(w2_state_vector, correct_final_state_vector)
 
 
@@ -95,7 +101,9 @@ def test_w3_circuit():
 
     # compare the state vector
     w3_state_vector = (
-        cirq.Simulator().simulate(output_circuit, initial_state=100).final_state_vector
+        cirq.Simulator()
+        .simulate(output_circuit, initial_state=100)
+        .final_state_vector
     )
     correct_final_state_vector = np.array(
         [0, 1 / np.sqrt(3), 1 / np.sqrt(3), 0, 1 / np.sqrt(3), 0, 0, 0]

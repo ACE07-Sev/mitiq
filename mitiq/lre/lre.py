@@ -145,7 +145,9 @@ def execute_with_lre(
 
     # verify the linear combination coefficients and the calculated expectation
     # values have the same length
-    if len(noise_scaled_circuits) != len(linear_combination_coeffs):  # pragma: no cover
+    if len(noise_scaled_circuits) != len(
+        linear_combination_coeffs
+    ):  # pragma: no cover
         raise AssertionError(
             "The number of expectation values are not equal "
             + "to the number of coefficients required for "
@@ -227,9 +229,13 @@ def lre_decorator(
     degree: int,
     fold_multiplier: int,
     observable: Observable | None = None,
-    folding_method: Callable[[QPROGRAM, float], QPROGRAM] = fold_gates_at_random,
+    folding_method: Callable[
+        [QPROGRAM, float], QPROGRAM
+    ] = fold_gates_at_random,
     num_chunks: int | None = None,
-) -> Callable[[Callable[[QPROGRAM], QuantumResult]], Callable[[QPROGRAM], float]]:
+) -> Callable[
+    [Callable[[QPROGRAM], QuantumResult]], Callable[[QPROGRAM], float]
+]:
     """Decorator which adds an error-mitigation layer based on
     layerwise richardson extrapolation (LRE).
 

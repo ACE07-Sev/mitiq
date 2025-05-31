@@ -141,7 +141,9 @@ def _cirq_sample_circuit(
         random_state = np.random.RandomState(random_state)
 
     # copy and remove all moments
-    sampled_circuits = [deepcopy(ideal_circuit)[0:0] for _ in range(num_samples)]
+    sampled_circuits = [
+        deepcopy(ideal_circuit)[0:0] for _ in range(num_samples)
+    ]
     sampled_signs = [1 for _ in range(num_samples)]
     norm = 1.0
 

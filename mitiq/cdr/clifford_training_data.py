@@ -66,7 +66,9 @@ def generate_training_circuits(
     # Find the non-Clifford operations in the circuit.
     operations = list(circuit.all_operations())
     non_clifford_indices_and_ops = [
-        (i, op) for i, op in enumerate(operations) if not cirq.has_stabilizer_effect(op)
+        (i, op)
+        for i, op in enumerate(operations)
+        if not cirq.has_stabilizer_effect(op)
     ]
 
     if len(non_clifford_indices_and_ops) == 0:
@@ -187,7 +189,8 @@ def _select(
         distribution = probabilities / sum(probabilities)
     else:
         raise ValueError(
-            f"Arg `method_select` must be 'uniform' or 'gaussian' but was " f"{method}."
+            f"Arg `method_select` must be 'uniform' or 'gaussian' but was "
+            f"{method}."
         )
 
     # Select (indices of) non-Clifford operations to replace.

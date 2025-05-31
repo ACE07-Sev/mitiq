@@ -83,7 +83,10 @@ def mitigate_executor(
         self: Executor,
         results: Sequence[MeasurementResult],
     ) -> Sequence[MeasurementResult]:
-        return [mitigate_measurements(res, inverse_confusion_matrix) for res in results]
+        return [
+            mitigate_measurements(res, inverse_confusion_matrix)
+            for res in results
+        ]
 
     setattr(executor_obj, "_post_run", MethodType(post_run, executor_obj))
 

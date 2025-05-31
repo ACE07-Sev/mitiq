@@ -91,7 +91,9 @@ def test_get_pauli_fidelity():
     )
     k_calibration = 2
     expected_result = {"00": 1, "10": -0.25, "01": 0.25, "11": -0.25}
-    result = get_pauli_fidelities(calibration_measurement_outcomes, k_calibration)
+    result = get_pauli_fidelities(
+        calibration_measurement_outcomes, k_calibration
+    )
     assert result == expected_result
 
 
@@ -177,7 +179,9 @@ def test_expectation_estimation_shadow():
     batch_size = 1
     expected_result = -9
 
-    result = expectation_estimation_shadow(measurement_outcomes, pauli, batch_size)
+    result = expectation_estimation_shadow(
+        measurement_outcomes, pauli, batch_size
+    )
     assert np.isclose(result, expected_result)
 
 
@@ -223,6 +227,8 @@ def test_expectation_estimation_shadow_no_indices():
     measurement_outcomes = ["101", "010", "101"], ["ZXY", "YZX", "ZZY"]
     batch_size = 1
 
-    result = expectation_estimation_shadow(measurement_outcomes, pauli, batch_size)
+    result = expectation_estimation_shadow(
+        measurement_outcomes, pauli, batch_size
+    )
 
     assert result == 0

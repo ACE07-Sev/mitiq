@@ -52,4 +52,6 @@ def test_rotated_rb_conversion(n_qubits, theta, return_type):
 
 def test_rotated_rb_circuit_no_theta():
     circuit = generate_rotated_rb_circuits(n_qubits=1, num_cliffords=5)[0]
-    assert len(list(circuit.findall_operations_with_gate_type(cirq.ops.Rz))) > 0
+    assert (
+        len(list(circuit.findall_operations_with_gate_type(cirq.ops.Rz))) > 0
+    )

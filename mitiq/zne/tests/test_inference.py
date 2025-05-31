@@ -217,7 +217,9 @@ def test_get_expectation_values_static_factories(factory):
     # Compute expectation values at all the scale factors
     fac.run_classical(executor)
     assert isinstance(fac.get_expectation_values(), list)
-    assert np.allclose(fac.get_expectation_values(), expectation_values, atol=1e-3)
+    assert np.allclose(
+        fac.get_expectation_values(), expectation_values, atol=1e-3
+    )
 
 
 @mark.parametrize("factory", (AdaExpFactory,))
@@ -245,7 +247,9 @@ def test_get_expectation_values_adaptive_factories(factory):
         4.2031916,
         4.2052843,
     ]
-    correct_expectation_values = [executor(scale) for scale in correct_scale_factors]
+    correct_expectation_values = [
+        executor(scale) for scale in correct_scale_factors
+    ]
     assert len(fac.get_expectation_values()) == num_steps
     assert np.allclose(
         fac.get_expectation_values(), correct_expectation_values, atol=1e-3
@@ -290,7 +294,9 @@ def test_run_sequential_and_batched(factory, batched):
     fac.run(cirq.Circuit(), executor, scale_noise=lambda circ, _: circ)
 
     assert isinstance(fac.get_expectation_values(), list)
-    assert np.allclose(fac.get_expectation_values(), np.ones_like(scale_factors))
+    assert np.allclose(
+        fac.get_expectation_values(), np.ones_like(scale_factors)
+    )
 
 
 @mark.parametrize("test_f", [f_lin, f_non_lin])
@@ -323,7 +329,9 @@ def test_fake_nodes_factory() -> None:
     assert np.isclose(zne_value, f_runge(0.0), atol=LARGE_TOL)
     assert len(fac._opt_params) == len(UNIFORM_X)
     assert np.isclose(fac._opt_params[-1], zne_value)
-    assert np.isclose(fac.extrapolate(UNIFORM_X, f_runge(UNIFORM_X)), zne_value)
+    assert np.isclose(
+        fac.extrapolate(UNIFORM_X, f_runge(UNIFORM_X)), zne_value
+    )
     exp_vals = fac.get_expectation_values()
     assert np.isclose(fac.extrapolate(UNIFORM_X, exp_vals), zne_value)
     assert np.isclose(
@@ -403,7 +411,9 @@ def test_opt_params_poly_factory(order: int) -> None:
 
 @mark.parametrize("avoid_log", [False, True])
 @mark.parametrize("test_f", [f_exp_down, f_exp_up])
-def test_exp_factory_with_asympt(test_f: Callable[[float], float], avoid_log: bool):
+def test_exp_factory_with_asympt(
+    test_f: Callable[[float], float], avoid_log: bool
+):
     """Test of exponential extrapolator."""
     seeded_f = apply_seed_to_func(test_f, SEED)
     fac = ExpFactory(X_VALS, asymptote=A, avoid_log=avoid_log)
@@ -516,7 +526,9 @@ def test_poly_exp_factory_no_asympt(test_f: Callable[[float], float]):
 
 
 @mark.parametrize("infinite_noise_limit", [0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2])
-@mark.parametrize("exp_vals", [[0.700000001, 0.7, 0.7, 0.7], [0.7, 0.7, 0.7, 0.700001]])
+@mark.parametrize(
+    "exp_vals", [[0.700000001, 0.7, 0.7, 0.7], [0.7, 0.7, 0.7, 0.700001]]
+)
 def test_poly_exp_factory_converges_toward_asympt(
     exp_vals: list[float],
     infinite_noise_limit: float,
@@ -527,17 +539,23 @@ def test_poly_exp_factory_converges_toward_asympt(
     # asymptote
     scale_factors = [1.0, 2, 3, 4]
     assert np.isclose(
-        ExpFactory.extrapolate(scale_factors, exp_vals, asymptote=infinite_noise_limit),
+        ExpFactory.extrapolate(
+            scale_factors, exp_vals, asymptote=infinite_noise_limit
+        ),
         0.7,
     )
 
 
 @mark.parametrize("avoid_log", [False, True])
 @mark.parametrize("test_f", [f_exp_down, f_exp_up])
-def test_ada_exp_factory_with_asympt(test_f: Callable[[float], float], avoid_log: bool):
+def test_ada_exp_factory_with_asympt(
+    test_f: Callable[[float], float], avoid_log: bool
+):
     """Test of the adaptive exponential extrapolator."""
     seeded_f = apply_seed_to_func(test_f, SEED)
-    fac = AdaExpFactory(steps=3, scale_factor=2.0, asymptote=A, avoid_log=avoid_log)
+    fac = AdaExpFactory(
+        steps=3, scale_factor=2.0, asymptote=A, avoid_log=avoid_log
+    )
     # Note: run_classical calls next which calls reduce, so calling
     # fac.run_classical with an AdaExpFactory sets the optimal parameters as
     # well. Hence we check that the opt_params are empty before
@@ -557,7 +575,9 @@ def test_ada_exp_fac_with_asympt_more_steps(
 ):
     """Test of the adaptive exponential extrapolator with more steps."""
     seeded_f = apply_seed_to_func(test_f, SEED)
-    fac = AdaExpFactory(steps=6, scale_factor=2.0, asymptote=A, avoid_log=avoid_log)
+    fac = AdaExpFactory(
+        steps=6, scale_factor=2.0, asymptote=A, avoid_log=avoid_log
+    )
     fac.run_classical(seeded_f)
     assert np.isclose(fac.reduce(), seeded_f(0, err=0), atol=CLOSE_TOL)
 
@@ -607,7 +627,9 @@ def test_avoid_log_keyword():
     assert not znl_with_log == znl_without_log
 
 
-@mark.parametrize("factory", (LinearFactory, RichardsonFactory, FakeNodesFactory))
+@mark.parametrize(
+    "factory", (LinearFactory, RichardsonFactory, FakeNodesFactory)
+)
 def test_too_few_scale_factors(factory):
     """Test less than 2 scale_factors."""
     with raises(ValueError, match=r"At least 2 scale factors are necessary"):
@@ -646,10 +668,14 @@ def test_failing_fit_error():
     fac = ExpFactory(X_VALS, asymptote=None)
     fac._instack = [{"scale_factor": x} for x in X_VALS]
     fac._outstack = [1.0, 2.0, 1.0, 2.0, 1.0]
-    with raises(ExtrapolationError, match=r"The extrapolation fit failed to converge."):
+    with raises(
+        ExtrapolationError, match=r"The extrapolation fit failed to converge."
+    ):
         fac.reduce()
     # test also the static "extrapolate" method.
-    with raises(ExtrapolationError, match=r"The extrapolation fit failed to converge."):
+    with raises(
+        ExtrapolationError, match=r"The extrapolation fit failed to converge."
+    ):
         ExpFactory.extrapolate(X_VALS, [1.0, 2.0, 1.0, 2.0, 1.0])
 
 
@@ -767,7 +793,9 @@ def test_full_output_keyword_cov_std():
         opt_params,
         params_cov,
         zne_curve,
-    ) = PolyFactory.extrapolate([1, 2, 3], [1, 4, 9], order=2, full_output=True)
+    ) = PolyFactory.extrapolate(
+        [1, 2, 3], [1, 4, 9], order=2, full_output=True
+    )
 
     assert len(opt_params) == 3
     assert np.isclose(zne_limit, 0.0)
@@ -803,7 +831,9 @@ def test_params_cov_and_zne_std():
     assert np.isclose(zne_curve(0.5), 0.0)
 
 
-@mark.parametrize("factory", [LinearFactory, RichardsonFactory, FakeNodesFactory])
+@mark.parametrize(
+    "factory", [LinearFactory, RichardsonFactory, FakeNodesFactory]
+)
 def test_execute_with_zne_fit_fail(factory):
     """Tests errors are raised when asking for fitting parameters that can't
     be calculated.
@@ -836,7 +866,9 @@ def test_get_methods_of_factories():
     assert np.allclose(fac.get_expectation_values(), y_values)
     assert np.allclose(fac.get_extrapolation_curve()(0.0), zne_reduce)
     assert np.allclose(fac.get_optimal_parameters(), [0.0, 0.0])
-    assert np.allclose(fac.get_parameters_covariance(), [[3.0, -1.0], [-1.0, 1.0]])
+    assert np.allclose(
+        fac.get_parameters_covariance(), [[3.0, -1.0], [-1.0, 1.0]]
+    )
     assert np.allclose(fac.get_scale_factors(), x_values)
     assert np.allclose(fac.get_zero_noise_limit(), zne_reduce)
     assert np.allclose(fac.get_zero_noise_limit_error(), 1.0)
@@ -927,7 +959,9 @@ def test_plot_fit_exp_factory(factory):
 def test_fakenodes_scale_factors_equally_spaced():
     """FakeNodesFactory should only accept equally spaced scale factors."""
     y_vals = [0.5, 1.0, 1.5]
-    with raises(ValueError, match=r"The scale factors must be equally spaced."):
+    with raises(
+        ValueError, match=r"The scale factors must be equally spaced."
+    ):
         _ = FakeNodesFactory(X_VALS).extrapolate(X_VALS, y_vals)
 
 

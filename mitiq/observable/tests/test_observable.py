@@ -182,15 +182,21 @@ def test_observable_measure_in_needs_two_circuits():
 def test_observable_expectation_from_measurements_one_pauli_string():
     obs = Observable(PauliString(spec="Z"))
 
-    measurements = MeasurementResult([[0], [0], [0], [0], [0], [0], [0], [0], [0], [0]])
+    measurements = MeasurementResult(
+        [[0], [0], [0], [0], [0], [0], [0], [0], [0], [0]]
+    )
     expectation = obs._expectation_from_measurements([measurements])
     assert np.isclose(expectation, 1.0)
 
-    measurements = MeasurementResult([[1], [1], [1], [1], [1], [1], [1], [1], [1], [1]])
+    measurements = MeasurementResult(
+        [[1], [1], [1], [1], [1], [1], [1], [1], [1], [1]]
+    )
     expectation = obs._expectation_from_measurements([measurements])
     assert np.isclose(expectation, -1.0)
 
-    measurements = MeasurementResult([[0], [1], [0], [1], [0], [1], [0], [1], [0], [1]])
+    measurements = MeasurementResult(
+        [[0], [1], [0], [1], [0], [1], [0], [1], [0], [1]]
+    )
     expectation = obs._expectation_from_measurements([measurements])
     assert np.isclose(expectation, 0.0)
 
@@ -198,13 +204,17 @@ def test_observable_expectation_from_measurements_one_pauli_string():
 def test_observable_expectation_from_measurements_two_pauli_strings():
     obs = Observable(PauliString(spec="Z", coeff=2.5), PauliString(spec="X"))
 
-    bits = MeasurementResult([[0], [0], [0], [0], [0], [0], [0], [0], [0], [0]])
+    bits = MeasurementResult(
+        [[0], [0], [0], [0], [0], [0], [0], [0], [0], [0]]
+    )
     expectation = obs._expectation_from_measurements([bits, bits])
     assert np.isclose(expectation, 3.5)
 
 
 @pytest.mark.parametrize("n", range(1, 3 + 1))
-@pytest.mark.parametrize("executor", (sample_bitstrings, compute_density_matrix))
+@pytest.mark.parametrize(
+    "executor", (sample_bitstrings, compute_density_matrix)
+)
 def test_observable_expectation_one_circuit(n, executor):
     executor = functools.partial(executor, noise_level=(0,))
 
@@ -217,11 +227,15 @@ def test_observable_expectation_one_circuit(n, executor):
 
 
 @pytest.mark.parametrize("n", range(1, 3 + 1))
-@pytest.mark.parametrize("executor", (sample_bitstrings, compute_density_matrix))
+@pytest.mark.parametrize(
+    "executor", (sample_bitstrings, compute_density_matrix)
+)
 def test_observable_expectation_two_circuits(n, executor):
     executor = functools.partial(executor, noise_level=(0,))
 
-    obs = Observable(PauliString(spec="X" * n, coeff=-2.0), PauliString(spec="Z" * n))
+    obs = Observable(
+        PauliString(spec="X" * n, coeff=-2.0), PauliString(spec="Z" * n)
+    )
     qubits = cirq.LineQubit.range(n)
     circuit = cirq.Circuit(cirq.H.on_each(qubits))
 
@@ -229,7 +243,9 @@ def test_observable_expectation_two_circuits(n, executor):
     assert np.isclose(expectation, -2.0, atol=1e-1)
 
 
-@pytest.mark.parametrize("executor", (sample_bitstrings, compute_density_matrix))
+@pytest.mark.parametrize(
+    "executor", (sample_bitstrings, compute_density_matrix)
+)
 def test_observable_expectation_supported_qubits(executor):
     executor = functools.partial(executor, noise_level=(0,))
 
@@ -257,7 +273,9 @@ def test_observable_multuplication_1():
     IZ = PauliString("IZ", -0.4)
     obs1 = Observable(XI, YY, XZ)
     obs2 = Observable(ZX, IZ)
-    correct_obs = Observable(XI * ZX, XI * IZ, YY * ZX, YY * IZ, XZ * ZX, XZ * IZ)
+    correct_obs = Observable(
+        XI * ZX, XI * IZ, YY * ZX, YY * IZ, XZ * ZX, XZ * IZ
+    )
     assert obs1 * obs2 == correct_obs
 
 

@@ -36,7 +36,9 @@ def create_string(str_len: int, loc_list: list[int]) -> str:
             create_string(5, [1, 3])
             >>> "01010"
     """
-    return "".join(map(lambda i: "1" if i in set(loc_list) else "0", range(str_len)))
+    return "".join(
+        map(lambda i: "1" if i in set(loc_list) else "0", range(str_len))
+    )
 
 
 def valid_bitstrings(
@@ -57,7 +59,8 @@ def valid_bitstrings(
     """
     if max_hamming_weight and max_hamming_weight < 1:
         raise ValueError(
-            "max_hamming_weight must be greater than 0. " f"Got {max_hamming_weight}."
+            "max_hamming_weight must be greater than 0. "
+            f"Got {max_hamming_weight}."
         )
 
     bitstrings = {
@@ -68,7 +71,9 @@ def valid_bitstrings(
     return bitstrings
 
 
-def fidelity(sigma: npt.NDArray[np.complex64], rho: npt.NDArray[np.complex64]) -> float:
+def fidelity(
+    sigma: npt.NDArray[np.complex64], rho: npt.NDArray[np.complex64]
+) -> float:
     """
     Calculate the fidelity between two states.
 

@@ -242,7 +242,9 @@ def test_is_measurement():
     # Test circuit:
     # 0: ───H───X───Z───
     qbit = LineQubit(0)
-    circ = Circuit([ops.H.on(qbit), ops.X.on(qbit), ops.Z.on(qbit), ops.measure(qbit)])
+    circ = Circuit(
+        [ops.H.on(qbit), ops.X.on(qbit), ops.Z.on(qbit), ops.measure(qbit)]
+    )
     for i, op in enumerate(circ.all_operations()):
         if i == 3:
             assert _is_measurement(op)
@@ -293,7 +295,9 @@ def test_simplify_gate_exponent_with_gates_that_cannot_be_simplified(gate):
 
 
 def test_simplify_circuit_exponents_controlled_gate():
-    circuit = Circuit(ControlledGate(CNOT, num_controls=1).on(*LineQubit.range(3)))
+    circuit = Circuit(
+        ControlledGate(CNOT, num_controls=1).on(*LineQubit.range(3))
+    )
     copy = circuit.copy()
 
     _simplify_circuit_exponents(circuit)
@@ -374,8 +378,12 @@ def test_max_ent_state_circuit():
     """Tests 1-qubit and 2-qubit maximally entangled states are generated."""
     two_state = np.array([1, 0, 0, 1]) / np.sqrt(2)
     four_state = np.array(3 * [1, 0, 0, 0, 0] + [1]) / 2.0
-    assert np.allclose(_max_ent_state_circuit(2).final_state_vector(), two_state)
-    assert np.allclose(_max_ent_state_circuit(4).final_state_vector(), four_state)
+    assert np.allclose(
+        _max_ent_state_circuit(2).final_state_vector(), two_state
+    )
+    assert np.allclose(
+        _max_ent_state_circuit(4).final_state_vector(), four_state
+    )
 
 
 def test_circuit_to_choi_and_operation_to_choi():
@@ -408,19 +416,27 @@ def test_circuit_to_choi_and_operation_to_choi():
 
 def test_kronecker_product():
     matrices = [np.array([[1, 2], [3, 4]]), np.array([[0, 1], [1, 0]])]
-    expected_result = np.array([[0, 1, 0, 2], [1, 0, 2, 0], [0, 3, 0, 4], [3, 0, 4, 0]])
-    np.testing.assert_array_equal(matrix_kronecker_product(matrices), expected_result)
+    expected_result = np.array(
+        [[0, 1, 0, 2], [1, 0, 2, 0], [0, 3, 0, 4], [3, 0, 4, 0]]
+    )
+    np.testing.assert_array_equal(
+        matrix_kronecker_product(matrices), expected_result
+    )
 
 
 def test_operator_ptm_vector_rep():
     opt = cirq.I._unitary_() / np.sqrt(2)
     expected_result = np.array([1.0, 0.0, 0.0, 0.0])
-    np.testing.assert_array_almost_equal(operator_ptm_vector_rep(opt), expected_result)
+    np.testing.assert_array_almost_equal(
+        operator_ptm_vector_rep(opt), expected_result
+    )
 
 
 def test_operator_ptm_vector_rep_raised_error():
     with pytest.raises(TypeError, match="Input must be a square matrix"):
-        assert np.allclose(operator_ptm_vector_rep(np.array([1.0, 0.0, 0.0, 0.0])))
+        assert np.allclose(
+            operator_ptm_vector_rep(np.array([1.0, 0.0, 0.0, 0.0]))
+        )
 
 
 def test_qem_methods_basic():

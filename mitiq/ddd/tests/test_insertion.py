@@ -18,7 +18,9 @@ from mitiq.ddd.insertion import (
 )
 from mitiq.ddd.rules import xx, xyxy
 
-circuit_cirq_one = cirq.Circuit(cirq.SWAP(q, q + 1) for q in cirq.LineQubit.range(7))
+circuit_cirq_one = cirq.Circuit(
+    cirq.SWAP(q, q + 1) for q in cirq.LineQubit.range(7)
+)
 
 qreg_cirq = cirq.GridQubit.rect(10, 1)
 circuit_cirq_two = cirq.Circuit(

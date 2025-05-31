@@ -149,7 +149,9 @@ def convert_to_mitiq(circuit: QPROGRAM) -> tuple[cirq.Circuit, str]:
     return mitiq_circuit, input_circuit_type
 
 
-def convert_from_mitiq(circuit: cirq.Circuit, conversion_type: str) -> QPROGRAM:
+def convert_from_mitiq(
+    circuit: cirq.Circuit, conversion_type: str
+) -> QPROGRAM:
     """Converts a Mitiq circuit to a type specified by the conversion type.
 
     Args:
@@ -239,7 +241,9 @@ def atomic_converter(
     """
 
     @wraps(cirq_circuit_modifier)
-    def qprogram_modifier(circuit: QPROGRAM, *args: Any, **kwargs: Any) -> QPROGRAM:
+    def qprogram_modifier(
+        circuit: QPROGRAM, *args: Any, **kwargs: Any
+    ) -> QPROGRAM:
         # Convert to Mitiq representation.
         mitiq_circuit, input_circuit_type = convert_to_mitiq(circuit)
 
@@ -270,7 +274,9 @@ def atomic_one_to_many_converter(
     ) -> Collection[QPROGRAM]:
         mitiq_circuit, input_circuit_type = convert_to_mitiq(circuit)
 
-        modified_circuits = cirq_circuit_modifier(mitiq_circuit, *args, **kwargs)
+        modified_circuits = cirq_circuit_modifier(
+            mitiq_circuit, *args, **kwargs
+        )
 
         if kwargs.get("return_mitiq") is True:
             return modified_circuits
@@ -366,7 +372,9 @@ def accept_qprogram_and_validate(
 
                 # Add back original declarations and measurements.
                 out_circuit = Program(
-                    list(new_declarations.values()) + instructions + measurements
+                    list(new_declarations.values())
+                    + instructions
+                    + measurements
                 )
 
                 # Set the number of shots to the input circuit.
@@ -381,7 +389,9 @@ def accept_qprogram_and_validate(
                 )
 
                 out_circuit.remove_final_measurements()
-                out_circuit = _transform_registers(out_circuit, new_qregs=circuit.qregs)
+                out_circuit = _transform_registers(
+                    out_circuit, new_qregs=circuit.qregs
+                )
                 _remove_identity_from_idle(out_circuit, idle_qubits)
                 if circuit.cregs and not out_circuit.cregs:
                     out_circuit.add_register(*circuit.cregs)

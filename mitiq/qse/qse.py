@@ -124,7 +124,9 @@ def qse_decorator(
     code_hamiltonian: Observable,
     observable: Observable,
     pauli_string_to_expectation_cache: dict[PauliString, complex] = {},
-) -> Callable[[Callable[[QPROGRAM], QuantumResult]], Callable[[QPROGRAM], float]]:
+) -> Callable[
+    [Callable[[QPROGRAM], QuantumResult]], Callable[[QPROGRAM], float]
+]:
     """Decorator which adds an error-mitigation layer based on quantum
     subspace expansion (QSE) to an executor function, i.e., a function which
     executes a quantum circuit with an arbitrary backend and returns a

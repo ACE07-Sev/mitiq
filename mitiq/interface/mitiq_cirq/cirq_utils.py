@@ -16,7 +16,9 @@ from mitiq import MeasurementResult
 # Executors.
 def sample_bitstrings(
     circuit: cirq.Circuit,
-    noise_model_function: Callable[..., cirq.NOISE_MODEL_LIKE] = cirq.amplitude_damp,
+    noise_model_function: Callable[
+        ..., cirq.NOISE_MODEL_LIKE
+    ] = cirq.amplitude_damp,
     noise_level: tuple[float] = (0.01,),
     sampler: cirq.Sampler = cirq.DensityMatrixSimulator(),
     shots: int = 8192,
@@ -51,7 +53,9 @@ def sample_bitstrings(
 
 def compute_density_matrix(
     circuit: cirq.Circuit,
-    noise_model_function: Callable[..., cirq.NOISE_MODEL_LIKE] = cirq.amplitude_damp,
+    noise_model_function: Callable[
+        ..., cirq.NOISE_MODEL_LIKE
+    ] = cirq.amplitude_damp,
     noise_level: tuple[float] = (0.01,),
 ) -> npt.NDArray[np.complex64]:
     """Returns the density matrix of the quantum state after the

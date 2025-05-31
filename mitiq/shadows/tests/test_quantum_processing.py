@@ -144,12 +144,16 @@ def test_random_pauli_measurement_no_errors(n_qubits, executor):
     """Test that random_pauli_measurement runs without errors."""
     qubits = cirq.LineQubit.range(n_qubits)
     circuit = simple_test_circuit(qubits)
-    random_pauli_measurement(circuit, n_total_measurements=10, executor=executor)
+    random_pauli_measurement(
+        circuit, n_total_measurements=10, executor=executor
+    )
 
 
 @pytest.mark.parametrize("n_qubits", [1, 2, 5])
 @pytest.mark.parametrize("executor", [cirq_executor, qiskit_executor])
-def test_random_pauli_measurement_output_dimensions(n_qubits: int, executor: Callable):
+def test_random_pauli_measurement_output_dimensions(
+    n_qubits: int, executor: Callable
+):
     """Test that random_pauli_measurement returns the correct output
     dimensions."""
     qubits = cirq.LineQubit.range(n_qubits)
@@ -172,7 +176,9 @@ def test_random_pauli_measurement_output_dimensions(n_qubits: int, executor: Cal
 
 @pytest.mark.parametrize("n_qubits", [1, 2, 5])
 @pytest.mark.parametrize("executor", [cirq_executor, qiskit_executor])
-def test_random_pauli_measurement_output_types(n_qubits: int, executor: Callable):
+def test_random_pauli_measurement_output_types(
+    n_qubits: int, executor: Callable
+):
     """Test that random_pauli_measurement returns the correct output types."""
     qubits = cirq.LineQubit.range(n_qubits)
     circuit = simple_test_circuit(qubits)

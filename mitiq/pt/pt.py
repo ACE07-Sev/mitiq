@@ -118,7 +118,9 @@ def add_noise_to_two_qubit_gates(
 def _add_noise_to_two_qubit_gates(
     circuit: QPROGRAM, noise_name: str, **kwargs: float
 ) -> QPROGRAM:
-    raise NotImplementedError(f"Cannot add noise to Circuit of type {type(circuit)}.")
+    raise NotImplementedError(
+        f"Cannot add noise to Circuit of type {type(circuit)}."
+    )
 
 
 @_add_noise_to_two_qubit_gates.register
@@ -140,7 +142,9 @@ def _cirq(circuit: _Circuit, noise_name: str, **kwargs: float) -> _Circuit:
 
 
 @_add_noise_to_two_qubit_gates.register
-def _pennylane(circuit: QuantumTape, noise_name: str, **kwargs: float) -> QuantumTape:
+def _pennylane(
+    circuit: QuantumTape, noise_name: str, **kwargs: float
+) -> QuantumTape:
     new_ops = []
     noise_function = PENNYLANE_NOISE_OP[noise_name]
 

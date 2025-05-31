@@ -44,7 +44,9 @@ def _get_num_layers_without_measurements(input_circuit: Circuit) -> int:
     return len(circuit)
 
 
-def _get_chunks(input_circuit: Circuit, num_chunks: int | None = None) -> list[Circuit]:
+def _get_chunks(
+    input_circuit: Circuit, num_chunks: int | None = None
+) -> list[Circuit]:
     """Splits a circuit into approximately equal chunks.
 
     Adapted from:
@@ -75,7 +77,9 @@ def _get_chunks(input_circuit: Circuit, num_chunks: int | None = None) -> list[C
         num_chunks = num_layers
 
     if num_chunks < 1:
-        raise ValueError("Number of chunks should be greater than or equal to 1.")
+        raise ValueError(
+            "Number of chunks should be greater than or equal to 1."
+        )
 
     if num_chunks > num_layers:
         raise ValueError(
@@ -131,7 +135,8 @@ def get_scale_factor_vectors(
     # Get the scale factor vectors.
     # The layers are scaled as 2n+1 due to unitary folding.
     return [
-        tuple(2 * num_folds + 1 for num_folds in pattern) for pattern in pattern_full
+        tuple(2 * num_folds + 1 for num_folds in pattern)
+        for pattern in pattern_full
     ]
 
 
@@ -140,7 +145,9 @@ def _multivariate_layer_scaling(
     degree: int,
     fold_multiplier: int,
     num_chunks: int | None = None,
-    folding_method: Callable[[QPROGRAM, float], QPROGRAM] = fold_gates_at_random,
+    folding_method: Callable[
+        [QPROGRAM, float], QPROGRAM
+    ] = fold_gates_at_random,
 ) -> list[Circuit]:
     r"""
     Defines the noise scaling function required for Layerwise Richardson
@@ -179,7 +186,9 @@ def _multivariate_layer_scaling(
 
     """
     if degree < 1:
-        raise ValueError("Multinomial degree must be greater than or equal to 1.")
+        raise ValueError(
+            "Multinomial degree must be greater than or equal to 1."
+        )
     if fold_multiplier < 1:
         raise ValueError("Fold multiplier must be greater than or equal to 1.")
     circuit_copy = deepcopy(input_circuit)

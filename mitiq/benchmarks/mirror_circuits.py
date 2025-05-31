@@ -96,7 +96,9 @@ def random_cliffords(
     ]
     qubits = nx.Graph()
     qubits.add_nodes_from(nx.isolates(connectivity_graph))
-    gates.extend(list(random_single_cliffords(qubits, random_state).all_operations()))
+    gates.extend(
+        list(random_single_cliffords(qubits, random_state).all_operations())
+    )
     return cirq.Circuit(gates)
 
 
@@ -180,10 +182,14 @@ def generate_mirror_circuit(
         circ = random_cliffords(selected_edges, random_state, two_qubit_gate)
         forward_circuit.append(circ)
 
-        quasi_inverse_gates.append(random_paulis(connectivity_graph, random_state))
+        quasi_inverse_gates.append(
+            random_paulis(connectivity_graph, random_state)
+        )
         quasi_inverse_gates.append(cirq.inverse(circ))
 
-    quasi_inversion_circuit.append(gate for gate in reversed(quasi_inverse_gates))
+    quasi_inversion_circuit.append(
+        gate for gate in reversed(quasi_inverse_gates)
+    )
 
     rand_paulis = cirq.Circuit(random_paulis(connectivity_graph, random_state))
     circuit = (
@@ -195,7 +201,9 @@ def generate_mirror_circuit(
     )
 
     # Compute the bitstring this circuit should sample.
-    res = cirq.Simulator().run(circuit + cirq.measure(*sorted(circuit.all_qubits())))
+    res = cirq.Simulator().run(
+        circuit + cirq.measure(*sorted(circuit.all_qubits()))
+    )
     bitstring = list(res.measurements.values())[0][0].tolist()
 
     return_type = "cirq" if not return_type else return_type

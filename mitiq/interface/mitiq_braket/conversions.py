@@ -188,9 +188,13 @@ def _translate_one_qubit_braket_instruction_to_cirq_operation(
     elif isinstance(gate, braket_gates.PhaseShift):
         return [cirq_ops.Z.on(*qubits) ** (gate.angle / np.pi)]
     elif isinstance(gate, braket_gates.GPi):
-        return [cirq_ionq_ops.GPIGate(phi=gate.angle / (2 * np.pi)).on(*qubits)]
+        return [
+            cirq_ionq_ops.GPIGate(phi=gate.angle / (2 * np.pi)).on(*qubits)
+        ]
     elif isinstance(gate, braket_gates.GPi2):
-        return [cirq_ionq_ops.GPI2Gate(phi=gate.angle / (2 * np.pi)).on(*qubits)]
+        return [
+            cirq_ionq_ops.GPI2Gate(phi=gate.angle / (2 * np.pi)).on(*qubits)
+        ]
 
     else:
         _raise_braket_to_cirq_error(instr)
@@ -259,21 +263,21 @@ def _translate_two_qubit_braket_instruction_to_cirq_operation(
         ]
     elif isinstance(gate, braket_gates.XX):
         return [
-            cirq_ops.XXPowGate(exponent=gate.angle / np.pi, global_shift=-0.5).on(
-                *qubits
-            )
+            cirq_ops.XXPowGate(
+                exponent=gate.angle / np.pi, global_shift=-0.5
+            ).on(*qubits)
         ]
     elif isinstance(gate, braket_gates.YY):
         return [
-            cirq_ops.YYPowGate(exponent=gate.angle / np.pi, global_shift=-0.5).on(
-                *qubits
-            )
+            cirq_ops.YYPowGate(
+                exponent=gate.angle / np.pi, global_shift=-0.5
+            ).on(*qubits)
         ]
     elif isinstance(gate, braket_gates.ZZ):
         return [
-            cirq_ops.ZZPowGate(exponent=gate.angle / np.pi, global_shift=-0.5).on(
-                *qubits
-            )
+            cirq_ops.ZZPowGate(
+                exponent=gate.angle / np.pi, global_shift=-0.5
+            ).on(*qubits)
         ]
     elif isinstance(gate, braket_gates.XY):
         return [cirq_ops.ISwapPowGate(exponent=gate.angle / np.pi).on(*qubits)]
@@ -317,7 +321,9 @@ def _translate_one_qubit_cirq_operation_to_braket_instruction(
         target = cast(LineQubit, op.qubits[0]).x
 
     if target is None:
-        raise ValueError("Arg `target` must be specified when `op` is a matrix.")
+        raise ValueError(
+            "Arg `target` must be specified when `op` is a matrix."
+        )
 
     # Check common single-qubit gates.
     if isinstance(op, cirq_ops.Operation):

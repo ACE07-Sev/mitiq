@@ -28,9 +28,13 @@ def to_quil(circuit: Circuit) -> QuilType:
     # if we are using LineQubits, keep the qubit labeling the same
     if isinstance(max_qubit, LineQubit):
         qubit_range = max_qubit.x + 1
-        return str(QuilOutput(circuit.all_operations(), LineQubit.range(qubit_range)))
+        return str(
+            QuilOutput(circuit.all_operations(), LineQubit.range(qubit_range))
+        )
     # otherwise, use the default ordering (starting from zero)
-    return str(QuilOutput(circuit.all_operations(), sorted(circuit.all_qubits())))
+    return str(
+        QuilOutput(circuit.all_operations(), sorted(circuit.all_qubits()))
+    )
 
 
 def to_pyquil(circuit: Circuit) -> Program:

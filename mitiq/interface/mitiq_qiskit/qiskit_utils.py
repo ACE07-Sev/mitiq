@@ -38,7 +38,9 @@ def initialized_depolarizing_noise(noise_level: float) -> NoiseModel:
     noise_model.add_all_qubit_quantum_error(
         depolarizing_error(noise_level, 1), ["u1", "u2", "u3"]
     )
-    noise_model.add_all_qubit_quantum_error(depolarizing_error(noise_level, 2), ["cx"])
+    noise_model.add_all_qubit_quantum_error(
+        depolarizing_error(noise_level, 2), ["cx"]
+    )
     return noise_model
 
 
@@ -172,7 +174,9 @@ def execute_with_shots_and_noise(
     expectation = 0
 
     for bitstring, count in counts.items():
-        expectation += eigvals[int(bitstring[0 : circ.num_qubits], 2)] * count / shots
+        expectation += (
+            eigvals[int(bitstring[0 : circ.num_qubits], 2)] * count / shots
+        )
     return expectation
 
 
@@ -213,7 +217,9 @@ def sample_bitstrings(
     if backend:
         job = backend.run(circuit, shots=shots)
     elif noise_model:
-        backend = AerSimulator(method="density_matrix", noise_model=noise_model)
+        backend = AerSimulator(
+            method="density_matrix", noise_model=noise_model
+        )
         exec_circuit = qiskit.transpile(
             circuit,
             backend=backend,
@@ -224,7 +230,9 @@ def sample_bitstrings(
         )
         job = backend.run(exec_circuit, shots=shots)
     else:
-        raise ValueError("Either a backend or a noise model must be given as input.")
+        raise ValueError(
+            "Either a backend or a noise model must be given as input."
+        )
 
     counts = job.result().get_counts(circuit)
     bitstrings = []

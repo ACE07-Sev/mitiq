@@ -16,9 +16,7 @@ from mitiq.zne.scaling import fold_gates_at_random
 def construct_circuits(
     circuit: QPROGRAM,
     scale_factors: list[float],
-    scale_method: Callable[
-        [QPROGRAM, float], QPROGRAM
-    ] = fold_gates_at_random,  # type:ignore [has-type]
+    scale_method: Callable[[QPROGRAM, float], QPROGRAM] = fold_gates_at_random,  # type:ignore [has-type]
 ) -> list[QPROGRAM]:
     """Given a circuit, scale_factors and a scale_method, outputs a list
        of circuits that will be used in ZNE.
@@ -118,9 +116,7 @@ def mitigate_executor(
     observable: Observable | None = None,
     *,
     factory: Factory | None = None,
-    scale_noise: Callable[
-        [QPROGRAM, float], QPROGRAM
-    ] = fold_gates_at_random,  # type:ignore [has-type]
+    scale_noise: Callable[[QPROGRAM, float], QPROGRAM] = fold_gates_at_random,  # type:ignore [has-type]
     num_to_average: int = 1,
 ) -> Callable[[QPROGRAM], float]:
     """Returns a modified version of the input 'executor' which is
@@ -181,7 +177,9 @@ def zne_decorator(
     factory: Factory | None = None,
     scale_noise: Callable[[QPROGRAM, float], QPROGRAM] = fold_gates_at_random,  # type: ignore [has-type]
     num_to_average: int = 1,
-) -> Callable[[Callable[[QPROGRAM], QuantumResult]], Callable[[QPROGRAM], float]]:
+) -> Callable[
+    [Callable[[QPROGRAM], QuantumResult]], Callable[[QPROGRAM], float]
+]:
     """Decorator which adds an error-mitigation layer based on zero-noise
     extrapolation (ZNE) to an executor function, i.e., a function which
     executes a quantum circuit with an arbitrary backend and returns a

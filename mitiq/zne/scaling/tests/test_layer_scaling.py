@@ -113,4 +113,6 @@ def test_get_layer_folding(mock_layer_folding):
     folding_func = get_layer_folding(layer_index)
     folding_func(circuit, scale_factor)
 
-    mock_layer_folding.assert_called_once_with(circuit, layers_to_fold=[0, 1, 0])
+    mock_layer_folding.assert_called_once_with(
+        circuit, layers_to_fold=[0, 1, 0]
+    )

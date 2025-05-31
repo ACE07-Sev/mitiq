@@ -93,7 +93,9 @@ def _squash_moments(circuit: Circuit) -> Circuit:
     """
     output_circuit = circuit.copy()
     output_circuit = output_circuit[0:0]  # Remove moments
-    output_circuit.append(circuit.all_operations(), strategy=InsertStrategy.EARLIEST)
+    output_circuit.append(
+        circuit.all_operations(), strategy=InsertStrategy.EARLIEST
+    )
     return output_circuit
 
 
@@ -114,7 +116,9 @@ def _fold_all(
     """
     num_folds = round(num_folds)
     if num_folds < 0:
-        raise ValueError(f"Arg `num_folds` must be positive but was {num_folds}.")
+        raise ValueError(
+            f"Arg `num_folds` must be positive but was {num_folds}."
+        )
 
     # Parse the exclude argument.
     all_gates = set(cast(ops.Gate, op.gate) for op in circuit.all_operations())
@@ -145,7 +149,9 @@ def _fold_all(
         elif isinstance(item, ops.Gate):
             to_exclude.add(item)
         else:
-            raise ValueError(f"Do not know how to exclude {item} of type {type(item)}.")
+            raise ValueError(
+                f"Do not know how to exclude {item} of type {type(item)}."
+            )
 
     folded = deepcopy(circuit)[:0]
     for i, moment in enumerate(circuit):
@@ -170,7 +176,9 @@ def _default_weight(op: ops.Operation) -> float:
     return 0.99 ** len(op.qubits)
 
 
-def _get_weight_for_gate(weights: dict[str, float], op: ops.Operation) -> float:
+def _get_weight_for_gate(
+    weights: dict[str, float], op: ops.Operation
+) -> float:
     """Returns the weight for a given gate, using a default value of 1.0 if
     weights is None or if the weight is not specified.
 
@@ -260,7 +268,9 @@ def fold_all(
 
 # Global folding function
 @accept_qprogram_and_validate
-def fold_global(circuit: Circuit, scale_factor: float, **kwargs: Any) -> Circuit:
+def fold_global(
+    circuit: Circuit, scale_factor: float, **kwargs: Any
+) -> Circuit:
     """Returns a new circuit obtained by folding the global unitary of the
     input circuit.
 
@@ -435,7 +445,9 @@ def _create_fold_mask(
     # Fold gates until the input scale_factor is better approximated
     input_circuit_weight = sum(weight_mask)
     output_circuit_weight = odd_integer_scale_factor * input_circuit_weight
-    approx_error = np.abs(output_circuit_weight - scale_factor * input_circuit_weight)
+    approx_error = np.abs(
+        output_circuit_weight - scale_factor * input_circuit_weight
+    )
     for j in folding_order:
         # Skip gates with 0 weight
         if np.isclose(weight_mask[j], 0.0):

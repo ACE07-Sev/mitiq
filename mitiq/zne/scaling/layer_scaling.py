@@ -19,7 +19,9 @@ from mitiq.zne.scaling.folding import _check_foldable
 
 
 @accept_qprogram_and_validate
-def layer_folding(circuit: cirq.Circuit, layers_to_fold: list[int]) -> cirq.Circuit:
+def layer_folding(
+    circuit: cirq.Circuit, layers_to_fold: list[int]
+) -> cirq.Circuit:
     """Applies a variable amount of folding to select layers of a circuit.
 
     Note that this method only works for the univariate extrapolation methods.
@@ -86,7 +88,9 @@ def get_layer_folding(
     """
 
     @accept_qprogram_and_validate
-    def fold_ith_layer(circuit: cirq.Circuit, scale_factor: int) -> cirq.Circuit:
+    def fold_ith_layer(
+        circuit: cirq.Circuit, scale_factor: int
+    ) -> cirq.Circuit:
         """Returns a circuit folded according to integer scale factors.
 
         Args:

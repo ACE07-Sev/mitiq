@@ -61,9 +61,13 @@ def generate_rb_circuits(
         clifford_group_size = 24
         for _ in range(trials):
             gate_ids = list(rng.choice(clifford_group_size, num_cliffords))
-            gate_sequence = [gate for gate_id in gate_ids for gate in c1[gate_id]]
+            gate_sequence = [
+                gate for gate_id in gate_ids for gate in c1[gate_id]
+            ]
             gate_sequence.append(_reduce_gate_seq(gate_sequence) ** -1)
-            circuits.append(cirq.Circuit(gate(qubits[0]) for gate in gate_sequence))
+            circuits.append(
+                cirq.Circuit(gate(qubits[0]) for gate in gate_sequence)
+            )
 
     else:
         clifford_group_size = 11520
@@ -80,7 +84,9 @@ def generate_rb_circuits(
                 circuit.append(
                     _two_qubit_clifford(qubits[0], qubits[1], idx, cliffords)
                 )
-            inv_idx = _find_inv_matrix(cirq.protocols.unitary(circuit), cfd_matrices)
+            inv_idx = _find_inv_matrix(
+                cirq.protocols.unitary(circuit), cfd_matrices
+            )
             circuit.append(
                 _two_qubit_clifford(qubits[0], qubits[1], inv_idx, cliffords)
             )

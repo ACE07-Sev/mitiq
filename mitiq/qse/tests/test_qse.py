@@ -36,7 +36,9 @@ def batched_execute_with_depolarized_noise(circuits) -> list[np.ndarray]:
 
 
 def execute_no_noise(circuit: QPROGRAM) -> np.ndarray:
-    return compute_density_matrix(convert_to_mitiq(circuit)[0], noise_level=(0,))
+    return compute_density_matrix(
+        convert_to_mitiq(circuit)[0], noise_level=(0,)
+    )
 
 
 @pytest.fixture
@@ -69,7 +71,9 @@ def test_execute_with_qse(prepare_setup):
     qc, check_operators, code_hamiltonian = prepare_setup
 
     observable = get_observable_in_code_space(PauliString("ZZZZZ"))
-    unmitigated_value = observable.expectation(qc, execute_with_depolarized_noise)
+    unmitigated_value = observable.expectation(
+        qc, execute_with_depolarized_noise
+    )
     mitigated_value = execute_with_qse(
         qc,
         execute_with_depolarized_noise,
@@ -80,7 +84,9 @@ def test_execute_with_qse(prepare_setup):
     assert abs(mitigated_value.real - 1) < abs(unmitigated_value.real - 1)
 
     observable = get_observable_in_code_space(PauliString("XXXXX"))
-    unmitigated_value = observable.expectation(qc, execute_with_depolarized_noise)
+    unmitigated_value = observable.expectation(
+        qc, execute_with_depolarized_noise
+    )
     mitigated_value = execute_with_qse(
         qc,
         execute_with_depolarized_noise,
@@ -154,7 +160,9 @@ def test_compute_overlap_matrix(prepare_setup):
     S = _compute_overlap_matrix(qc, execute_no_noise, check_operators, {})
     assert np.allclose(S, np.ones(16))
 
-    S = _compute_overlap_matrix(qc, execute_with_depolarized_noise, check_operators, {})
+    S = _compute_overlap_matrix(
+        qc, execute_with_depolarized_noise, check_operators, {}
+    )
     # Diagonal terms are all 1 because
     # ⟨Ψ|C_i C_i|Ψ⟩ = ⟨Ψ|Ψ⟩ = 1
     assert np.allclose(np.diag(np.diag(S)), np.eye(16))
@@ -233,7 +241,9 @@ def get_5_1_3_code_check_operators_and_code_hamiltonian() -> tuple:
         "XIXZZ",
         "IIIII",
     ]
-    Ms_as_pauliStrings = [PauliString(M, coeff=1, support=range(5)) for M in Ms]
+    Ms_as_pauliStrings = [
+        PauliString(M, coeff=1, support=range(5)) for M in Ms
+    ]
     negative_Ms_as_pauliStrings = [
         PauliString(M, coeff=-1, support=range(5)) for M in Ms
     ]
@@ -254,7 +264,9 @@ def prepare_logical_0_state_for_5_1_3_code():
     def gram_schmidt(
         orthogonal_vecs: list[np.ndarray],
     ) -> np.ndarray:
-        orthonormalVecs = [vec / np.sqrt(np.vdot(vec, vec)) for vec in orthogonal_vecs]
+        orthonormalVecs = [
+            vec / np.sqrt(np.vdot(vec, vec)) for vec in orthogonal_vecs
+        ]
         dim = np.shape(orthogonal_vecs[0])[0]
         for i in range(dim - len(orthogonal_vecs)):
             new_vec = np.zeros(dim)
@@ -266,7 +278,9 @@ def prepare_logical_0_state_for_5_1_3_code():
                 ]
             )
             new_vec -= projs
-            orthonormalVecs.append(new_vec / np.sqrt(np.vdot(new_vec, new_vec)))
+            orthonormalVecs.append(
+                new_vec / np.sqrt(np.vdot(new_vec, new_vec))
+            )
         return np.reshape(orthonormalVecs, (32, 32)).T
 
     logical_0_state = np.zeros(32)

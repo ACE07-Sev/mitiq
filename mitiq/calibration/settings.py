@@ -82,7 +82,9 @@ class BenchmarkProblem:
     def largest_probability(self) -> float:
         return max(self.ideal_distribution.values())
 
-    def converted_circuit(self, circuit_type: SUPPORTED_PROGRAM_TYPES) -> QPROGRAM:
+    def converted_circuit(
+        self, circuit_type: SUPPORTED_PROGRAM_TYPES
+    ) -> QPROGRAM:
         """Adds measurements to all qubits and convert
         to the input frontend type.
 
@@ -197,7 +199,9 @@ class Strategy:
 
             return partial_pec
         elif self.technique is MitigationTechnique.ZNE:
-            return partial(self.technique.mitigation_function, **self.technique_params)
+            return partial(
+                self.technique.mitigation_function, **self.technique_params
+            )
         else:
             raise ValueError(
                 """Specified technique is not supported by calibration.
@@ -215,15 +219,21 @@ class Strategy:
             inference_func = self.technique_params["factory"]
             summary["factory"] = inference_func.__class__.__name__
             summary["scale_factors"] = inference_func._scale_factors
-            summary["scale_method"] = self.technique_params["scale_noise"].__name__
+            summary["scale_method"] = self.technique_params[
+                "scale_noise"
+            ].__name__
 
         elif self.technique is MitigationTechnique.PEC:
             summary["representation_function"] = self.technique_params[
                 "representation_function"
             ].__name__
             summary["noise_level"] = self.technique_params["noise_level"]
-            summary["noise_bias"] = self.technique_params.setdefault("noise_bias", 0)
-            summary["is_qubit_dependent"] = self.technique_params["is_qubit_dependent"]
+            summary["noise_bias"] = self.technique_params.setdefault(
+                "noise_bias", 0
+            )
+            summary["is_qubit_dependent"] = self.technique_params[
+                "is_qubit_dependent"
+            ]
             summary["num_samples"] = self.technique_params["num_samples"]
         return summary
 
@@ -234,7 +244,9 @@ class Strategy:
             summary["factory"] = summary["factory"][:-7]
         elif self.technique is MitigationTechnique.PEC:
             summary["noise_bias"] = summary.get("noise_bias", "N/A")
-            summary["representation_function"] = summary["representation_function"][25:]
+            summary["representation_function"] = summary[
+                "representation_function"
+            ][25:]
         return summary
 
     def __repr__(self) -> str:
@@ -331,7 +343,9 @@ class Settings:
             elif circuit_type == "rotated_rb":
                 theta = benchmark["theta"]
                 if num_qubits == 1:
-                    circuit = generate_rotated_rb_circuits(num_qubits, depth)[0]
+                    circuit = generate_rotated_rb_circuits(num_qubits, depth)[
+                        0
+                    ]
                     p = (2 / 3) * np.sin(theta / 2) ** 2
                     ideal = {"0": p, "1": 1 - p}
                 else:
@@ -386,7 +400,9 @@ class Settings:
             params_copy = params.copy()
             del params_copy["technique"]
 
-            strategy = Strategy(id=i, technique=technique, technique_params=params_copy)
+            strategy = Strategy(
+                id=i, technique=technique, technique_params=params_copy
+            )
             funcs.append(strategy)
             self.strategy_dict[strategy.id] = strategy
         return funcs

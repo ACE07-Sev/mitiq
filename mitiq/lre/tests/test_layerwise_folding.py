@@ -54,7 +54,9 @@ def test_multivariate_layerwise_scaling_types(circuit_type):
         circuit, degree, fold_multiplier, num_chunks
     )
 
-    assert all(isinstance(circuit, circuit_type.value) for circuit in scaled_circuits)
+    assert all(
+        isinstance(circuit, circuit_type.value) for circuit in scaled_circuits
+    )
 
 
 def test_multivariate_layerwise_scaling_cirq():
@@ -76,7 +78,8 @@ def test_multivariate_layerwise_scaling_cirq():
         scale_layer1, scale_layer2, scale_layer3 = scale_factors
         expected_circuit = Circuit(
             [ops.H.on_each(*qreg1)] * scale_layer1,
-            [ops.CNOT.on(qreg1[0], qreg1[1]), ops.X.on(qreg1[2])] * scale_layer2,
+            [ops.CNOT.on(qreg1[0], qreg1[1]), ops.X.on(qreg1[2])]
+            * scale_layer2,
             [ops.TOFFOLI.on(*qreg1)] * scale_layer3,
         )
         assert expected_circuit == circuit
@@ -276,7 +279,8 @@ def test_get_scale_factor_vectors_with_chunking(
         (
             test_circuit1,
             5,
-            "Number of chunks 5 cannot be greater than the number of layers" " 3.",
+            "Number of chunks 5 cannot be greater than the number of layers"
+            " 3.",
         ),
         (
             test_circuit1,
@@ -339,4 +343,6 @@ def test_invalid_degree_fold_multiplier(
     """Ensures that the args for the main noise scaling function raise
     an error for an invalid value."""
     with pytest.raises(ValueError, match=error_msg):
-        multivariate_layer_scaling(test_input, test_degree, test_fold_multiplier)
+        multivariate_layer_scaling(
+            test_input, test_degree, test_fold_multiplier
+        )

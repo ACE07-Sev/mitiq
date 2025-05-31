@@ -84,7 +84,9 @@ def noiseless_serial_executor(circuit: QPROGRAM) -> float:
     return serial_executor(circuit, noise=0.0)
 
 
-def fake_executor(circuit: cirq.Circuit, random_state: np.random.RandomState) -> float:
+def fake_executor(
+    circuit: cirq.Circuit, random_state: np.random.RandomState
+) -> float:
     """A fake executor which just samples from a normal distribution."""
     return random_state.randn()
 
@@ -245,7 +247,9 @@ def test_qiskit_noiseless_decomposition_multiqubit(nqubits: int) -> None:
 @pytest.mark.parametrize("circuit", [oneq_circ, twoq_circ])
 @pytest.mark.parametrize("executor", [serial_executor, batched_executor])
 @pytest.mark.parametrize("circuit_type", SUPPORTED_PROGRAM_TYPES.keys())
-def test_execute_with_pec_mitigates_noise(circuit, executor, circuit_type) -> None:
+def test_execute_with_pec_mitigates_noise(
+    circuit, executor, circuit_type
+) -> None:
     """Tests that execute_with_pec mitigates the error of a noisy
     expectation value.
     """
@@ -616,7 +620,9 @@ def test_doc_is_preserved() -> None:
         """Doc of the original executor."""
         return 0
 
-    mit_executor = mitigate_executor(first_executor, representations=representations)
+    mit_executor = mitigate_executor(
+        first_executor, representations=representations
+    )
     assert mit_executor.__doc__ == first_executor.__doc__
 
     @pec_decorator(representations=representations)

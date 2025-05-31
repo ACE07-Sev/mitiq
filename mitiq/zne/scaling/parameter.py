@@ -68,7 +68,9 @@ def _generate_parameter_calibration_circuit(
         raise CircuitMismatchException(
             "Number of qubits does not match domain size of gate."
         )
-    return Circuit(gate(exponent=2 * np.pi / depth).on(*qubits) for _ in range(depth))
+    return Circuit(
+        gate(exponent=2 * np.pi / depth).on(*qubits) for _ in range(depth)
+    )
 
 
 def compute_parameter_variance(
@@ -96,7 +98,9 @@ def compute_parameter_variance(
     """
 
     base_gate = _get_base_gate(gate)
-    circuit = _generate_parameter_calibration_circuit([qubit], depth, base_gate)
+    circuit = _generate_parameter_calibration_circuit(
+        [qubit], depth, base_gate
+    )
     expectation = executor(circuit)
     error_prob = (1 - np.power(2 * expectation - 1, 1 / depth)) / 2
     variance = -0.5 * np.log(1 - 2 * error_prob)
@@ -140,6 +144,8 @@ def scale_parameters(
                 param = cast(float, gate.exponent) * np.pi
                 error = rng.normal(loc=0.0, scale=np.sqrt(noise))
                 new_param = param + error
-                curr_moment.append(base_gate(exponent=new_param / np.pi)(*qubits))
+                curr_moment.append(
+                    base_gate(exponent=new_param / np.pi)(*qubits)
+                )
         final_moments.append(Moment(curr_moment))
     return Circuit(final_moments)

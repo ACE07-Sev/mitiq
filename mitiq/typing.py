@@ -67,7 +67,14 @@ except ImportError:  # pragma: no cover
 
 
 # Supported + installed quantum programs.
-QPROGRAM = _Circuit | _Program | _QuantumCircuit | _BKCircuit | _QuantumTape | _QiboCircuit
+QPROGRAM = (
+    _Circuit
+    | _Program
+    | _QuantumCircuit
+    | _BKCircuit
+    | _QuantumTape
+    | _QiboCircuit
+)
 
 
 # Supported quantum programs.

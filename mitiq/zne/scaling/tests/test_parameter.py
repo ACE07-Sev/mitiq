@@ -134,7 +134,9 @@ def test_compute_parameter_variance():
     # Perfect executor should have sigma = 0
     qubit = LineQubit(0)
     gate = ops.H.on(qubit).gate
-    sigma = compute_parameter_variance(noiseless_executor_mock, gate, qubit, depth=10)
+    sigma = compute_parameter_variance(
+        noiseless_executor_mock, gate, qubit, depth=10
+    )
     assert sigma == 0
 
     # Perfectly imperfect executor should have sigma = inf
@@ -145,7 +147,9 @@ def test_compute_parameter_variance():
     gate = ops.H.on(qubit).gate
     with pytest.warns(RuntimeWarning):
         # Runtime warning for divide by zero
-        sigma = compute_parameter_variance(noisy_executor_mock, gate, qubit, depth=10)
+        sigma = compute_parameter_variance(
+            noisy_executor_mock, gate, qubit, depth=10
+        )
     assert sigma == np.inf
 
 

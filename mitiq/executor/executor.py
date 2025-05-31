@@ -25,7 +25,7 @@ DensityMatrixLike = [
     Iterable[np.ndarray],  # type: ignore
     list[np.ndarray],  # type: ignore
     Sequence[np.ndarray],  # type: ignore
-    tuple[np.ndarray], # type: ignore
+    tuple[np.ndarray],  # type: ignore
     npt.NDArray[np.complex64],
     list[npt.NDArray[np.complex64]],
     list[np.ndarray],  # type: ignore
@@ -160,10 +160,14 @@ class Executor:
                 if observable.coeff.imag > 0.0001:
                     warn_non_hermitian = True
             elif isinstance(observable, Observable):
-                if any(pauli.coeff.imag > 0.0001 for pauli in observable._paulis):
+                if any(
+                    pauli.coeff.imag > 0.0001 for pauli in observable._paulis
+                ):
                     warn_non_hermitian = True
         if warn_non_hermitian:
-            warnings.warn("Expected observable to be hermitian. Continue with caution.")
+            warnings.warn(
+                "Expected observable to be hermitian. Continue with caution."
+            )
 
         # Check executor and observable compatability with type hinting
         # If FloatLike is specified as a return and observable is used
@@ -185,7 +189,8 @@ class Executor:
             # Type hinted as DensityMatrixLike but no observable is set
             if self._executor_return_type in DensityMatrixLike:
                 raise ValueError(
-                    "When using a density matrix result, an observable " "is required."
+                    "When using a density matrix result, an observable "
+                    "is required."
                 )
             # Type hinted as MeasurementResulteLike but no observable is set
             elif self._executor_return_type in MeasurementResultLike:
@@ -214,7 +219,9 @@ class Executor:
 
         # Parse the results.
         if self._executor_return_type in FloatLike:
-            results = np.real_if_close(cast(Sequence[float], all_results)).tolist()
+            results = np.real_if_close(
+                cast(Sequence[float], all_results)
+            ).tolist()
 
         elif self._executor_return_type in DensityMatrixLike:
             observable = cast(Observable, observable)
@@ -304,7 +311,9 @@ class Executor:
 
         return self._post_run(results)
 
-    def _post_run(self, results: Sequence[QuantumResult]) -> Sequence[QuantumResult]:
+    def _post_run(
+        self, results: Sequence[QuantumResult]
+    ) -> Sequence[QuantumResult]:
         """Post-processes the measurement results.
         For example, this method can be overridden by a
         readout error mitigation function.

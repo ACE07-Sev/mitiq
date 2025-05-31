@@ -88,7 +88,9 @@ def learn_biased_noise_parameters(
         random_state=training_random_state,
     )
 
-    ideal_values = np.array(ideal_executor.evaluate(training_circuits, observable))
+    ideal_values = np.array(
+        ideal_executor.evaluate(training_circuits, observable)
+    )
 
     pec_data, method, minimize_kwargs = _parse_learning_kwargs(
         learning_kwargs=learning_kwargs
@@ -180,7 +182,9 @@ def learn_depolarizing_noise_parameter(
         random_state=training_random_state,
     )
 
-    ideal_values = np.array(ideal_executor.evaluate(training_circuits, observable))
+    ideal_values = np.array(
+        ideal_executor.evaluate(training_circuits, observable)
+    )
 
     pec_data, method, minimize_kwargs = _parse_learning_kwargs(
         learning_kwargs=learning_kwargs

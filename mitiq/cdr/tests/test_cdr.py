@@ -33,7 +33,9 @@ def batched_execute(circuits) -> list[np.ndarray]:
 
 
 def simulate(circuit: QPROGRAM) -> np.ndarray:
-    return compute_density_matrix(convert_to_mitiq(circuit)[0], noise_level=(0,))
+    return compute_density_matrix(
+        convert_to_mitiq(circuit)[0], noise_level=(0,)
+    )
 
 
 @pytest.mark.parametrize("circuit_type", SUPPORTED_PROGRAM_TYPES.keys())
@@ -96,7 +98,9 @@ def test_execute_with_cdr(circuit_type, fit_function, kwargs, random_state):
     ],
 )
 @pytest.mark.parametrize("random_state", [1, 2, 3, 4, 5])
-def test_decorator_execute_with_cdr(circuit_type, fit_function, kwargs, random_state):
+def test_decorator_execute_with_cdr(
+    circuit_type, fit_function, kwargs, random_state
+):
     obs = Observable(PauliString("XZ"), PauliString("YY"))
 
     @cdr_decorator(
@@ -157,7 +161,9 @@ def test_decorator_execute_with_cdr(circuit_type, fit_function, kwargs, random_s
     ],
 )
 @pytest.mark.parametrize("random_state", [1, 2, 3, 4, 5])
-def test_mitigated_execute_with_cdr(circuit_type, fit_function, kwargs, random_state):
+def test_mitigated_execute_with_cdr(
+    circuit_type, fit_function, kwargs, random_state
+):
     circuit = random_x_z_cnot_circuit(
         LineQubit.range(2),
         n_moments=5,
@@ -194,14 +200,17 @@ def test_mitigated_execute_with_cdr(circuit_type, fit_function, kwargs, random_s
     )
     cdr_batched_mitigated_values = cdr_batched_executor([circuit] * 3)
     assert [
-        abs(cdr_batched_mitigated - true_value) <= abs(noisy_value - true_value)
+        abs(cdr_batched_mitigated - true_value)
+        <= abs(noisy_value - true_value)
         for cdr_batched_mitigated in cdr_batched_mitigated_values
     ]
 
 
 @pytest.mark.parametrize("circuit_type", SUPPORTED_PROGRAM_TYPES.keys())
 def test_execute_with_variable_noise_cdr(circuit_type):
-    circuit = random_x_z_cnot_circuit(LineQubit.range(2), n_moments=5, random_state=1)
+    circuit = random_x_z_cnot_circuit(
+        LineQubit.range(2), n_moments=5, random_state=1
+    )
     circuit = convert_from_mitiq(circuit, circuit_type)
     obs = Observable(PauliString("IZ"), PauliString("ZZ"))
 
@@ -222,7 +231,9 @@ def test_execute_with_variable_noise_cdr(circuit_type):
 
 @pytest.mark.parametrize("circuit_type", SUPPORTED_PROGRAM_TYPES.keys())
 def test_mitigate_executor_with_variable_noise_cdr(circuit_type):
-    circuit = random_x_z_cnot_circuit(LineQubit.range(2), n_moments=5, random_state=1)
+    circuit = random_x_z_cnot_circuit(
+        LineQubit.range(2), n_moments=5, random_state=1
+    )
     circuit = convert_from_mitiq(circuit, circuit_type)
     obs = Observable(PauliString("IZ"), PauliString("ZZ"))
 
@@ -244,7 +255,9 @@ def test_mitigate_executor_with_variable_noise_cdr(circuit_type):
 def test_no_num_fit_parameters_with_custom_fit_raises_error():
     with pytest.raises(ValueError, match="Must provide `num_fit_parameters`"):
         execute_with_cdr(
-            random_x_z_cnot_circuit(LineQubit.range(2), n_moments=2, random_state=1),
+            random_x_z_cnot_circuit(
+                LineQubit.range(2), n_moments=2, random_state=1
+            ),
             execute,
             observables=Observable(PauliString()),
             simulator=simulate,
@@ -262,7 +275,9 @@ def test_no_num_fit_parameters_mitigate_executor_raises_error():
         )
         mitigated = (
             mitigated_executor(
-                random_x_z_cnot_circuit(LineQubit.range(2), n_moments=2, random_state=1)
+                random_x_z_cnot_circuit(
+                    LineQubit.range(2), n_moments=2, random_state=1
+                )
             ),
         )
         mitigated

@@ -185,7 +185,9 @@ def mitiq_polyfit(
             warn.category = ExtrapolationWarning
             warn.message = _EXTR_WARN
         # re-raise all warnings
-        warnings.warn_explicit(warn.message, warn.category, warn.filename, warn.lineno)
+        warnings.warn_explicit(
+            warn.message, warn.category, warn.filename, warn.lineno
+        )
     return list(opt_params), params_cov
 
 
@@ -221,7 +223,9 @@ class Factory(ABC):
         """Returns the scale factors that were either passed in to the factory
         or at which the factory has computed expectation values.
         """
-        scale_factors = [params.get("scale_factor", 0.0) for params in self._instack]
+        scale_factors = [
+            params.get("scale_factor", 0.0) for params in self._instack
+        ]
         if not scale_factors and hasattr(self, "_scale_factors"):
             return [scale_factor for scale_factor in self._scale_factors]
         return scale_factors
@@ -329,7 +333,9 @@ class Factory(ABC):
     def reduce(self) -> float:
         raise NotImplementedError
 
-    def push(self, instack_val: dict[str, float], outstack_val: float) -> "Factory":
+    def push(
+        self, instack_val: dict[str, float], outstack_val: float
+    ) -> "Factory":
         """Appends "instack_val" to "self._instack" and "outstack_val" to
         "self._outstack". Each time a new expectation value is computed this
         method should be used to update the internal state of the Factory.
@@ -553,7 +559,9 @@ class BatchedFactory(Factory, ABC):
             res = []
             for circuit, kwargs in zip(to_run, kwargs_list):
                 res.extend(
-                    executor.evaluate(circuit, observable, force_run_all=True, **kwargs)
+                    executor.evaluate(
+                        circuit, observable, force_run_all=True, **kwargs
+                    )
                 )
         else:
             # Else, run all circuits.
@@ -619,7 +627,9 @@ class BatchedFactory(Factory, ABC):
                 for scale, shots in zip(self._scale_factors, self._shot_list)
             ]
         else:
-            self._instack = [{"scale_factor": scale} for scale in self._scale_factors]
+            self._instack = [
+                {"scale_factor": scale} for scale in self._scale_factors
+            ]
 
     def _get_keyword_args(self, num_to_average: int) -> list[dict[str, Any]]:
         """Returns a list of keyword dictionaries to be used for
@@ -753,13 +763,17 @@ class AdaptiveFactory(Factory, ABC):
         ) -> float:
             """Evaluates the quantum expectation value for a given
             scale_factor and other executor parameters."""
-            to_run = [scale_noise(qp, scale_factor) for _ in range(num_to_average)]
+            to_run = [
+                scale_noise(qp, scale_factor) for _ in range(num_to_average)
+            ]
             expectation_values = executor.evaluate(  # type: ignore[union-attr]
                 to_run, observable, force_run_all=True, **exec_params
             )
             return cast(float, np.average(expectation_values))
 
-        return self.run_classical(scale_factor_to_expectation_value, max_iterations)
+        return self.run_classical(
+            scale_factor_to_expectation_value, max_iterations
+        )
 
 
 class PolyFactory(BatchedFactory):
@@ -833,7 +847,9 @@ class PolyFactory(BatchedFactory):
             parameters, use the ``reduce`` method.
         """
 
-        opt_params, params_cov = mitiq_polyfit(scale_factors, exp_values, order)
+        opt_params, params_cov = mitiq_polyfit(
+            scale_factors, exp_values, order
+        )
 
         zne_limit = opt_params[-1]
 
@@ -903,7 +919,9 @@ class RichardsonFactory(BatchedFactory):
         # Richardson extrapolation is a particular case of a polynomial fit
         # with order equal to the number of data points minus 1.
         order = len(scale_factors) - 1
-        return PolyFactory.extrapolate(scale_factors, exp_values, order, full_output)
+        return PolyFactory.extrapolate(
+            scale_factors, exp_values, order, full_output
+        )
 
 
 class FakeNodesFactory(BatchedFactory):
@@ -975,7 +993,9 @@ class FakeNodesFactory(BatchedFactory):
         return zne_limit, zne_error, opt_params, params_cov, new_curve
 
     @staticmethod
-    def _map_to_fake_nodes(x: Sequence[float], a: float, b: float) -> Sequence[float]:
+    def _map_to_fake_nodes(
+        x: Sequence[float], a: float, b: float
+    ) -> Sequence[float]:
         """
         A function that maps inputs to Chebyshev-Lobatto points. Based on
         the function [De2020polynomial]_:
@@ -999,7 +1019,9 @@ class FakeNodesFactory(BatchedFactory):
 
         # The mapping function
         def mapping(_x: float) -> float:
-            return (a - b) / 2 * np.cos(np.pi * (_x - a) / (b - a)) + (a + b) / 2
+            return (a - b) / 2 * np.cos(np.pi * (_x - a) / (b - a)) + (
+                a + b
+            ) / 2
 
         return [mapping(y) for y in x]
 
@@ -1062,7 +1084,9 @@ class LinearFactory(BatchedFactory):
             parameters, use the ``reduce`` method.
         """
         # Linear extrapolation is equivalent to a polynomial fit with order=1
-        return PolyFactory.extrapolate(scale_factors, exp_values, 1, full_output)
+        return PolyFactory.extrapolate(
+            scale_factors, exp_values, 1, full_output
+        )
 
 
 class ExpFactory(BatchedFactory):
@@ -1104,7 +1128,9 @@ class ExpFactory(BatchedFactory):
     ) -> None:
         super(ExpFactory, self).__init__(scale_factors, shot_list)
         if not (asymptote is None or isinstance(asymptote, float)):
-            raise ValueError("The argument 'asymptote' must be either a float or None")
+            raise ValueError(
+                "The argument 'asymptote' must be either a float or None"
+            )
         self._options = {
             "asymptote": asymptote,
             "avoid_log": avoid_log,
@@ -1221,7 +1247,9 @@ class PolyExpFactory(BatchedFactory):
     ) -> None:
         super(PolyExpFactory, self).__init__(scale_factors, shot_list)
         if not (asymptote is None or isinstance(asymptote, float)):
-            raise ValueError("The argument 'asymptote' must be either a float or None")
+            raise ValueError(
+                "The argument 'asymptote' must be either a float or None"
+            )
         self._options = {
             "order": order,
             "asymptote": asymptote,
@@ -1293,7 +1321,9 @@ class PolyExpFactory(BatchedFactory):
         shift = int(asymptote is None)
 
         # Check arguments
-        error_str = "Data is not enough: at least two data points are necessary."
+        error_str = (
+            "Data is not enough: at least two data points are necessary."
+        )
         if scale_factors is None or exp_values is None:
             raise ValueError(error_str)
         if len(scale_factors) != len(exp_values) or len(scale_factors) < 2:
@@ -1352,7 +1382,9 @@ class PolyExpFactory(BatchedFactory):
             if params_cov is not None:
                 if params_cov.shape == (order + 2, order + 2):
                     zne_error = np.sqrt(
-                        params_cov[0, 0] + 2 * params_cov[0, 1] + params_cov[1, 1]
+                        params_cov[0, 0]
+                        + 2 * params_cov[0, 1]
+                        + params_cov[1, 1]
                     )
 
             if full_output:
@@ -1416,7 +1448,9 @@ class PolyExpFactory(BatchedFactory):
         zne_limit = asymptote + sign * np.exp(z_coefficients[-1])
 
         def _zne_curve(scale_factor: float) -> float:
-            return asymptote + sign * np.exp(np.polyval(z_coefficients, scale_factor))
+            return asymptote + sign * np.exp(
+                np.polyval(z_coefficients, scale_factor)
+            )
 
         # Use propagation of errors to calculate zne_error
         if params_cov is not None:
@@ -1484,7 +1518,9 @@ class AdaExpFactory(AdaptiveFactory):
     ) -> None:
         super(AdaExpFactory, self).__init__()
         if not (asymptote is None or isinstance(asymptote, float)):
-            raise ValueError("The argument 'asymptote' must be either a float or None")
+            raise ValueError(
+                "The argument 'asymptote' must be either a float or None"
+            )
         if scale_factor <= 1:
             raise ValueError(
                 "The argument 'scale_factor' must be strictly larger than one."
@@ -1498,7 +1534,8 @@ class AdaExpFactory(AdaptiveFactory):
             )
         if max_scale_factor <= 1:
             raise ValueError(
-                "The argument 'max_scale_factor' must be" " strictly larger than one."
+                "The argument 'max_scale_factor' must be"
+                " strictly larger than one."
             )
         self._steps = steps
         self._scale_factor = scale_factor

@@ -66,7 +66,9 @@ class ApplyMitiqLayout(TransformationPass):  # type: ignore
 
         q = [qbit for qreg in self._new_qregs for qbit in qreg]
         if len(q) < len(dag.qubits):
-            raise TranspilerError("New layout has less qubits than DAGCircuit.")
+            raise TranspilerError(
+                "New layout has less qubits than DAGCircuit."
+            )
 
         new_dag = DAGCircuit()
 
@@ -85,7 +87,9 @@ class ApplyMitiqLayout(TransformationPass):  # type: ignore
         virtual_physical_map = layout.get_virtual_bits()
         for node in dag.topological_op_nodes():
             qargs = [q[virtual_physical_map[qarg]] for qarg in node.qargs]
-            new_dag.apply_operation_back(node.op, qargs, node.cargs, check=False)
+            new_dag.apply_operation_back(
+                node.op, qargs, node.cargs, check=False
+            )
 
         new_dag.global_phase = dag.global_phase
 

@@ -130,7 +130,9 @@ def _insert_ddd_sequences(
             "are not currently supported by DDD."
         )
 
-    slack_matrix = get_slack_matrix_from_circuit_mask(_get_circuit_mask(circuit))
+    slack_matrix = get_slack_matrix_from_circuit_mask(
+        _get_circuit_mask(circuit)
+    )
     # Copy to avoid mutating the input circuit
     circuit_with_ddd = circuit.copy()
     qubits = sorted(circuit.all_qubits())
@@ -148,5 +150,7 @@ def _insert_ddd_sequences(
                     if op_to_replace and op_to_replace.gate == I:
                         moment = moment.without_operations_touching(op.qubits)
 
-                    circuit_with_ddd[moment_idx + idx] = moment.with_operation(op)
+                    circuit_with_ddd[moment_idx + idx] = moment.with_operation(
+                        op
+                    )
     return circuit_with_ddd

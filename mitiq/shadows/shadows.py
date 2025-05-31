@@ -67,11 +67,13 @@ def pauli_twirling_calibrate(
     if zero_state_shadow_outcomes is None:
         if qubits is None:
             raise TypeError(
-                "qubits must be specified when" "zero_state_shadow_outcomes is None."
+                "qubits must be specified when"
+                "zero_state_shadow_outcomes is None."
             )
         if executor is None:
             raise TypeError(
-                "executor must be specified when" "zero_state_shadow_outcomes is None."
+                "executor must be specified when"
+                "zero_state_shadow_outcomes is None."
             )
         if num_total_measurements_calibration is None:
             raise TypeError(
@@ -89,7 +91,7 @@ def pauli_twirling_calibrate(
             qubits=qubits,
         )
     else:
-        calibration_measurement_outcomes = zero_state_shadow_outcomes # type: ignore
+        calibration_measurement_outcomes = zero_state_shadow_outcomes  # type: ignore
     # get the median of means estimation of Pauli fidelities
     return get_pauli_fidelities(
         calibration_measurement_outcomes, k_calibration, locality=locality

@@ -11,4 +11,6 @@ import mitiq
 def test_result_and_stdout(capsys):
     mitiq.about()
     captured = capsys.readouterr()
-    assert captured.out.startswith("\nMitiq: A Python toolkit for implementing")
+    assert captured.out.startswith(
+        "\nMitiq: A Python toolkit for implementing"
+    )

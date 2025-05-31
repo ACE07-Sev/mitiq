@@ -33,7 +33,9 @@ QASMType = str
 
 # Cirq Bell circuit.
 cirq_qreg = cirq.LineQubit.range(2)
-cirq_circuit = cirq.Circuit(cirq.ops.H.on(cirq_qreg[0]), cirq.ops.CNOT.on(*cirq_qreg))
+cirq_circuit = cirq.Circuit(
+    cirq.ops.H.on(cirq_qreg[0]), cirq.ops.CNOT.on(*cirq_qreg)
+)
 
 # Qiskit Bell circuit.
 qiskit_qreg = qiskit.QuantumRegister(2)
@@ -92,7 +94,9 @@ def returns_several_circuits(circ: cirq.Circuit, *args, **kwargs):
     return [circ] * 5
 
 
-@pytest.mark.parametrize("circuit", (qiskit_circuit, pyquil_circuit, braket_circuit))
+@pytest.mark.parametrize(
+    "circuit", (qiskit_circuit, pyquil_circuit, braket_circuit)
+)
 def test_to_mitiq(circuit):
     converted_circuit, input_type = convert_to_mitiq(circuit)
     assert _equal(converted_circuit, cirq_circuit)

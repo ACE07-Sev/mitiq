@@ -54,7 +54,9 @@ def minimize_one_norm(
     """
 
     # Map complex matrices to extended real matrices
-    ideal_matrix_real = np.hstack((np.real(ideal_matrix), np.imag(ideal_matrix)))
+    ideal_matrix_real = np.hstack(
+        (np.real(ideal_matrix), np.imag(ideal_matrix))
+    )
     basis_matrices_real = [
         np.hstack((np.real(mat), np.imag(mat))) for mat in basis_matrices
     ]
@@ -123,14 +125,17 @@ def find_optimal_representation(
 
     ops = list(ideal_cirq_circuit.all_operations())
     super_ops = [
-        kraus_to_super(cast(list[npt.NDArray[np.complex64]], kraus(op))) for op in ops
+        kraus_to_super(cast(list[npt.NDArray[np.complex64]], kraus(op)))
+        for op in ops
     ]
 
     # Compute super operator of the full ideal_circuit
     ideal_matrix = functools.reduce(lambda a, b: a @ b, super_ops)
 
     try:
-        basis_matrices = [noisy_op.channel_matrix for noisy_op in noisy_operations]
+        basis_matrices = [
+            noisy_op.channel_matrix for noisy_op in noisy_operations
+        ]
     except ValueError as err:
         if str(err) == "The channel matrix is unknown.":
             raise ValueError(

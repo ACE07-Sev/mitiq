@@ -12,7 +12,9 @@ from numpy.typing import NDArray
 from mitiq.observable import Observable
 
 
-def _copy_circuit_parallel(circuit: cirq.Circuit, num_copies: int = 2) -> cirq.Circuit:
+def _copy_circuit_parallel(
+    circuit: cirq.Circuit, num_copies: int = 2
+) -> cirq.Circuit:
     """Given a circuit that acts on N qubits, this function returns a circuit
     that copies the circuit num_copies times in parallel. This means the
     resulting circuit has N * num_copies qubits.
@@ -55,7 +57,9 @@ def _copy_circuit_parallel(circuit: cirq.Circuit, num_copies: int = 2) -> cirq.C
     return new_circuit
 
 
-def _apply_diagonalizing_gate(circuit: cirq.Circuit, num_copies: int) -> cirq.Circuit:
+def _apply_diagonalizing_gate(
+    circuit: cirq.Circuit, num_copies: int
+) -> cirq.Circuit:
     """Apply the diagonalizing gate to a circuit, assuming the circuit has been
     copied in parallel ``num_copies`` times.
 
@@ -107,7 +111,9 @@ def _generate_diagonalizing_gate(num_copies: int = 2) -> cirq.Gate:
             ]
         )
     else:
-        raise NotImplementedError("Only num_copies = 2 is currently supported.")
+        raise NotImplementedError(
+            "Only num_copies = 2 is currently supported."
+        )
 
     return cirq.MatrixGate(diagonalizing_matrix)
 
@@ -174,7 +180,8 @@ def _apply_symmetric_observable(
     z_matrix = np.array([[1.0, 0.0], [0.0, -1.0]])
 
     if observable is None or (
-        isinstance(observable, np.ndarray) and np.allclose(observable, z_matrix)
+        isinstance(observable, np.ndarray)
+        and np.allclose(observable, z_matrix)
     ):
         # use the default Z observable
         sym_observable_diagonals: list[NDArray[np.complex64]] = []
@@ -203,20 +210,28 @@ def _apply_symmetric_observable(
             combined_diagonal = (
                 observable_i_diagonal_system1 + observable_i_diagonal_system2
             ) / 2
-            sym_observable_diagonals.append(combined_diagonal.astype(np.complex64))
+            sym_observable_diagonals.append(
+                combined_diagonal.astype(np.complex64)
+            )
 
         if matrix.ndim == 2:
             return np.array([sod * matrix for sod in sym_observable_diagonals])
         elif matrix.ndim == 3:
             return np.array(
-                [sod * mat for sod in sym_observable_diagonals for mat in matrix]
+                [
+                    sod * mat
+                    for sod in sym_observable_diagonals
+                    for mat in matrix
+                ]
             )
         else:
             raise ValueError("matrix should be 2D or 3D ndarray")
 
     else:
         obs_array = (
-            observable if isinstance(observable, np.ndarray) else observable.matrix()
+            observable
+            if isinstance(observable, np.ndarray)
+            else observable.matrix()
         )
         sym_observable_matrices: list[NDArray[np.complex64]] = []
         for i in range(N_qubits):
@@ -228,6 +243,8 @@ def _apply_symmetric_observable(
                 np.kron(observable_i_matrix, np.eye(2**N_qubits))
                 + np.kron(np.eye(2**N_qubits), observable_i_matrix)
             ) / 2
-            sym_observable_matrices.append(sym_observable_matrix.astype(np.complex64))
+            sym_observable_matrices.append(
+                sym_observable_matrix.astype(np.complex64)
+            )
 
         return np.array(sym_observable_matrices) @ matrix

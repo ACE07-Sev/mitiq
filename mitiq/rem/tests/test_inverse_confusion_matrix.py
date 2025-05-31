@@ -76,7 +76,10 @@ def test_probability_vector_roundtrip(_):
     pv /= np.sum(pv)
     assert isclose(
         np.linalg.norm(
-            pv - bitstrings_to_probability_vector(sample_probability_vector(pv, 1000))
+            pv
+            - bitstrings_to_probability_vector(
+                sample_probability_vector(pv, 1000)
+            )
         ),
         0,
         abs_tol=0.1,
@@ -86,9 +89,12 @@ def test_probability_vector_roundtrip(_):
 def test_generate_inverse_confusion_matrix():
     num_qubits = 2
     identity = np.identity(4)
-    assert (generate_inverse_confusion_matrix(num_qubits, p0=0, p1=0) == identity).all()
     assert (
-        generate_inverse_confusion_matrix(num_qubits, p0=1, p1=1) == np.flipud(identity)
+        generate_inverse_confusion_matrix(num_qubits, p0=0, p1=0) == identity
+    ).all()
+    assert (
+        generate_inverse_confusion_matrix(num_qubits, p0=1, p1=1)
+        == np.flipud(identity)
     ).all()
 
 
@@ -133,10 +139,14 @@ def test_generate_tensored_inverse_confusion_matrix(
 ):
     if expected is ValueError:
         with pytest.raises(ValueError):
-            generate_tensored_inverse_confusion_matrix(num_qubits, confusion_matrices)
+            generate_tensored_inverse_confusion_matrix(
+                num_qubits, confusion_matrices
+            )
     else:
         assert np.allclose(
-            generate_tensored_inverse_confusion_matrix(num_qubits, confusion_matrices),
+            generate_tensored_inverse_confusion_matrix(
+                num_qubits, confusion_matrices
+            ),
             expected,
         )
 
@@ -146,11 +156,15 @@ def test_mitigate_measurements():
 
     measurements = MeasurementResult([[1, 0]])
     assert mitigate_measurements(measurements, identity) == measurements
-    assert mitigate_measurements(measurements, np.flipud(identity)).result == [[0, 1]]
+    assert mitigate_measurements(measurements, np.flipud(identity)).result == [
+        [0, 1]
+    ]
 
     measurements = MeasurementResult([[0, 1]])
     assert mitigate_measurements(measurements, identity) == measurements
-    assert mitigate_measurements(measurements, np.flipud(identity)).result == [[1, 0]]
+    assert mitigate_measurements(measurements, np.flipud(identity)).result == [
+        [1, 0]
+    ]
 
 
 def test_closest_positive_distribution():

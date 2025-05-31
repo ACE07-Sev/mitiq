@@ -62,7 +62,9 @@ def get_expectation_value_for_observable(
     This function modifies pauli_string_to_expectation_cache in place.
     """
 
-    final_executor = executor if isinstance(executor, Executor) else Executor(executor)
+    final_executor = (
+        executor if isinstance(executor, Executor) else Executor(executor)
+    )
 
     def get_expectation_value_for_one_pauli(
         pauli_string: PauliString,
@@ -73,7 +75,11 @@ def get_expectation_value_for_observable(
         )[0]
         return (pauli_expectation_cache[cache_key] * pauli_string.coeff).real
 
-    paulis = [observable] if isinstance(observable, PauliString) else observable.paulis
+    paulis = (
+        [observable]
+        if isinstance(observable, PauliString)
+        else observable.paulis
+    )
     expectation_value = sum(
         get_expectation_value_for_one_pauli(pauli) for pauli in paulis
     )
@@ -94,7 +100,9 @@ def _compute_overlap_matrix(
     for i, j in product(range(num_ops), repeat=2):
         observable: PauliString | Observable
         if code_hamiltonian:
-            observable = check_operators[i] * code_hamiltonian * check_operators[j]
+            observable = (
+                check_operators[i] * code_hamiltonian * check_operators[j]
+            )
         else:
             observable = check_operators[i] * check_operators[j]
         H[i, j] = get_expectation_value_for_observable(

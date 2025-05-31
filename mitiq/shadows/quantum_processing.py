@@ -18,7 +18,9 @@ except ImportError:
 from mitiq import MeasurementResult
 
 
-def generate_random_pauli_strings(num_qubits: int, num_strings: int) -> list[str]:
+def generate_random_pauli_strings(
+    num_qubits: int, num_strings: int
+) -> list[str]:
     """Generate a list of random Pauli strings.
 
     Args:
@@ -68,7 +70,9 @@ def get_rotated_circuits(
                 rotated_circuit.append(cirq.H(qubit))
             # Pauli Z measurement
             else:
-                assert pauli == "Z", f"Pauli must be X, Y, Z. Got {pauli} instead."
+                assert pauli == "Z", (
+                    f"Pauli must be X, Y, Z. Got {pauli} instead."
+                )
         if add_measurements:
             rotated_circuit.append(cirq.measure(*qubits))
         rotated_circuits.append(rotated_circuit)
@@ -107,7 +111,9 @@ def random_pauli_measurement(
 
     qubits = sorted(list(circuit.all_qubits())) if qubits is None else qubits
     num_qubits = len(qubits)
-    pauli_strings = generate_random_pauli_strings(num_qubits, n_total_measurements)
+    pauli_strings = generate_random_pauli_strings(
+        num_qubits, n_total_measurements
+    )
 
     # Rotate and attach measurement gates to the circuit
     rotated_circuits = get_rotated_circuits(
@@ -123,14 +129,17 @@ def random_pauli_measurement(
             desc="Measurement",
             leave=False,
         )
-    results = [executor(rotated_circuit) for rotated_circuit in rotated_circuits]
+    results = [
+        executor(rotated_circuit) for rotated_circuit in rotated_circuits
+    ]
 
     shadow_outcomes = []
     for result in results:
         bitstring = list(result.get_counts().keys())[0]
         if len(result.get_counts().keys()) > 1:
             raise ValueError(
-                "The `executor` must return a `MeasurementResult` " "for a single shot"
+                "The `executor` must return a `MeasurementResult` "
+                "for a single shot"
             )
         shadow_outcomes.append(bitstring)
 

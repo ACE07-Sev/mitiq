@@ -36,7 +36,9 @@ def generate_w_circuit(
     for i, j in zip(range(0, n_qubits), range(1, n_qubits)):
         N = n_qubits - i
         angle = 2 * np.arccos(np.sqrt(1 / N))
-        circuit.append(cirq.Ry(rads=angle).controlled().on(qubits[i], qubits[j]))
+        circuit.append(
+            cirq.Ry(rads=angle).controlled().on(qubits[i], qubits[j])
+        )
         circuit.append(cirq.CNOT(qubits[j], qubits[i]))
 
     return_type = "cirq" if not return_type else return_type

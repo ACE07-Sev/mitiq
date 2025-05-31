@@ -88,7 +88,9 @@ def test_random_cliffords() -> None:
         for a, b in edges[x]:
             two_q_gates.add(cirq.CNOT(cirq.LineQubit(a), cirq.LineQubit(b)))
         assert two_q_gates.issubset(circuit.all_operations())
-        assert set(op.gate for op in circuit.all_operations()).issubset(all_cliffords)
+        assert set(op.gate for op in circuit.all_operations()).issubset(
+            all_cliffords
+        )
 
 
 def test_random_single_cliffords() -> None:
@@ -121,7 +123,9 @@ def test_generate_mirror_circuit(
 ) -> None:
     depth, xi, connectivity_graph = depth_twoqprob_graph
     n = connectivity_graph.number_of_nodes()
-    circ, _ = mirror_circuits.generate_mirror_circuit(depth, xi, connectivity_graph)
+    circ, _ = mirror_circuits.generate_mirror_circuit(
+        depth, xi, connectivity_graph
+    )
     assert isinstance(circ, cirq.Circuit)
     assert len(circ.all_qubits()) == n
     assert set(op.gate for op in circ.all_operations()).issubset(all_gates)
@@ -131,7 +135,9 @@ def test_generate_mirror_circuit(
         .run(circ, repetitions=1_000)
         .multi_measurement_histogram(keys=circ.all_measurement_key_names())
     )
-    assert len(result.keys()) == 1  # checks that the circuit only outputs one bitstring
+    assert (
+        len(result.keys()) == 1
+    )  # checks that the circuit only outputs one bitstring
 
 
 @pytest.mark.parametrize("seed", (0, 3))
@@ -168,7 +174,9 @@ def test_mirror_circuits_conversions(return_type: str) -> None:
     assert return_type in circuit.__module__
 
 
-@pytest.mark.parametrize("twoq_name_and_gate", [("CNOT", cirq.CNOT), ("CZ", cirq.CZ)])
+@pytest.mark.parametrize(
+    "twoq_name_and_gate", [("CNOT", cirq.CNOT), ("CZ", cirq.CZ)]
+)
 def test_two_qubit_gate(twoq_name_and_gate: tuple[str, cirq.Gate]) -> None:
     twoq_name, twoq_gate = twoq_name_and_gate
     circuit, _ = mirror_circuits.generate_mirror_circuit(
@@ -191,7 +199,9 @@ def test_two_qubit_gate_unsupported() -> None:
 
 
 def test_two_qubit_gate_bad_probability() -> None:
-    with pytest.raises(ValueError, match="two_qubit_gate_prob must be between 0 and 1"):
+    with pytest.raises(
+        ValueError, match="two_qubit_gate_prob must be between 0 and 1"
+    ):
         mirror_circuits.generate_mirror_circuit(1, 2.0, nx.complete_graph(2))
 
 

@@ -45,7 +45,9 @@ def generate_qpe_circuit(
         raise ValueError("This QPE method only works for 1-qubit gates.")
 
     if evalue_reg == num_qubits_for_gate:
-        raise ValueError("The eigenvalue reg must be larger than the eigenstate reg.")
+        raise ValueError(
+            "The eigenvalue reg must be larger than the eigenstate reg."
+        )
 
     total_num_qubits = evalue_reg + num_qubits_for_gate
     qreg = cirq.LineQubit.range(total_num_qubits)
@@ -60,7 +62,8 @@ def generate_qpe_circuit(
 
     for i in range(total_num_qubits - 1)[::-1]:
         circuit.append(
-            [input_gate(qreg[-1]).controlled_by(qreg[i])] * (2 ** (evalue_reg - 1 - i))
+            [input_gate(qreg[-1]).controlled_by(qreg[i])]
+            * (2 ** (evalue_reg - 1 - i))
         )
 
     # IQFT of the eigenvalue register

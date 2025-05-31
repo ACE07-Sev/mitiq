@@ -126,7 +126,8 @@ def represent_operation_with_local_biased_noise(
         )
     # Basis of implementable operations as circuits.
     imp_op_circuits = [
-        append_cirq_circuit_to_qprogram(ideal_operation, Circuit(op)) for op in post_ops
+        append_cirq_circuit_to_qprogram(ideal_operation, Circuit(op))
+        for op in post_ops
     ]
 
     # Build basis expansion.

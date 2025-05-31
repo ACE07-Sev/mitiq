@@ -76,7 +76,9 @@ def test_closest_clifford():
 
 
 def test_random_clifford():
-    assert set(random_clifford(20, np.random.RandomState(1))).issubset(_CLIFFORD_ANGLES)
+    assert set(random_clifford(20, np.random.RandomState(1))).issubset(
+        _CLIFFORD_ANGLES
+    )
 
 
 def test_angle_to_proximities():

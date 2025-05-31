@@ -137,7 +137,9 @@ def test_run_executor_identical_circuits_batched(ncircuits, executor):
 
 @pytest.mark.parametrize("batch_size", (1, 2, 10))
 def test_run_executor_nonidentical_pyquil_programs(batch_size):
-    collector = Executor(executor=executor_pyquil_batched, max_batch_size=batch_size)
+    collector = Executor(
+        executor=executor_pyquil_batched, max_batch_size=batch_size
+    )
     assert collector.can_batch
 
     circuits = [
@@ -205,7 +207,9 @@ def test_run_executor_preserves_order(s, b):
     assert np.allclose(collector.run(batch), executor_batched_unique(batch))
 
 
-@pytest.mark.parametrize("execute", [executor_serial_unique, executor_batched_unique])
+@pytest.mark.parametrize(
+    "execute", [executor_serial_unique, executor_batched_unique]
+)
 def test_executor_evaluate_float(execute):
     q = cirq.LineQubit(0)
     circuits = [

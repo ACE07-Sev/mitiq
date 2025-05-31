@@ -32,7 +32,9 @@ def test_valid_bitstrings():
 
     num_qubits = 4
     max_hamming_weight = 2
-    bitstrings_on_3_qubits_hamming_2 = valid_bitstrings(num_qubits, max_hamming_weight)
+    bitstrings_on_3_qubits_hamming_2 = valid_bitstrings(
+        num_qubits, max_hamming_weight
+    )
     assert len(bitstrings_on_3_qubits_hamming_2) == sum(
         math.comb(num_qubits, i) for i in range(max_hamming_weight + 1)
     )  # sum_{i == 0}^{max_hamming_weight} (num_qubits choose i)
@@ -65,6 +67,6 @@ def test_n_measurements_opts_expectation_bound():
 def test_fidelity():
     state_vector = np.array([0.5, 0.5, 0.5, 0.5])
     rho = np.eye(4) / 4
-    assert np.isclose(
-        fidelity(state_vector, rho), 0.25
-    ), f"Expected 0.25, got {fidelity(state_vector, rho)}"
+    assert np.isclose(fidelity(state_vector, rho), 0.25), (
+        f"Expected 0.25, got {fidelity(state_vector, rho)}"
+    )

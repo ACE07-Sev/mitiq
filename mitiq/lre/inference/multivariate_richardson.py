@@ -89,7 +89,9 @@ def sample_matrix(
 
     """
     if degree < 1:
-        raise ValueError("Multinomial degree must be greater than or equal to 1.")
+        raise ValueError(
+            "Multinomial degree must be greater than or equal to 1."
+        )
     if fold_multiplier < 1:
         raise ValueError("Fold multiplier must be greater than or equal to 1.")
 
@@ -158,7 +160,9 @@ def multivariate_richardson_coefficients(
         input_circuit, degree, fold_multiplier, num_chunks
     )
     num_layers = len(
-        get_scale_factor_vectors(input_circuit, degree, fold_multiplier, num_chunks)
+        get_scale_factor_vectors(
+            input_circuit, degree, fold_multiplier, num_chunks
+        )
     )
     try:
         det = np.linalg.det(input_sample_matrix)
@@ -169,7 +173,9 @@ def multivariate_richardson_coefficients(
             + "large sample matrix is calculated through "
             + "`np.linalg.slogdet`."
         )
-        sign, logdet = np.linalg.slogdet(input_sample_matrix)  # pragma: no cover
+        sign, logdet = np.linalg.slogdet(
+            input_sample_matrix
+        )  # pragma: no cover
         det = sign * np.exp(logdet)  # pragma: no cover
 
     if np.isinf(det):
@@ -185,7 +191,8 @@ def multivariate_richardson_coefficients(
         sample_matrix_copy = input_sample_matrix.copy()
         sample_matrix_copy[i] = np.array([[1] + [0] * (num_layers - 1)])
         coeff_list.append(
-            np.linalg.det(sample_matrix_copy) / np.linalg.det(input_sample_matrix)
+            np.linalg.det(sample_matrix_copy)
+            / np.linalg.det(input_sample_matrix)
         )
 
     return coeff_list

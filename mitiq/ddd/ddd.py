@@ -61,7 +61,9 @@ def execute_with_ddd(
         executor = Executor(executor)
 
     # Insert DDD sequences in (a copy of) the input circuit
-    circuits_with_ddd = construct_circuits(circuit, rule, rule_args, num_trials)
+    circuits_with_ddd = construct_circuits(
+        circuit, rule, rule_args, num_trials
+    )
 
     results = executor.evaluate(
         circuits_with_ddd,

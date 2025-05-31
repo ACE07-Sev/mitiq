@@ -19,7 +19,9 @@ from pyquil.quilatom import ParameterDesignator, QubitDesignator
 from pyquil.quilbase import Gate
 
 
-def _CCNOT(q0: QubitDesignator, q1: QubitDesignator, q2: QubitDesignator) -> Program:
+def _CCNOT(
+    q0: QubitDesignator, q1: QubitDesignator, q2: QubitDesignator
+) -> Program:
     """
     A CCNOT in terms of RX(+-pi/2), RZ(theta), and CZ
 

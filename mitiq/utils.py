@@ -357,7 +357,9 @@ def operator_ptm_vector_rep(opt: NDArray[Any]) -> NDArray[Any]:
     opt_vec = []
     for pauli_combination in product(PAULIS, repeat=num_qubits):
         kron_product = matrix_kronecker_product(pauli_combination)
-        opt_vec.append(np.trace(opt @ kron_product) * np.sqrt(1 / 2**num_qubits))
+        opt_vec.append(
+            np.trace(opt @ kron_product) * np.sqrt(1 / 2**num_qubits)
+        )
     return np.array(opt_vec)
 
 

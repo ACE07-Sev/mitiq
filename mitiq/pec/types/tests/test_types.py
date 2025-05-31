@@ -248,8 +248,12 @@ def test_noisy_basis_deprecation_error():
 def get_test_representation():
     ideal = cirq.Circuit(cirq.H(cirq.LineQubit(0)))
 
-    noisy_xop = NoisyOperation(circuit=xcirq, channel_matrix=np.zeros(shape=(4, 4)))
-    noisy_zop = NoisyOperation(circuit=zcirq, channel_matrix=np.zeros(shape=(4, 4)))
+    noisy_xop = NoisyOperation(
+        circuit=xcirq, channel_matrix=np.zeros(shape=(4, 4))
+    )
+    noisy_zop = NoisyOperation(
+        circuit=zcirq, channel_matrix=np.zeros(shape=(4, 4))
+    )
 
     decomp = OperationRepresentation(
         ideal,
@@ -273,7 +277,9 @@ def test_representation_simple():
 def test_representation_bad_type():
     ideal = cirq.Circuit(cirq.H(cirq.LineQubit(0)))
 
-    noisy_xop = NoisyOperation(circuit=xcirq, channel_matrix=np.zeros(shape=(4, 4)))
+    noisy_xop = NoisyOperation(
+        circuit=xcirq, channel_matrix=np.zeros(shape=(4, 4))
+    )
 
     with pytest.raises(TypeError, match="All elements of `noisy_operations`"):
         OperationRepresentation(
@@ -324,8 +330,12 @@ def test_representation_sample_bad_seed_type():
 def test_representation_sample_zero_coefficient():
     ideal = cirq.Circuit(cirq.H(cirq.LineQubit(0)))
 
-    noisy_xop = NoisyOperation(circuit=xcirq, channel_matrix=np.zeros(shape=(4, 4)))
-    noisy_zop = NoisyOperation(circuit=zcirq, channel_matrix=np.zeros(shape=(4, 4)))
+    noisy_xop = NoisyOperation(
+        circuit=xcirq, channel_matrix=np.zeros(shape=(4, 4))
+    )
+    noisy_zop = NoisyOperation(
+        circuit=zcirq, channel_matrix=np.zeros(shape=(4, 4))
+    )
 
     decomp = OperationRepresentation(
         ideal=ideal,
@@ -347,8 +357,12 @@ def test_representation_sample_zero_coefficient():
 def test_print_cirq_operation_representation():
     ideal = cirq.Circuit(cirq.H(cirq.LineQubit(0)))
 
-    noisy_xop = NoisyOperation(circuit=xcirq, channel_matrix=np.zeros(shape=(4, 4)))
-    noisy_zop = NoisyOperation(circuit=zcirq, channel_matrix=np.zeros(shape=(4, 4)))
+    noisy_xop = NoisyOperation(
+        circuit=xcirq, channel_matrix=np.zeros(shape=(4, 4))
+    )
+    noisy_zop = NoisyOperation(
+        circuit=zcirq, channel_matrix=np.zeros(shape=(4, 4))
+    )
     # Positive first coefficient
     decomp = OperationRepresentation(
         ideal=ideal,

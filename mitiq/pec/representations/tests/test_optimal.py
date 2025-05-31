@@ -57,7 +57,9 @@ def test_minimize_one_norm_with_depolarized_choi():
         q = LineQubit(0)
         ideal_matrix = _operation_to_choi(H(q))
         basis_matrices = [
-            _operation_to_choi([H(q), gate(q), DepolarizingChannel(noise_level, 1)(q)])
+            _operation_to_choi(
+                [H(q), gate(q), DepolarizingChannel(noise_level, 1)(q)]
+            )
             for gate in [I, X, Y, Z, H]
         ]
         optimal_coeffs = minimize_one_norm(ideal_matrix, basis_matrices)
@@ -98,7 +100,9 @@ def test_minimize_one_norm_with_amp_damp_choi():
         q = LineQubit(0)
         ideal_matrix = _operation_to_choi(H(q))
         basis_matrices = [
-            _operation_to_choi([H(q), gate(q), AmplitudeDampingChannel(noise_level)(q)])
+            _operation_to_choi(
+                [H(q), gate(q), AmplitudeDampingChannel(noise_level)(q)]
+            )
             for gate in [I, Z]
         ]
         # Append reset channel
@@ -121,12 +125,15 @@ def test_minimize_one_norm_with_amp_damp_superoperators():
         damp_super = kraus_to_super(damp_kraus)
         ideal_matrix = kraus_to_super(kraus(H))
         basis_matrices = [
-            damp_super @ kraus_to_super(kraus(gate)) @ ideal_matrix for gate in [I, Z]
+            damp_super @ kraus_to_super(kraus(gate)) @ ideal_matrix
+            for gate in [I, Z]
         ]
         # Append reset channel
         reset_kraus = kraus(ResetChannel())
         basis_matrices.append(kraus_to_super(reset_kraus))
-        optimal_coeffs = minimize_one_norm(ideal_matrix, basis_matrices, tol=1.0e-6)
+        optimal_coeffs = minimize_one_norm(
+            ideal_matrix, basis_matrices, tol=1.0e-6
+        )
         represented_mat = sum(
             [eta * mat for eta, mat in zip(optimal_coeffs, basis_matrices)]
         )
@@ -142,7 +149,8 @@ def test_minimize_one_norm_tolerance():
     depo_super = kraus_to_super(depo_kraus)
     ideal_matrix = kraus_to_super(kraus(H))
     basis_matrices = [
-        depo_super @ kraus_to_super(kraus(gate)) @ ideal_matrix for gate in [I, X, Y, Z]
+        depo_super @ kraus_to_super(kraus(gate)) @ ideal_matrix
+        for gate in [I, X, Y, Z]
     ]
     previous_minimum = 0.0
     previous_error = 1.0
@@ -197,7 +205,9 @@ def test_find_optimal_representation_depolarizing_two_qubit_gates(circ_type):
         ]
 
         # Find optimal representation
-        rep = find_optimal_representation(ideal_op_native, noisy_operations, tol=1.0e-8)
+        rep = find_optimal_representation(
+            ideal_op_native, noisy_operations, tol=1.0e-8
+        )
         # Expected analytical result
         expected_rep = represent_operation_with_local_depolarizing_noise(
             ideal_op_native,

@@ -75,7 +75,9 @@ class Observable:
     def nqubits(self) -> int:
         return len(self.qubit_indices)
 
-    def __mul__(self, other: "Observable | PauliString | Number") -> "Observable":
+    def __mul__(
+        self, other: "Observable | PauliString | Number"
+    ) -> "Observable":
         if isinstance(other, (PauliString, Number)):
             return Observable(*[pauli * other for pauli in self._paulis])
         elif isinstance(other, Observable):
@@ -216,7 +218,9 @@ class Observable:
                 keep_indices=self.qubit_indices,
             ).reshape(observable_matrix.shape)
 
-        return np.real_if_close(np.trace(density_matrix @ observable_matrix)).item()
+        return np.real_if_close(
+            np.trace(density_matrix @ observable_matrix)
+        ).item()
 
     def __str__(self) -> str:
         return " + ".join(map(str, self._paulis))
@@ -233,7 +237,9 @@ def _combine_duplicate_pauli_strings(
 
     Returns: deduped list of PauliStrings.
     """
-    pauli_string_coefficients: defaultdict[PauliString, complex] = defaultdict(complex)
+    pauli_string_coefficients: defaultdict[PauliString, complex] = defaultdict(
+        complex
+    )
     for pauli_string in paulis:
         cache_key = pauli_string.with_coeff(1)
         pauli_string_coefficients[cache_key] += pauli_string.coeff

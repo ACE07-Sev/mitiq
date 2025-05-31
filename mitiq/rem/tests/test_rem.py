@@ -57,7 +57,9 @@ npZ = np.array([[1, 0], [0, -1]])
 
 # An invalid executor for unit tests since it returns an expectation
 def invalid_executor(circuit) -> float:
-    wavefunction = circuit.final_state_vector(ignore_terminal_measurements=True)
+    wavefunction = circuit.final_state_vector(
+        ignore_terminal_measurements=True
+    )
     return np.real(wavefunction.conj().T @ np.kron(npX, npZ) @ wavefunction)
 
 
@@ -111,7 +113,9 @@ def test_rem_with_invalid_matrix():
     executor = partial(sample_bitstrings, noise_level=(0,))
     identity = np.identity(2)
     with pytest.raises(ValueError):
-        execute_with_rem(circ, executor, observable, inverse_confusion_matrix=identity)
+        execute_with_rem(
+            circ, executor, observable, inverse_confusion_matrix=identity
+        )
 
 
 def test_doc_is_preserved():
@@ -123,7 +127,9 @@ def test_doc_is_preserved():
 
     identity = np.identity(4)
 
-    mit_executor = mitigate_executor(first_executor, inverse_confusion_matrix=identity)
+    mit_executor = mitigate_executor(
+        first_executor, inverse_confusion_matrix=identity
+    )
     assert mit_executor.__doc__ == first_executor.__doc__
 
     @rem_decorator(inverse_confusion_matrix=identity)
@@ -173,7 +179,9 @@ def test_mitigate_executor(p0, p1, atol):
         inverse_confusion_matrix=inverse_confusion_matrix,
     )
     rem_value = raw_execute(circ, mitigated_executor, observable)
-    assert abs(true_rem_value - rem_value) <= abs(true_rem_value - base) or np.isclose(
+    assert abs(true_rem_value - rem_value) <= abs(
+        true_rem_value - base
+    ) or np.isclose(
         abs(true_rem_value - rem_value),
         abs(true_rem_value - base),
         atol=atol,
@@ -219,7 +227,9 @@ def test_rem_decorator_batched():
         return [noisy_readout_executor(c, p0=p0, p1=p1) for c in circuits]
 
     noisy_executor = partial(noisy_readout_executor, p0=p0, p1=p1)
-    base_values = [raw_execute(c, noisy_executor, observable) for c in circuits]
+    base_values = [
+        raw_execute(c, noisy_executor, observable) for c in circuits
+    ]
     rem_values = Executor(noisy_readout_batched).evaluate(circuits, observable)
     for true_val, base, rem_val in zip(true_values, base_values, rem_values):
         assert abs(true_val - rem_val) < abs(true_val - base)

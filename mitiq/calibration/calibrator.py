@@ -77,7 +77,9 @@ class ExperimentResults:
             f"Improvement factor: {round(noisy_error / mitigated_error, 4)}"
         )
 
-    def _get_errors(self, strategy_id: int, problem_id: int) -> tuple[float, float]:
+    def _get_errors(
+        self, strategy_id: int, problem_id: int
+    ) -> tuple[float, float]:
         """Get errors for a given strategy/problem combination.
 
         Returns:
@@ -204,7 +206,9 @@ class ExperimentResults:
 
     def reset_data(self) -> None:
         """Reset all experiment result data using NaN values."""
-        self.mitigated = np.full((self.num_strategies, self.num_problems), np.nan)
+        self.mitigated = np.full(
+            (self.num_strategies, self.num_problems), np.nan
+        )
         self.noisy = np.full((self.num_strategies, self.num_problems), np.nan)
         self.ideal = np.full((self.num_strategies, self.num_problems), np.nan)
 
@@ -230,7 +234,9 @@ class Calibrator:
         *,
         frontend: str,
         settings: Settings = ZNE_SETTINGS,
-        ideal_executor: Executor | Callable[[QPROGRAM], QuantumResult] | None = None,
+        ideal_executor: Executor
+        | Callable[[QPROGRAM], QuantumResult]
+        | None = None,
     ):
         self.executor = (
             executor if isinstance(executor, Executor) else Executor(executor)
@@ -252,7 +258,9 @@ class Calibrator:
             circuits: Sequence[cirq.Circuit],
         ) -> Sequence[MeasurementResult]:
             q_programs = [convert_from_mitiq(c, frontend) for c in circuits]
-            results = cast(Sequence[MeasurementResult], self.executor.run(q_programs))
+            results = cast(
+                Sequence[MeasurementResult], self.executor.run(q_programs)
+            )
             return results
 
         self._cirq_executor = Executor(cirq_execute)  # type: ignore [arg-type]
@@ -279,7 +287,8 @@ class Calibrator:
         """
         num_circuits = len(self.problems)
         num_options = sum(
-            strategy.num_circuits_required() for strategy in self.strategies # type: ignore
+            strategy.num_circuits_required()
+            for strategy in self.strategies  # type: ignore
         )
 
         noisy = num_circuits * (num_options + 1)
@@ -385,7 +394,9 @@ def convert_to_expval_executor(executor: Executor, bitstring: str) -> Executor:
     def expval_executor(circuit: cirq.Circuit) -> float:
         circuit_with_meas = circuit.copy()
         if not cirq.is_measurement(circuit_with_meas):
-            circuit_with_meas.append(cirq.measure(circuit_with_meas.all_qubits()))
+            circuit_with_meas.append(
+                cirq.measure(circuit_with_meas.all_qubits())
+            )
         raw = cast(MeasurementResult, executor.run([circuit_with_meas])[0])
         distribution = raw.prob_distribution()
         return distribution.get(bitstring, 0.0)

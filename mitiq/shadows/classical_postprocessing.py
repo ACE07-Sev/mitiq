@@ -125,7 +125,9 @@ def get_pauli_fidelities(
         for bitstring, fids in all_fidelities.items():
             means[bitstring].append(sum(fids) / num_batches)
 
-    return {bitstring: median(averages) for bitstring, averages in means.items()}
+    return {
+        bitstring: median(averages) for bitstring, averages in means.items()
+    }
 
 
 def classical_snapshot(
@@ -168,7 +170,9 @@ def classical_snapshot(
                 pi_snapshot_vector.append(
                     pi * operator_ptm_vector_rep(U.conj().T @ state @ U)
                 )
-            elements.append(1 / fidelity * matrix_kronecker_product(pi_snapshot_vector))
+            elements.append(
+                1 / fidelity * matrix_kronecker_product(pi_snapshot_vector)
+            )
         rho_snapshot = np.sum(elements, axis=0)
     else:
         local_rhos = []
@@ -238,7 +242,9 @@ def expectation_estimation_shadow(
     filtered_bitstrings = [
         "".join([bitstring[q] for q in qubits]) for bitstring in bitstrings
     ]
-    filtered_paulis = ["".join([pauli[q] for q in qubits]) for pauli in paulistrings]
+    filtered_paulis = [
+        "".join([pauli[q] for q in qubits]) for pauli in paulistrings
+    ]
     filtered_data = (filtered_bitstrings, filtered_paulis)
 
     means = []
