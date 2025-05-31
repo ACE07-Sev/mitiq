@@ -18,7 +18,7 @@ from collections import Counter
 from collections.abc import Sequence
 from dataclasses import dataclass
 from enum import Enum, EnumMeta
-from typing import Any, TypeAlias, cast
+from typing import Any, cast
 
 import numpy as np
 import numpy.typing as npt
@@ -27,7 +27,9 @@ from cirq import Circuit as _Circuit
 
 class EnhancedEnumMeta(EnumMeta):
     def __str__(cls) -> str:
-        return ", ".join([member.name.lower() for member in cast(type[Enum], cls)])
+        return ", ".join(
+            [member.name.lower() for member in cast(Type[Enum], cls)]
+        )
 
 
 class EnhancedEnum(Enum, metaclass=EnhancedEnumMeta):
@@ -65,9 +67,7 @@ except ImportError:  # pragma: no cover
 
 
 # Supported + installed quantum programs.
-QPROGRAM: TypeAlias = (
-    _Circuit | _Program | _QuantumCircuit | _BKCircuit | _QuantumTape | _QiboCircuit
-)  # type: ignore
+QPROGRAM = _Circuit | _Program | _QuantumCircuit | _BKCircuit | _QuantumTape | _QiboCircuit
 
 
 # Supported quantum programs.
@@ -156,7 +156,11 @@ class MeasurementResult:
 
     @property
     def nqubits(self) -> int:
-        return self._bitstrings.shape[1] if len(self._bitstrings.shape) >= 2 else 0
+        return (
+            self._bitstrings.shape[1]
+            if len(self._bitstrings.shape) >= 2
+            else 0
+        )
 
     @property
     def asarray(self) -> npt.NDArray[np.int64]:
@@ -224,10 +228,7 @@ class MeasurementResult:
 # An `executor` function inputs a quantum program and outputs an object from
 # which expectation values can be computed. Explicitly, this object can be one
 # of the following types:
-# - A float, which is the expectation value itself.
-# - A MeasurementResult, which is a collection of bitstrings sampled from the
-#   quantum computer.
-# - A numpy.ndarray of type complex, which is a density matrix.
-# TODO: Support the following:
-# Sequence[np.ndarray],  # Wavefunctions sampled via quantum trajectories.
-QuantumResult: TypeAlias = float | MeasurementResult | npt.NDArray[np.complex128]
+# - -float: The expectation value itself.
+# - MeasurementResult: Sampled bitstrings.
+#  np.ndarray: Density matrix.
+QuantumResult = float | MeasurementResult | np.ndarray

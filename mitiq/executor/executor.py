@@ -21,16 +21,15 @@ from mitiq.observable.observable import Observable
 from mitiq.observable.pauli import PauliString
 
 DensityMatrixLike = [
+    np.ndarray,
+    Iterable[np.ndarray],  # type: ignore
+    list[np.ndarray],  # type: ignore
+    Sequence[np.ndarray],  # type: ignore
+    tuple[np.ndarray],
     npt.NDArray[np.complex64],
-    Iterable[npt.NDArray[np.complex64]],
     list[npt.NDArray[np.complex64]],
-    Sequence[npt.NDArray[np.complex64]],
+    list[np.ndarray],  # type: ignore
     tuple[npt.NDArray[np.complex64]],
-    npt.NDArray[np.complex64],
-    list[npt.NDArray[np.complex64]],
-    list[npt.NDArray[np.complex64]],
-    tuple[npt.NDArray[np.complex64]],
-    np.ndarray # type: ignore
 ]
 FloatLike = [
     None,  # Untyped executors are assumed to return floats.
