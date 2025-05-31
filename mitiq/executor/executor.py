@@ -25,7 +25,7 @@ DensityMatrixLike = [
     Iterable[np.ndarray],  # type: ignore
     list[np.ndarray],  # type: ignore
     Sequence[np.ndarray],  # type: ignore
-    tuple[np.ndarray],
+    tuple[np.ndarray], # type: ignore
     npt.NDArray[np.complex64],
     list[npt.NDArray[np.complex64]],
     list[np.ndarray],  # type: ignore

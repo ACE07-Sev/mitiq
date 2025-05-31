@@ -28,7 +28,7 @@ from cirq import Circuit as _Circuit
 class EnhancedEnumMeta(EnumMeta):
     def __str__(cls) -> str:
         return ", ".join(
-            [member.name.lower() for member in cast(Type[Enum], cls)]
+            [member.name.lower() for member in cast(type[Enum], cls)]
         )
 
 

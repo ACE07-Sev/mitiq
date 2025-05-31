@@ -89,7 +89,7 @@ def pauli_twirling_calibrate(
             qubits=qubits,
         )
     else:
-        calibration_measurement_outcomes = zero_state_shadow_outcomes
+        calibration_measurement_outcomes = zero_state_shadow_outcomes # type: ignore
     # get the median of means estimation of Pauli fidelities
     return get_pauli_fidelities(
         calibration_measurement_outcomes, k_calibration, locality=locality

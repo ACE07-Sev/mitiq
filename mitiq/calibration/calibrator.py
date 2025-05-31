@@ -279,7 +279,7 @@ class Calibrator:
         """
         num_circuits = len(self.problems)
         num_options = sum(
-            strategy.num_circuits_required() for strategy in self.strategies
+            strategy.num_circuits_required() for strategy in self.strategies # type: ignore
         )
 
         noisy = num_circuits * (num_options + 1)
