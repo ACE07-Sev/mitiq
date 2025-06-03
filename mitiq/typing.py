@@ -18,7 +18,7 @@ from collections import Counter
 from collections.abc import Sequence
 from dataclasses import dataclass
 from enum import Enum, EnumMeta
-from typing import Any, cast
+from typing import Any, Union, cast
 
 import numpy as np
 import numpy.typing as npt
@@ -67,14 +67,9 @@ except ImportError:  # pragma: no cover
 
 
 # Supported + installed quantum programs.
-QPROGRAM = (
-    _Circuit
-    | _Program
-    | _QuantumCircuit
-    | _BKCircuit
-    | _QuantumTape
-    | _QiboCircuit
-)
+QPROGRAM = Union[
+    _Circuit, _Program, _QuantumCircuit, _BKCircuit, _QuantumTape, _QiboCircuit
+]
 
 
 # Supported quantum programs.

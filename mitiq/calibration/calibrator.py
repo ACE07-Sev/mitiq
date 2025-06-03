@@ -287,7 +287,7 @@ class Calibrator:
         """
         num_circuits = len(self.problems)
         num_options = sum(
-            strategy.num_circuits_required() # type: ignore
+            strategy.num_circuits_required()  # type: ignore
             for strategy in self.strategies  # type: ignore
         )
 
