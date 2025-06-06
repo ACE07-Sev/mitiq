@@ -265,7 +265,7 @@ class Calibrator:
 
         self._cirq_executor = Executor(cirq_execute)  # type: ignore [arg-type]
 
-        # Executor for ideal circuits if providedAdd commentMore actions
+        # Executor for ideal circuits if provided
         if self.ideal_executor is not None:
             ideal_exec: Executor = self.ideal_executor
 

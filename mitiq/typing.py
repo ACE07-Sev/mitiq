@@ -230,7 +230,7 @@ class MeasurementResult:
 # An `executor` function inputs a quantum program and outputs an object from
 # which expectation values can be computed. Explicitly, this object can be one
 # of the following types:
-# - -float: The expectation value itself.
+# - float: The expectation value itself.
 # - MeasurementResult: Sampled bitstrings.
-#  np.ndarray: Density matrix.
+# - np.ndarray: Density matrix.
 QuantumResult = float | MeasurementResult | np.ndarray
