@@ -6,6 +6,7 @@
 """Tests for circuit conversions."""
 
 import cirq
+from cudaq import PyKernel
 import numpy as np
 import pennylane as qml
 import pytest
@@ -63,6 +64,7 @@ circuit_types = {
     "braket": BKCircuit,
     "pennylane": qml.tape.QuantumTape,
     "qibo": qibo.models.circuit.Circuit,
+    "cudaq": PyKernel
 }
 
 

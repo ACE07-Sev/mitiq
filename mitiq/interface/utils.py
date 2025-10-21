@@ -137,6 +137,16 @@ def _count_gate_arities_qibo(circuit: Any) -> dict[str, int]:
             counts["nq"] += 1
     return counts
 
+def _count_gate_arities_cudaq(circuit: Any) -> dict[str, int]:
+    """Counts gates in a Cudaq circuit grouped by arity."""
+    try:
+        import cudaq
+    except ImportError as exc:  # pragma: no cover
+        raise UnsupportedCircuitError("Cudaq is not installed.") from exc
+
+    counts = {"1q": 0, "2q": 0, "nq": 0}
+
+    return counts
 
 def _get_circuit_type(circuit: QPROGRAM) -> str:
     """Returns the framework type of ``circuit``."""
@@ -156,6 +166,8 @@ def _get_circuit_type(circuit: QPROGRAM) -> str:
         return "pennylane"
     if "qibo" in package:
         return "qibo"
+    if "cudaq" in package:
+        return "cudaq"
     if isinstance(circuit, cirq.Circuit):
         return "cirq"
     raise UnsupportedCircuitError(
@@ -170,6 +182,7 @@ _COUNT_FUNCTIONS: dict[str, Callable[[Any], dict[str, int]]] = {
     "braket": _count_gate_arities_braket,
     "pennylane": _count_gate_arities_pennylane,
     "qibo": _count_gate_arities_qibo,
+    "cudaq": _count_gate_arities_cudaq
 }
 
 

@@ -8,6 +8,7 @@ Cuda-Quantum's circuit representation.
 """
 
 from cirq import Circuit
+import cudaq
 from cudaq import PyKernel
 from qbraid.transpiler.conversions.cirq import cirq_to_qasm2
 from qbraid.transpiler.conversions.cudaq import cudaq_to_qasm2
@@ -46,8 +47,16 @@ def to_cudaq(circuit: Circuit) -> PyKernel:
     # We need to transpile as `openqasm3_to_cudaq` cannot work
     # with arbitrary gates, i.e., ccx, rxx, etc.
     qiskit_qc = transpile(qiskit_qc, basis_gates=["u3", "cx"])
-    qasm3_str = qiskit_to_qasm3(qiskit_qc)
-    openqasm3_str = qasm3_to_openqasm3(qasm3_str)
-    cudaq_qc = openqasm3_to_cudaq(openqasm3_str)
+
+    cudaq_qc = cudaq.make_kernel()
+    qr = cudaq_qc.qalloc(qiskit_qc.num_qubits)
+    for gate in qiskit_qc:
+        if gate.name == "u3":
+            qubit = gate.qubits[0]._index
+            params = gate.params
+            cudaq_qc.u3(*params, qr[qubit])
+        else:
+            qubits = [qubit._index for qubit in gate.qubits]
+            cudaq_qc.cx(qr[qubits[0]], qr[qubits[1]])
 
     return cudaq_qc
