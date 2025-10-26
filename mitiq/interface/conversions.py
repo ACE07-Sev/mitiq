@@ -83,6 +83,7 @@ def convert_to_mitiq(circuit: QPROGRAM) -> tuple[cirq.Circuit, str]:
 
     try:
         package = circuit.__module__
+        print(package)
     except AttributeError:
         raise UnsupportedCircuitError(
             "Could not determine the package of the input circuit."
@@ -113,6 +114,12 @@ def convert_to_mitiq(circuit: QPROGRAM) -> tuple[cirq.Circuit, str]:
 
         input_circuit_type = "qibo"
         conversion_function = from_qibo
+
+    elif "openqasm3.ast" in package:
+        from mitiq.interface.mitiq_openqasm.conversions import from_openqasm
+
+        input_circuit_type = "openqasm"
+        conversion_function = from_openqasm
 
     elif package in TO_MITIQ_DICT:
         input_circuit_type = package
@@ -187,6 +194,11 @@ def convert_from_mitiq(
 
         def conversion_function(circ: cirq.Circuit) -> cirq.Circuit:
             return circ
+
+    elif conversion_type == "openqasm":
+        from mitiq.interface.mitiq_openqasm.conversions import to_openqasm
+
+        conversion_function = to_openqasm
 
     else:
         raise UnsupportedCircuitError(

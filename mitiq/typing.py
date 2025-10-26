@@ -65,10 +65,20 @@ try:
 except ImportError:  # pragma: no cover
     _QiboCircuit = _Circuit
 
+try:
+    from openqasm3.ast import Program as _OpenQASMCircuit
+except ImportError:  # pragma: no cover
+    _OpenQASMCircuit = _Circuit  # type: ignore
 
 # Supported + installed quantum programs.
 QPROGRAM = Union[
-    _Circuit, _Program, _QuantumCircuit, _BKCircuit, _QuantumTape, _QiboCircuit
+    _Circuit,
+    _Program,
+    _QuantumCircuit,
+    _BKCircuit,
+    _QuantumTape,
+    _QiboCircuit,
+    _OpenQASMCircuit,
 ]
 
 
@@ -80,6 +90,7 @@ class SUPPORTED_PROGRAM_TYPES(EnhancedEnum):
     PYQUIL = _Program
     QIBO = _QiboCircuit
     QISKIT = _QuantumCircuit
+    OPENQASM = _OpenQASMCircuit
 
 
 # Define MeasurementResult, a result obtained by measuring qubits on a quantum
