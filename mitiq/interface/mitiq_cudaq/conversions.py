@@ -7,15 +7,11 @@
 Cuda-Quantum's circuit representation.
 """
 
-from cirq import Circuit
 import cudaq
+from cirq import Circuit
 from cudaq import PyKernel
-from qbraid.transpiler.conversions.cirq import cirq_to_qasm2
 from qbraid.transpiler.conversions.cudaq import cudaq_to_qasm2
-from qbraid.transpiler.conversions.openqasm3 import openqasm3_to_cudaq
-from qbraid.transpiler.conversions.qasm2 import qasm2_to_cirq, qasm2_to_qiskit
-from qbraid.transpiler.conversions.qasm3 import qasm3_to_openqasm3
-from qbraid.transpiler.conversions.qiskit import qiskit_to_qasm3
+from qbraid.transpiler.conversions.qasm2 import qasm2_to_cirq
 
 
 def from_cudaq(kernel: PyKernel) -> Circuit:
@@ -27,8 +23,7 @@ def from_cudaq(kernel: PyKernel) -> Circuit:
     Returns:
         Circuit: The converted cirq Circuit.
     """
-    qasm2_str = cudaq_to_qasm2(kernel)
-    return qasm2_to_cirq(qasm2_str)
+    return qasm2_to_cirq(cudaq_to_qasm2(kernel))
 
 
 def to_cudaq(circuit: Circuit) -> PyKernel:
@@ -42,21 +37,49 @@ def to_cudaq(circuit: Circuit) -> PyKernel:
     """
     from qiskit import transpile
 
-    qasm2_str = cirq_to_qasm2(circuit)
-    qiskit_qc = qasm2_to_qiskit(qasm2_str)
-    # We need to transpile as `openqasm3_to_cudaq` cannot work
-    # with arbitrary gates, i.e., ccx, rxx, etc.
-    qiskit_qc = transpile(qiskit_qc, basis_gates=["u3", "cx"])
+    from mitiq.interface.mitiq_qiskit import to_qiskit
+
+    qiskit_qc = to_qiskit(circuit)
+
+    qiskit_qc = transpile(
+        qiskit_qc,
+        basis_gates=["x", "y", "z", "h", "rx", "rz", "cx", "ccx"],
+        optimization_level=0,
+    )
 
     cudaq_qc = cudaq.make_kernel()
     qr = cudaq_qc.qalloc(qiskit_qc.num_qubits)
+
     for gate in qiskit_qc:
-        if gate.name == "u3":
+        if gate.name == "x":
             qubit = gate.qubits[0]._index
-            params = gate.params
-            cudaq_qc.u3(*params, qr[qubit])
-        else:
+            cudaq_qc.x(qr[qubit])
+        elif gate.name == "y":
+            qubit = gate.qubits[0]._index
+            cudaq_qc.y(qr[qubit])
+        elif gate.name == "z":
+            qubit = gate.qubits[0]._index
+            cudaq_qc.z(qr[qubit])
+        elif gate.name == "h":
+            qubit = gate.qubits[0]._index
+            cudaq_qc.h(qr[qubit])
+        elif gate.name == "rx":
+            qubit = gate.qubits[0]._index
+            param = gate.params[0]
+            cudaq_qc.rx(param, qr[qubit])
+        elif gate.name == "rz":
+            qubit = gate.qubits[0]._index
+            param = gate.params[0]
+            cudaq_qc.rz(param, qr[qubit])
+        elif gate.name == "cx":
             qubits = [qubit._index for qubit in gate.qubits]
             cudaq_qc.cx(qr[qubits[0]], qr[qubits[1]])
+        elif gate.name in ["ccx", "toffoli"]:
+            qubits = [qubit._index for qubit in gate.qubits]
+            cudaq_qc.cx([qr[qubits[0]], qr[qubits[1]]], qr[qubits[2]])
+        elif gate.name == "measure":
+            qubits = [qubit._index for qubit in gate.qubits]
+            for qubit in qubits:
+                cudaq_qc.mz(qr[qubit])
 
     return cudaq_qc
