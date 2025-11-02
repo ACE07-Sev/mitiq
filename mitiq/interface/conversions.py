@@ -139,7 +139,7 @@ def convert_to_mitiq(circuit: QPROGRAM) -> tuple[cirq.Circuit, str]:
         )
 
     try:
-        mitiq_circuit = conversion_function(circuit)
+        mitiq_circuit = conversion_function(circuit)  # type: ignore
     except Exception:
         raise CircuitConversionError(
             "Circuit could not be converted to an internal Mitiq circuit. "
@@ -332,7 +332,7 @@ def accept_qprogram_and_validate(
             )
 
             # Avoid mutating the input circuit
-            circuit = circuit.copy()
+            circuit = circuit.copy()  # type: ignore
             # Removing barriers is necessary to correctly identify idle qubits
             circuit = RemoveBarriers()(circuit)
             # Apply identity gates to idle qubits otherwise they get lost

@@ -195,14 +195,14 @@ def execute_with_pec(
     results = executor.evaluate(sampled_circuits, observable, force_run_all)
 
     # Evaluate unbiased estimators [Temme2017] [Endo2018] [Takagi2020]
-    unbiased_estimators = [norm * s * val for s, val in zip(signs, results)]
+    unbiased_estimators = [norm * s * val for s, val in zip(signs, results)]  # type: ignore
 
     pec_value = cast(float, np.average(unbiased_estimators))
 
     if not full_output:
         return pec_value
 
-    num_circuits = len(sampled_circuits)
+    num_circuits = len(sampled_circuits)  # type: ignore
     # Build dictionary with additional results and data
     pec_data: dict[str, Any] = {
         "num_samples": num_circuits,
