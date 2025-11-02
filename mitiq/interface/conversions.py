@@ -83,7 +83,6 @@ def convert_to_mitiq(circuit: QPROGRAM) -> tuple[cirq.Circuit, str]:
 
     try:
         package = circuit.__module__
-        print(package)
     except AttributeError:
         raise UnsupportedCircuitError(
             "Could not determine the package of the input circuit."
