@@ -14,7 +14,6 @@ import qiskit
 from braket.circuits import Circuit as BKCircuit
 from braket.circuits import Instruction
 from braket.circuits import gates as braket_gates
-from openqasm3.ast import Program as OpenQASMProgram
 from pyquil import Program, gates
 
 from mitiq import SUPPORTED_PROGRAM_TYPES
@@ -64,7 +63,7 @@ circuit_types = {
     "braket": BKCircuit,
     "pennylane": qml.tape.QuantumTape,
     "qibo": qibo.models.circuit.Circuit,
-    "openqasm": OpenQASMProgram,
+    "openqasm": QASMType,
 }
 
 

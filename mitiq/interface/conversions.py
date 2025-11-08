@@ -332,7 +332,7 @@ def accept_qprogram_and_validate(
             )
 
             # Avoid mutating the input circuit
-            circuit = circuit.copy()  # type: ignore
+            circuit = circuit.copy()
             # Removing barriers is necessary to correctly identify idle qubits
             circuit = RemoveBarriers()(circuit)
             # Apply identity gates to idle qubits otherwise they get lost

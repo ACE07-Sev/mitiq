@@ -131,7 +131,7 @@ def scale_parameters(
     final_moments = []
     noise = (scale_factor - 1) * base_variance
     rng = np.random.RandomState(seed)
-    for moment in circuit:  # type: ignore
+    for moment in circuit:
         curr_moment = []
         for op in moment.operations:  # type: ignore
             gate = copy.deepcopy(op.gate)

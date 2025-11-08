@@ -8,11 +8,11 @@ OpenQASM's circuit representation.
 """
 
 from cirq import Circuit
-from openqasm3 import parser, printer
-from openqasm3.ast import Program
+
+from mitiq.typing import QasmStringType
 
 
-def from_openqasm(circuit: Program) -> Circuit:
+def from_openqasm(circuit: str) -> Circuit:
     """Convert a OpenQASM program to a cirq Circuit.
     Args:
         circuit (str): The OpenQASM program to convert.
@@ -21,10 +21,10 @@ def from_openqasm(circuit: Program) -> Circuit:
     """
     from mitiq.interface.mitiq_qiskit import from_qasm
 
-    return from_qasm(printer.dumps(circuit))
+    return from_qasm(circuit)
 
 
-def to_openqasm(circuit: Circuit) -> Program:
+def to_openqasm(circuit: Circuit) -> str:
     """Convert a cirq Circuit to OpenQASM program.
     Args:
         circuit (Circuit): The cirq Circuit to convert.
@@ -33,4 +33,4 @@ def to_openqasm(circuit: Circuit) -> Program:
     """
     from mitiq.interface.mitiq_qiskit import to_qasm
 
-    return parser.parse(to_qasm(circuit))  # type: ignore
+    return QasmStringType(to_qasm(circuit))

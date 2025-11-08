@@ -66,7 +66,15 @@ except ImportError:  # pragma: no cover
     _QiboCircuit = _Circuit
 
 try:
-    from openqasm3.ast import Program as _OpenQASMCircuit
+    from openqasm3.ast import Program
+
+    class QasmStringType(str):
+        __module__ = Program.__module__
+
+        def copy(self) -> "QasmStringType":
+            return self
+
+    _OpenQASMCircuit = QasmStringType
 except ImportError:  # pragma: no cover
     _OpenQASMCircuit = _Circuit  # type: ignore
 
