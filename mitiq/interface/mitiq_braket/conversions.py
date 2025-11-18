@@ -187,6 +187,14 @@ def _translate_one_qubit_braket_instruction_to_cirq_operation(
         return [cirq_ops.rz(gate.angle).on(*qubits)]
     elif isinstance(gate, braket_gates.PhaseShift):
         return [cirq_ops.Z.on(*qubits) ** (gate.angle / np.pi)]
+    elif isinstance(gate, braket_gates.PRx):
+        return [
+            cirq_ops.PhasedXPowGate(
+                phase_exponent=gate.angle_2 / np.pi,
+                exponent=gate.angle_1 / np.pi,
+                global_shift=-0.5,
+            ).on(*qubits)
+        ]
     elif isinstance(gate, braket_gates.GPi):
         return [
             cirq_ionq_ops.GPIGate(phi=gate.angle / (2 * np.pi)).on(*qubits)
@@ -281,13 +289,12 @@ def _translate_two_qubit_braket_instruction_to_cirq_operation(
         ]
     elif isinstance(gate, braket_gates.XY):
         return [cirq_ops.ISwapPowGate(exponent=gate.angle / np.pi).on(*qubits)]
-
-    # Two-qubit two-parameters parameterized gates.
     elif isinstance(gate, braket_gates.MS):
         return [
             cirq_ionq_ops.MSGate(
                 phi0=gate.angle_1 / (2 * np.pi),
                 phi1=gate.angle_2 / (2 * np.pi),
+                theta=gate.angle_3 / (2 * np.pi),
             ).on(*qubits)
         ]
 
