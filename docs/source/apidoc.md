@@ -392,6 +392,13 @@ See Ref. {cite}`Czarnik_2021_Quantum` for more details on these methods.
    :members:
 ```
 
+#### Pennylane Conversions
+
+```{eval-rst}
+.. automodule:: mitiq.interface.mitiq_pennylane.conversions
+   :members:
+```
+
 #### PyQuil Conversions
 
 ```{eval-rst}
@@ -417,5 +424,12 @@ See Ref. {cite}`Czarnik_2021_Quantum` for more details on these methods.
 
 ```{eval-rst}
 .. automodule:: mitiq.interface.mitiq_qiskit.qiskit_utils
+   :members:
+```
+
+#### OpenQASM Conversions
+
+```{eval-rst}
+.. automodule:: mitiq.interface.mitiq_openqasm.conversions
    :members:
 ```
