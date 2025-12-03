@@ -81,6 +81,11 @@ def convert_to_mitiq(circuit: QPROGRAM) -> tuple[cirq.Circuit, str]:
     """
     conversion_function: Callable[[Any], cirq.Circuit]
 
+    if isinstance(circuit, str) and hasattr(circuit, "__module__") is False:
+        from mitiq.typing import QasmStringType
+
+        circuit = QasmStringType(circuit)
+
     try:
         package = circuit.__module__
     except AttributeError:

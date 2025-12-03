@@ -122,7 +122,7 @@ def test_register_from_to_mitiq():
     assert input_type == qasm_circuit.__module__
 
 
-@pytest.mark.parametrize("item", ("circuit", 1, None))
+@pytest.mark.parametrize("item", (1, None))
 def test_to_mitiq_bad_types(item):
     with pytest.raises(
         UnsupportedCircuitError,
@@ -185,6 +185,20 @@ def test_converter(circuit_and_type):
     cirq_scaled = scaling_function(circuit, return_mitiq=True)
     assert isinstance(cirq_scaled, cirq.Circuit)
     assert _equal(cirq_scaled, cirq_circuit)
+
+
+def test_qasm_string_converter():
+    circuit = qiskit.QuantumCircuit(2)
+    circuit.h(0)
+    circuit.cx(0, 1)
+    qasm_str = qiskit.qasm3.dumps(circuit)
+
+    cirq_circuit = cirq.Circuit()
+    qr = cirq.LineQubit.range(2)
+    cirq_circuit.append(cirq.ops.H(qr[0]))
+    cirq_circuit.append(cirq.ops.CX(qr[0], qr[1]))
+
+    assert _equal(cirq_circuit, convert_to_mitiq(qasm_str)[0])
 
 
 @pytest.mark.parametrize("nbits", [1, 10])

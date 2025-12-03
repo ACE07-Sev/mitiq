@@ -138,7 +138,6 @@ def _count_gate_arities_qibo(circuit: Any) -> dict[str, int]:
     return counts
 
 
-# TODO: Temporary solution
 def _count_gate_arities_openqasm(circuit: Any) -> dict[str, int]:
     """Counts gates in a OpenQASM circuit grouped by arity."""
     from mitiq.interface.conversions import convert_to_mitiq
