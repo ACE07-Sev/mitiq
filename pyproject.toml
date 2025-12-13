@@ -24,7 +24,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "numpy>=1.25.2,<2.0.0",
+    "numpy>=1.25.2,<=2.0.0",
     "scipy>=1.10.1,<=1.16.2",
     "cirq-core>=1.6.0,<1.7.0",
     "tabulate",
@@ -45,13 +45,16 @@ pyquil = [
     "qbraid~=0.10.0",
 ]
 qibo = [
-    "qibo~=0.2.16",
+    "qibo~=0.2.4",
 ]
 qiskit = [
     "qiskit~=2.0.0",
     "qiskit-aer~=0.17.0",
     "qiskit-ibm-runtime~=0.41.1",
     "ply==3.11",
+]
+qrisp = [
+    "qrisp~=0.7"
 ]
 
 [dependency-groups]
