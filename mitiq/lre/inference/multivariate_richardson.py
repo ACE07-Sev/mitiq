@@ -12,8 +12,8 @@ from itertools import product
 from typing import Any
 
 import numpy as np
+import numpy.typing as npt
 from cirq import Circuit
-from numpy.typing import NDArray
 
 from mitiq.interface import accept_any_qprogram_as_input
 from mitiq.lre.multivariate_scaling.layerwise_folding import (
@@ -58,7 +58,7 @@ def sample_matrix(
     degree: int,
     fold_multiplier: int,
     num_chunks: int | None = None,
-) -> NDArray[Any]:
+) -> npt.NDArray[Any]:
     r"""
     Defines the square sample matrix required for multivariate extrapolation as
     defined in :cite:`Russo_2024_LRE`.
@@ -71,9 +71,10 @@ def sample_matrix(
         input_circuit: Quantum circuit to be scaled.
         degree: Degree of the multivariate polynomial.
         fold_multiplier: Scaling gap required by unitary folding.
-        num_chunks: Number of desired approximately equal chunks. When the
-            number of chunks is the same as the layers in the input circuit,
-            the input circuit is unchanged.
+        num_chunks: The number of equally-sized circuit chunks. Noise
+            scaling is applied to each chunk independently. Ranges from 1
+            (all gates in one chunk, similar to ZNE) to the
+            number of circuit layers (default, each layer is a separate chunk).
 
     Returns:
         Matrix of the evaluated monomial basis terms from the scale factor
@@ -148,9 +149,10 @@ def multivariate_richardson_coefficients(
         input_circuit: Circuit to be scaled.
         degree: Degree of the multivariate polynomial.
         fold_multiplier: Scaling gap required by unitary folding.
-        num_chunks: Number of desired approximately equal chunks. When the
-            number of chunks is the same as the layers in the input circuit,
-            the input circuit is unchanged.
+        num_chunks: The number of equally-sized circuit chunks. Noise
+            scaling is applied to each chunk independently. Ranges from 1
+            (all gates in one chunk, similar to ZNE) to the number of circuit
+            layers (default, each layer is a separate chunk).
 
     Returns:
         List of the evaluated monomial basis terms using the scale factor

@@ -13,9 +13,14 @@ on:
     branches:
       - main
 
+permissions: {}
+
 jobs:
   docs:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: write
     steps:
       - name: Check out mitiq
         uses: actions/checkout@v6
@@ -43,7 +48,7 @@ jobs:
           echo "hash=$HASH" >> $GITHUB_OUTPUT
 
       - name: Fetch Jupyter cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ./docs/build/.jupyter_cache
           key: jupyter-cache-${{ steps.gen_hash.outputs.hash }}

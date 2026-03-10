@@ -165,7 +165,9 @@ class MeasurementResult:
         if isinstance(self.result, np.ndarray):
             self.result = self.result.tolist()
 
-        self._bitstrings = np.array(self.result)
+        self._bitstrings: npt.NDArray[np.int64] = np.array(
+            self.result, dtype=np.int64
+        )
 
         if not self.qubit_indices:
             self.qubit_indices = tuple(range(self.nqubits))
@@ -176,7 +178,9 @@ class MeasurementResult:
                     f"are {len(self.qubit_indices)} `qubit_indices`."
                 )
 
-        self._measurements = dict(zip(self.qubit_indices, self._bitstrings.T))
+        self._measurements: dict[int, npt.NDArray[np.int64]] = dict(
+            zip(self.qubit_indices, self._bitstrings.T)
+        )
 
     @property
     def shots(self) -> int:
