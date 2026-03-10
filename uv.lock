@@ -1272,7 +1272,7 @@ wheels = [
 
 [[package]]
 name = "jax"
-version = "0.6.0"
+version = "0.7.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "jaxlib" },
@@ -1281,14 +1281,14 @@ dependencies = [
     { name = "opt-einsum" },
     { name = "scipy" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/8e/ab/1229e0e027df6ab9e1d343f2900ab2fcca41bfde688df3b26600feb87e59/jax-0.6.0.tar.gz", hash = "sha256:abc690c530349ce470eeef92e09a7bd8a0460424b4980bc72feea45332a636bf", size = 2016538, upload-time = "2025-04-17T00:02:27.861Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/bc/e8/b393ee314d3b042bd66b986d38e52f4e6046590399d916381265c20467d3/jax-0.7.1.tar.gz", hash = "sha256:118f56338c503361d2791f069d24339d8d44a8db442ed851d2e591222fb7a56d", size = 2428411, upload-time = "2025-08-20T15:55:46.098Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/31/25/32c5e2c919da4faaea9ef5088437ab6e01738c49402e4ec8a6c7b49e30ef/jax-0.6.0-py3-none-any.whl", hash = "sha256:22b21827597c6d6b46e88543b4fc372fcddf1cc1247660452de020cc4bda1afc", size = 2338416, upload-time = "2025-04-17T00:00:18.542Z" },
+    { url = "https://files.pythonhosted.org/packages/83/81/793d78c91b0546b3b1f08e55fdd97437174171cd7d70e46098f1a4d94b7b/jax-0.7.1-py3-none-any.whl", hash = "sha256:056e576e0e58465506125699f48111ac8891cce4c9ebf034704c42b219dfd4a6", size = 2827341, upload-time = "2025-08-20T15:55:44.576Z" },
 ]
 
 [[package]]
 name = "jaxlib"
-version = "0.6.0"
+version = "0.7.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "ml-dtypes" },
@@ -1296,14 +1296,14 @@ dependencies = [
     { name = "scipy" },
 ]
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/38/13/f072d016428b3abccdce09fe9154f7ddb8008fbc74e977f122988b177b69/jaxlib-0.6.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:ef163cf07de00bc5690169e97fafaadc378f1c381f0287e8a473e78ab5bab1b5", size = 53466890, upload-time = "2025-04-17T00:01:14.981Z" },
-    { url = "https://files.pythonhosted.org/packages/42/ad/e7e580d0c3d8da64d610934342ac71c984e24d561cb97390ee05f51208b0/jaxlib-0.6.0-cp311-cp311-manylinux2014_aarch64.whl", hash = "sha256:c0ae959899802e1329cc8ec5a2b4d4be9a076b5beb2052eb49ba37514e623ebc", size = 77475513, upload-time = "2025-04-17T00:01:19.68Z" },
-    { url = "https://files.pythonhosted.org/packages/f9/d3/da7e18974de849093047251052d64228ab895ec0a2b12390f5a2dc7172d5/jaxlib-0.6.0-cp311-cp311-manylinux2014_x86_64.whl", hash = "sha256:bed45525e3bb5ec08630bfd207c09af9d62e9ff13f5f07c2ee2cfd8ed8411ba1", size = 87767967, upload-time = "2025-04-17T00:01:25.582Z" },
-    { url = "https://files.pythonhosted.org/packages/d7/4c/6ffb2c208cdf8e1bbaf0d48922ab58327700238b6efd4a9295af3563533c/jaxlib-0.6.0-cp311-cp311-win_amd64.whl", hash = "sha256:ec61ca368d0708e1a7543eae620823025bfd405fa9ab331302f209833e970107", size = 56389049, upload-time = "2025-04-17T00:01:31.054Z" },
-    { url = "https://files.pythonhosted.org/packages/7d/f4/ab3b96c6f2fb6a4c83bce6b49ccae760a8c53ddb788e8a334bf9124d2607/jaxlib-0.6.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:7e3ce2ef0edc9b48b36e2704c36181f1ece7a12ac114df753db4286ea2c6e8b8", size = 53481042, upload-time = "2025-04-17T00:01:35.765Z" },
-    { url = "https://files.pythonhosted.org/packages/90/af/d6ef7f3aba000446a8829510d4015d6757a8fb67638197de625ed71c9a19/jaxlib-0.6.0-cp312-cp312-manylinux2014_aarch64.whl", hash = "sha256:2536fa93ec148d5016da8b2077ba66325b0d86aae2289a61c126877f042b3d1c", size = 77475532, upload-time = "2025-04-17T00:01:40.398Z" },
-    { url = "https://files.pythonhosted.org/packages/a7/c4/1a252f12e3ed0a3986cfb36bbdc38ff33e358f58ee7a0ddb5d6bb126cb31/jaxlib-0.6.0-cp312-cp312-manylinux2014_x86_64.whl", hash = "sha256:b6d85b8d1fd79248b04503517201e72fcbcd3980cf791d37e814709ea50a3c82", size = 87788826, upload-time = "2025-04-17T00:01:47.247Z" },
-    { url = "https://files.pythonhosted.org/packages/65/81/5a989ecd4819de26ebffe90a165b81ceec1c98cd20214764c4b7c15c5837/jaxlib-0.6.0-cp312-cp312-win_amd64.whl", hash = "sha256:554512c1445ee69c566ef097c3dbdd09e9d9908523eef222c589a559f4220370", size = 56412726, upload-time = "2025-04-17T00:01:52.59Z" },
+    { url = "https://files.pythonhosted.org/packages/8b/af/5058d545e95f99a54289648f5430cc3c23263dd70a1391e7491f24ed328d/jaxlib-0.7.1-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:3f32c3e4c167b7327c342e82d3df84079714ea0b43718be871d039999670b3c9", size = 57686934, upload-time = "2025-08-20T15:55:58.989Z" },
+    { url = "https://files.pythonhosted.org/packages/e8/77/ef7f6cd03e699da7d9755f88741c29b3015654473fc9d5f906da19edcb47/jaxlib-0.7.1-cp311-cp311-manylinux2014_aarch64.whl", hash = "sha256:9fb189c3b39470c4394ffcb18b71e47cffc5bf85e8fcb1e33692686b0c3e04dd", size = 85134885, upload-time = "2025-08-20T15:56:03.484Z" },
+    { url = "https://files.pythonhosted.org/packages/4d/72/304018d46703f337787f010735f70d17212f86778fcba8bb5cf678f8e460/jaxlib-0.7.1-cp311-cp311-manylinux_2_27_x86_64.whl", hash = "sha256:eaf5f68f53bf4dcb93b6512538547667625588e4f3ccaeef048788fd18d8c0d5", size = 81147868, upload-time = "2025-08-20T15:56:07.214Z" },
+    { url = "https://files.pythonhosted.org/packages/f7/b7/0f0df407518691099d659ba6e19db01320dfb58e49d80594eaddd57d77c1/jaxlib-0.7.1-cp311-cp311-win_amd64.whl", hash = "sha256:ab4510fbaeafac6c794ab335f23e71200d824c48f6a0ab20553db8deab8805c5", size = 61185342, upload-time = "2025-08-20T15:56:10.452Z" },
+    { url = "https://files.pythonhosted.org/packages/ef/1f/10543d7a3f7e76dd4bbdc77134890ac2f41bc8570c565961464f6320009b/jaxlib-0.7.1-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:127c07c727703e5d59f84f655169bec849f4422e52f8546349cecc30a8a13e1d", size = 57682851, upload-time = "2025-08-20T15:56:13.395Z" },
+    { url = "https://files.pythonhosted.org/packages/de/4d/76ee71959311fe3da9951aa6f55af8f98eb3572bb322f5a7c89faf7ab933/jaxlib-0.7.1-cp312-cp312-manylinux2014_aarch64.whl", hash = "sha256:f0f1f52956b8c2518ab000a4d3d8c21be777e1d47f926ba03640e391061a41ee", size = 85133707, upload-time = "2025-08-20T15:56:16.908Z" },
+    { url = "https://files.pythonhosted.org/packages/0d/50/e37d02e250f5feb755112ec95b1c012a36d48a99209277267037d100f630/jaxlib-0.7.1-cp312-cp312-manylinux_2_27_x86_64.whl", hash = "sha256:74abd3135797f82440dd3711a35cba16c430d1bba65474b85bb70e41733a52e9", size = 81156916, upload-time = "2025-08-20T15:56:20.41Z" },
+    { url = "https://files.pythonhosted.org/packages/5a/97/c6c28dfe57cccffd85512615416024b52dd327d78270204caba9311e71f1/jaxlib-0.7.1-cp312-cp312-win_amd64.whl", hash = "sha256:c4023863b14f280516f24ecb7539b4300a3236ea81ed69ad82595beceed1ba1f", size = 61212445, upload-time = "2025-08-20T15:56:23.929Z" },
 ]
 
 [[package]]
@@ -1729,10 +1729,11 @@ requires-dist = [
     { name = "ply", marker = "extra == 'qiskit'", specifier = "==3.11" },
     { name = "pyquil", marker = "extra == 'pyquil'", specifier = "~=4.17.0" },
     { name = "qbraid", marker = "extra == 'pyquil'", specifier = ">=0.10,<0.12" },
-    { name = "qibo", marker = "extra == 'qibo'", specifier = ">=0.2.16,<0.4.0" },
+    { name = "qibo", marker = "extra == 'qibo'", specifier = "==0.2.4" },
     { name = "qiskit", marker = "extra == 'qiskit'", specifier = ">=2.0.0,<3.0.0" },
     { name = "qiskit-aer", marker = "extra == 'qiskit'", specifier = "~=0.17.0" },
     { name = "qiskit-ibm-runtime", marker = "extra == 'qiskit'", specifier = "~=0.41.1" },
+    { name = "qrisp", marker = "extra == 'qrisp'", specifier = "==0.8.2" },
     { name = "scipy", specifier = ">=1.10.1,<=1.17.1" },
     { name = "tabulate" },
 ]
@@ -2915,7 +2916,7 @@ wheels = [
 
 [[package]]
 name = "qibo"
-version = "0.3.1"
+version = "0.2.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cma" },
@@ -2925,9 +2926,9 @@ dependencies = [
     { name = "sympy" },
     { name = "tabulate" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ac/d9/a1b73c851da777b853c7bc75cba7be269bef03a03abb9ce630d4a4854225/qibo-0.3.1.tar.gz", hash = "sha256:4464a9ea9573dfa601aec1fa04338a07dab34984695458ca98c20424dca84e22", size = 298384, upload-time = "2026-03-06T15:41:53.096Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/9b/00/9d354bdcc35fc2c289fd935114533d7057d35aa15439480dcb90e933822e/qibo-0.2.4.tar.gz", hash = "sha256:8ab8519b107fdfa57a7aa19d9243403437ceb4a776454816ce3071a00bdc15ff", size = 203860, upload-time = "2024-01-12T10:18:27.078Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8a/0c/db11039d83afd53a2b2b3974b00148a8853ee4728703a893b5e66936d8e1/qibo-0.3.1-py3-none-any.whl", hash = "sha256:91b9839ee3d8e29602976696d7f0a487062a02eb34d89697320720c0752566c4", size = 342658, upload-time = "2026-03-06T15:41:51.715Z" },
+    { url = "https://files.pythonhosted.org/packages/44/24/dfc416e24fccef148aff3c10d73e8a61d70ad1c2929e1ebb1b722608f9c1/qibo-0.2.4-py3-none-any.whl", hash = "sha256:5aaf7693004d8106eff3cc614e20ff03e7016742ab129e7ece76c84b3deb7366", size = 236659, upload-time = "2024-01-12T10:18:25.065Z" },
 ]
 
 [[package]]
@@ -3019,7 +3020,7 @@ wheels = [
 
 [[package]]
 name = "qrisp"
-version = "0.7.17"
+version = "0.8.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "dill" },
@@ -3039,9 +3040,9 @@ dependencies = [
     { name = "tqdm" },
     { name = "waitress" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/bb/24/549165ccbc3747723e5eedc4c80d1419093efd7ded74c520f05d889058f1/qrisp-0.7.17.tar.gz", hash = "sha256:3e283920c0086d49545979845864911eac06ca1542043a6805863f1bbb2e62be", size = 583470, upload-time = "2025-12-05T17:22:56.559Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/3e/c4/719c4ebcf7e22f9012a218def250c2c857413cc962b3befe9c7aa07eaec0/qrisp-0.8.2.tar.gz", hash = "sha256:c12a5e6cde4ba1a6bf8ade9ac13bce701eced4a5c98b7c9ce1b2be3406026af8", size = 716849, upload-time = "2026-03-01T22:11:17.382Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/82/43/498e4a7cdee930070fe1fe4d7aa7c86d2975d27a2e70bfa0aac5141d92e3/qrisp-0.7.17-py3-none-any.whl", hash = "sha256:5778b0ed334e45384b2ee6b7013259d226e31ef755bc32aa98331d8cf18024ff", size = 800295, upload-time = "2025-12-05T17:22:47.3Z" },
+    { url = "https://files.pythonhosted.org/packages/8e/ea/81cd2bf0d7128237542f34cdba2cac404dcbc26ec07840e878577b147233/qrisp-0.8.2-py3-none-any.whl", hash = "sha256:d66c9e7586a641a071b7e481e06d71749980aafa7734603d4d86055c7246dad5", size = 968935, upload-time = "2026-03-01T22:11:15.155Z" },
 ]
 
 [[package]]

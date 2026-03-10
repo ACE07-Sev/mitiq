@@ -47,7 +47,7 @@ pyquil = [
     "qbraid>=0.10,<0.12",
 ]
 qibo = [
-    "qibo>=0.2.16,<0.4.0",
+    "qibo==0.2.4",
 ]
 qiskit = [
     "qiskit>=2.0.0,<3.0.0",
@@ -56,7 +56,7 @@ qiskit = [
     "ply==3.11",
 ]
 qrisp = [
-    "qrisp~=0.7"
+    "qrisp==0.8.2"
 ]
 
 [dependency-groups]
